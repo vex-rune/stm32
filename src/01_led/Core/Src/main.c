@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "gpio.h"
+#include "led.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -89,8 +90,8 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 
-  // led 亮
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+  // led 初始化
+  led_init();
 
   /* USER CODE END 2 */
 
@@ -99,6 +100,8 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+
+    led_start();
 
     /* USER CODE BEGIN 3 */
   }
