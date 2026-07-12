@@ -1,0 +1,207 @@
+# ============================================================
+# STM32CubeMX 生成的临时文件
+# ============================================================
+# STM32CubeMX 工程索引文件（指向 .ioc 文件的元数据）
+.mxproject
+
+# STM32CubeMX 锁定文件（标记工程被 IDE 打开）
+.metadata/.lock
+
+# ============================================================
+# STM32CubeIDE / Eclipse 元数据
+# ============================================================
+# Eclipse 工作空间元数据（包含本地路径、用户偏好等）
+.metadata/
+
+# Eclipse C 项目描述文件（包含特定于本地环境的配置）
+.cproject
+
+# Eclipse 通用项目描述文件
+.project
+
+# Eclipse 插件设置目录
+.settings/
+
+# STM32CubeIDE 的 C 语言设置文件
+.csettings
+
+# SVD（System View Description）缓存，用于外设寄存器调试
+*.scvd
+
+# Eclipse 其他工程格式文件
+*.ewt
+*.eww
+*.ewp
+
+# STM32CubeIDE 默认的构建输出目录
+Debug/
+Release/
+
+# ============================================================
+# Keil MDK - 另一种常见 IDE
+# ============================================================
+# Keil μVision 窗口布局文件（个人偏好）
+*.uvguix.*
+
+# Keil 项目配置（个人调试配置）
+*.uvoptx
+
+# Keil 构建输出目录
+Objects/
+Listings/
+
+# ============================================================
+# CMake - 构建系统生成的文件
+# ============================================================
+# CMake 构建目录
+build/
+
+# CMake 缓存配置
+CMakeCache.txt
+
+# CMake 生成的中间文件目录
+CMakeFiles/
+
+# CMake 安装脚本
+cmake_install.cmake
+
+# CMake 安装清单
+install_manifest.txt
+
+# CTest 测试配置文件
+CTestTestfile.cmake
+
+# CMake FetchContent 下载的依赖
+_deps/
+
+# CMake 编译数据库（用于 clangd 等工具智能提示）
+# 注：默认生成在 build/ 目录下，已被 build/ 覆盖
+# compile_commands.json
+
+# Ninja 构建工具生成的目录
+.ninja_deps
+.ninja_log
+
+# ============================================================
+# 构建产物 - 编译生成的文件
+# ============================================================
+# 自定义输出目录
+bin/
+lib/
+
+# 编译目标文件
+*.o
+*.obj
+
+# 可执行文件（用于调试和烧录）
+*.elf
+
+# Intel HEX 格式固件（用于烧录）
+*.hex
+
+# 二进制固件（用于直接烧录）
+*.bin
+
+# 链接器生成的内存映射文件（用于分析内存使用）
+*.map
+
+# 汇编列表文件（用于调试分析）
+*.lst
+
+# 依赖关系文件（Make 使用的增量编译信息）
+*.d
+
+# 各段大小信息文件
+*.size
+
+# ============================================================
+# VSCode - 编辑器配置
+# ============================================================
+# 默认忽略整个 .vscode 目录（个人配置不应提交）
+.vscode/
+
+# 例外：以下文件需要提交到仓库，用于团队共享配置
+# 团队统一的编辑器设置（缩进、字体等）
+!.vscode/settings.json
+# 团队统一的任务定义（构建、烧录等）
+!.vscode/tasks.json
+# 推荐安装的插件列表
+!.vscode/extensions.json
+
+# clangd/cpptools 生成的智能提示浏览数据库
+.vscode/.browse.c_cpp.db*
+.vscode/c_cpp_properties.json
+.vscode/launch.json
+.vscode/ipch
+
+# ============================================================
+# 其他 IDE 配置
+# ============================================================
+# JetBrains 系列 IDE 配置（IntelliJ IDEA、CLion 等）
+.idea/
+
+# IntelliJ 模块文件
+*.iml
+
+# IntelliJ 工作区文件
+*.iws
+
+# ============================================================
+# 通用文件 - 各系统/工具产生的临时文件
+# ============================================================
+# 日志文件
+*.log
+
+# 临时文件
+*.tmp
+*.bak
+
+# Vim 交换文件
+*.swp
+*.swo
+*.swn
+
+# macOS 文件系统元数据
+.DS_Store
+
+# Windows 缩略图缓存
+Thumbs.db
+
+# Windows 文件夹配置
+desktop.ini
+
+# ============================================================
+# 用户特定文件 - 不应提交的个人文件
+# ============================================================
+# 各 IDE 生成的用户特定配置
+*.user
+docs/01-STM32 介绍.md
+docs/2-STM32F103xCDE_数据手册-中文_最新.pdf
+docs/STM32-F103ZET6开发板.pdf
+docs/model/01_I2C/I2C规范.pdf
+docs/model/01_I2C/m24c02-w.pdf
+docs/model/02_flash/C179173_NOR+FLASH_W25Q32JVSSIQ_规格书_WINBOND(华邦)NOR+FLASH规格书.PDF
+docs/model/03_SRAM/SRAM 芯片.pdf
+docs/model/04_lcd/3.5寸并口不带触摸模块原理图-ILI9486.pdf
+docs/model/04_lcd/3.5寸并口带触摸模块原理图-ILI9486.pdf
+docs/model/04_lcd/电阻屏XPT2046用户手册.pdf
+docs/model/04_lcd/ILI9486芯片手册.pdf
+docs/model/04_lcd/ZJY350IT002.pdf
+docs/model/05_w5500以太模块/W5500数据手册V1.3.pdf
+docs/model/06_ESP32-C3/\[ESP32C3-AT]\[v3.2.0.0]用户指南.pdf
+docs/model/06_ESP32-C3/\[ESP32C3-AT]\[v3.2.0.0]Release-Note.pdf
+docs/model/06_ESP32-C3/\[ESP32C3-AT]\[v3.2.0.0]User-Guide.pdf
+docs/model/06_ESP32-C3/esp32-c3_datasheet_cn.pdf
+docs/stm32/1-STM32F10x-英文参考手册_最新.pdf
+docs/stm32/1-STM32F10x-中文参考手册_最新.pdf
+docs/stm32/2-STM32F103xCDE_数据手册-英文_最新.pdf
+docs/stm32/2-STM32F103xCDE_数据手册-中文_最新.pdf
+docs/stm32/CM3权威指南CnR2.pdf
+docs/stm32/E220-400M22S_UserManual_CN_v1.1.pdf
+docs/stm32/LLCC68_V1.0.pdf
+docs/stm32/STM8和STM32产品选型手册.pdf
+docs/stm32/STM32系统存储器启动模式.pdf
+docs/stm32/stm32与 lcd 连接.pdf
+docs/stm32/STM32Cube使用手册.pdf
+docs/stm32/STM32F10xxx Cortex-M3编程手册-英文版-PM0056-Rev6.pdf
+docs/stm32/STM32F10xxx闪存编程参考手册.pdf
