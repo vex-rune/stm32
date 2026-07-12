@@ -175,33 +175,3 @@ desktop.ini
 # ============================================================
 # 各 IDE 生成的用户特定配置
 *.user
-docs/01-STM32 介绍.md
-docs/2-STM32F103xCDE_数据手册-中文_最新.pdf
-docs/STM32-F103ZET6开发板.pdf
-docs/model/01_I2C/I2C规范.pdf
-docs/model/01_I2C/m24c02-w.pdf
-docs/model/02_flash/C179173_NOR+FLASH_W25Q32JVSSIQ_规格书_WINBOND(华邦)NOR+FLASH规格书.PDF
-docs/model/03_SRAM/SRAM 芯片.pdf
-docs/model/04_lcd/3.5寸并口不带触摸模块原理图-ILI9486.pdf
-docs/model/04_lcd/3.5寸并口带触摸模块原理图-ILI9486.pdf
-docs/model/04_lcd/电阻屏XPT2046用户手册.pdf
-docs/model/04_lcd/ILI9486芯片手册.pdf
-docs/model/04_lcd/ZJY350IT002.pdf
-docs/model/05_w5500以太模块/W5500数据手册V1.3.pdf
-docs/model/06_ESP32-C3/\[ESP32C3-AT]\[v3.2.0.0]用户指南.pdf
-docs/model/06_ESP32-C3/\[ESP32C3-AT]\[v3.2.0.0]Release-Note.pdf
-docs/model/06_ESP32-C3/\[ESP32C3-AT]\[v3.2.0.0]User-Guide.pdf
-docs/model/06_ESP32-C3/esp32-c3_datasheet_cn.pdf
-docs/stm32/1-STM32F10x-英文参考手册_最新.pdf
-docs/stm32/1-STM32F10x-中文参考手册_最新.pdf
-docs/stm32/2-STM32F103xCDE_数据手册-英文_最新.pdf
-docs/stm32/2-STM32F103xCDE_数据手册-中文_最新.pdf
-docs/stm32/CM3权威指南CnR2.pdf
-docs/stm32/E220-400M22S_UserManual_CN_v1.1.pdf
-docs/stm32/LLCC68_V1.0.pdf
-docs/stm32/STM8和STM32产品选型手册.pdf
-docs/stm32/STM32系统存储器启动模式.pdf
-docs/stm32/stm32与 lcd 连接.pdf
-docs/stm32/STM32Cube使用手册.pdf
-docs/stm32/STM32F10xxx Cortex-M3编程手册-英文版-PM0056-Rev6.pdf
-docs/stm32/STM32F10xxx闪存编程参考手册.pdf
