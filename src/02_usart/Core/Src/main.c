@@ -18,6 +18,9 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+
+#include <string.h>
+
 #include "usart.h"
 #include "gpio.h"
 
@@ -64,7 +67,6 @@ void SystemClock_Config(void);
   */
 int main(void)
 {
-
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -91,7 +93,13 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   // 发送数据的函数
-  HAL_UART_Transmit( &huart1, "hello world\r\n", 12, 1000);
+  HAL_UART_Transmit(&huart1, "hello world\r\n", 12, 1000);
+
+  // 接收缓存区
+  uint8_t rx_buffer[128] = {0};
+
+  // 实际接收的数据长度
+  uint16_t rx_len = 0;
 
   /* USER CODE END 2 */
 
@@ -100,6 +108,16 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+
+    // 接收一个字符串
+    // HAL_UART_Receive(&huart1, rx_buffer, 128, 1000); // 定长接收
+    HAL_UARTEx_ReceiveToIdle(&huart1, rx_buffer, 128, &rx_len, 1000);
+
+    // 发送出去的数据大小
+    // HAL_UART_Transmit(&huart1, rx_buffer, strlen(rx_buffer), 1000);
+
+    // 清空缓存区
+    memset(rx_buffer, 0, 128);
 
     /* USER CODE BEGIN 3 */
   }
@@ -131,8 +149,8 @@ void SystemClock_Config(void)
 
   /** Initializes the CPU, AHB and APB buses clocks
   */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+    | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
@@ -170,7 +188,7 @@ void Error_Handler(void)
   * @param  line: assert_param error line source number
   * @retval None
   */
-void assert_failed(uint8_t *file, uint32_t line)
+void assert_failed(uint8_t* file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
