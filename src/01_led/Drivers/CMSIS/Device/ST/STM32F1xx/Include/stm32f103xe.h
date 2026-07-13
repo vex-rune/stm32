@@ -44,7 +44,7 @@
   * @{
   */
 /**
-  * @brief Configuration of the Cortex-M3 Processor and Core Peripherals 
+  * @brief Cortex-M3 处理器和内核外设的配置 
  */
 #define __CM3_REV                  0x0200U  /*!< Core Revision r2p0                           */
  #define __MPU_PRESENT             0U       /*!< Other STM32 devices does not provide an MPU  */
@@ -60,11 +60,11 @@
   */
 
 /**
- * @brief STM32F10x Interrupt Number Definition, according to the selected device 
+ * @brief STM32F10x 中断号定义, according to the selected device 
  *        in @ref Library_configuration_section 
  */
 
- /*!< Interrupt Number Definition */
+ /*!< 中断号定义 */
 typedef enum
 {
 /******  Cortex-M3 Processor Exceptions Numbers ***************************************************/
@@ -374,7 +374,7 @@ typedef struct
 
 
 /** 
-  * @brief External Interrupt/Event Controller
+  * @brief 外部中断/Event Controller
   */
 
 typedef struct
@@ -474,7 +474,7 @@ typedef struct
 } FSMC_Bank4_TypeDef; 
 
 /** 
-  * @brief General Purpose I/O
+  * @brief GPIO
   */
 
 typedef struct
@@ -623,7 +623,7 @@ typedef struct
 } SPI_TypeDef;
 
 /**
-  * @brief TIM Timers
+  * @brief TIM 定时器s
   */
 typedef struct
 {
@@ -1560,7 +1560,7 @@ typedef struct
 
 #define RCC_APB2RSTR_TIM1RST_Pos             (11U)                             
 #define RCC_APB2RSTR_TIM1RST_Msk             (0x1UL << RCC_APB2RSTR_TIM1RST_Pos) /*!< 0x00000800 */
-#define RCC_APB2RSTR_TIM1RST                 RCC_APB2RSTR_TIM1RST_Msk          /*!< TIM1 Timer reset */
+#define RCC_APB2RSTR_TIM1RST                 RCC_APB2RSTR_TIM1RST_Msk          /*!< TIM1 定时器 reset */
 #define RCC_APB2RSTR_SPI1RST_Pos             (12U)                             
 #define RCC_APB2RSTR_SPI1RST_Msk             (0x1UL << RCC_APB2RSTR_SPI1RST_Pos) /*!< 0x00001000 */
 #define RCC_APB2RSTR_SPI1RST                 RCC_APB2RSTR_SPI1RST_Msk          /*!< SPI 1 reset */
@@ -1581,7 +1581,7 @@ typedef struct
 #define RCC_APB2RSTR_IOPGRST                 RCC_APB2RSTR_IOPGRST_Msk          /*!< I/O port G reset */
 #define RCC_APB2RSTR_TIM8RST_Pos             (13U)                             
 #define RCC_APB2RSTR_TIM8RST_Msk             (0x1UL << RCC_APB2RSTR_TIM8RST_Pos) /*!< 0x00002000 */
-#define RCC_APB2RSTR_TIM8RST                 RCC_APB2RSTR_TIM8RST_Msk          /*!< TIM8 Timer reset */
+#define RCC_APB2RSTR_TIM8RST                 RCC_APB2RSTR_TIM8RST_Msk          /*!< TIM8 定时器 reset */
 #define RCC_APB2RSTR_ADC3RST_Pos             (15U)                             
 #define RCC_APB2RSTR_ADC3RST_Msk             (0x1UL << RCC_APB2RSTR_ADC3RST_Pos) /*!< 0x00008000 */
 #define RCC_APB2RSTR_ADC3RST                 RCC_APB2RSTR_ADC3RST_Msk          /*!< ADC3 interface reset */
@@ -1591,10 +1591,10 @@ typedef struct
 /*****************  Bit definition for RCC_APB1RSTR register  *****************/
 #define RCC_APB1RSTR_TIM2RST_Pos             (0U)                              
 #define RCC_APB1RSTR_TIM2RST_Msk             (0x1UL << RCC_APB1RSTR_TIM2RST_Pos) /*!< 0x00000001 */
-#define RCC_APB1RSTR_TIM2RST                 RCC_APB1RSTR_TIM2RST_Msk          /*!< Timer 2 reset */
+#define RCC_APB1RSTR_TIM2RST                 RCC_APB1RSTR_TIM2RST_Msk          /*!< 定时器 2 reset */
 #define RCC_APB1RSTR_TIM3RST_Pos             (1U)                              
 #define RCC_APB1RSTR_TIM3RST_Msk             (0x1UL << RCC_APB1RSTR_TIM3RST_Pos) /*!< 0x00000002 */
-#define RCC_APB1RSTR_TIM3RST                 RCC_APB1RSTR_TIM3RST_Msk          /*!< Timer 3 reset */
+#define RCC_APB1RSTR_TIM3RST                 RCC_APB1RSTR_TIM3RST_Msk          /*!< 定时器 3 reset */
 #define RCC_APB1RSTR_WWDGRST_Pos             (11U)                             
 #define RCC_APB1RSTR_WWDGRST_Msk             (0x1UL << RCC_APB1RSTR_WWDGRST_Pos) /*!< 0x00000800 */
 #define RCC_APB1RSTR_WWDGRST                 RCC_APB1RSTR_WWDGRST_Msk          /*!< Window Watchdog reset */
@@ -1618,7 +1618,7 @@ typedef struct
 
 #define RCC_APB1RSTR_TIM4RST_Pos             (2U)                              
 #define RCC_APB1RSTR_TIM4RST_Msk             (0x1UL << RCC_APB1RSTR_TIM4RST_Pos) /*!< 0x00000004 */
-#define RCC_APB1RSTR_TIM4RST                 RCC_APB1RSTR_TIM4RST_Msk          /*!< Timer 4 reset */
+#define RCC_APB1RSTR_TIM4RST                 RCC_APB1RSTR_TIM4RST_Msk          /*!< 定时器 4 reset */
 #define RCC_APB1RSTR_SPI2RST_Pos             (14U)                             
 #define RCC_APB1RSTR_SPI2RST_Msk             (0x1UL << RCC_APB1RSTR_SPI2RST_Pos) /*!< 0x00004000 */
 #define RCC_APB1RSTR_SPI2RST                 RCC_APB1RSTR_SPI2RST_Msk          /*!< SPI 2 reset */
@@ -1635,13 +1635,13 @@ typedef struct
 
 #define RCC_APB1RSTR_TIM5RST_Pos             (3U)                              
 #define RCC_APB1RSTR_TIM5RST_Msk             (0x1UL << RCC_APB1RSTR_TIM5RST_Pos) /*!< 0x00000008 */
-#define RCC_APB1RSTR_TIM5RST                 RCC_APB1RSTR_TIM5RST_Msk          /*!< Timer 5 reset */
+#define RCC_APB1RSTR_TIM5RST                 RCC_APB1RSTR_TIM5RST_Msk          /*!< 定时器 5 reset */
 #define RCC_APB1RSTR_TIM6RST_Pos             (4U)                              
 #define RCC_APB1RSTR_TIM6RST_Msk             (0x1UL << RCC_APB1RSTR_TIM6RST_Pos) /*!< 0x00000010 */
-#define RCC_APB1RSTR_TIM6RST                 RCC_APB1RSTR_TIM6RST_Msk          /*!< Timer 6 reset */
+#define RCC_APB1RSTR_TIM6RST                 RCC_APB1RSTR_TIM6RST_Msk          /*!< 定时器 6 reset */
 #define RCC_APB1RSTR_TIM7RST_Pos             (5U)                              
 #define RCC_APB1RSTR_TIM7RST_Msk             (0x1UL << RCC_APB1RSTR_TIM7RST_Pos) /*!< 0x00000020 */
-#define RCC_APB1RSTR_TIM7RST                 RCC_APB1RSTR_TIM7RST_Msk          /*!< Timer 7 reset */
+#define RCC_APB1RSTR_TIM7RST                 RCC_APB1RSTR_TIM7RST_Msk          /*!< 定时器 7 reset */
 #define RCC_APB1RSTR_SPI3RST_Pos             (15U)                             
 #define RCC_APB1RSTR_SPI3RST_Msk             (0x1UL << RCC_APB1RSTR_SPI3RST_Pos) /*!< 0x00008000 */
 #define RCC_APB1RSTR_SPI3RST                 RCC_APB1RSTR_SPI3RST_Msk          /*!< SPI 3 reset */
@@ -1711,7 +1711,7 @@ typedef struct
 
 #define RCC_APB2ENR_TIM1EN_Pos               (11U)                             
 #define RCC_APB2ENR_TIM1EN_Msk               (0x1UL << RCC_APB2ENR_TIM1EN_Pos)  /*!< 0x00000800 */
-#define RCC_APB2ENR_TIM1EN                   RCC_APB2ENR_TIM1EN_Msk            /*!< TIM1 Timer clock enable */
+#define RCC_APB2ENR_TIM1EN                   RCC_APB2ENR_TIM1EN_Msk            /*!< TIM1 定时器 clock enable */
 #define RCC_APB2ENR_SPI1EN_Pos               (12U)                             
 #define RCC_APB2ENR_SPI1EN_Msk               (0x1UL << RCC_APB2ENR_SPI1EN_Pos)  /*!< 0x00001000 */
 #define RCC_APB2ENR_SPI1EN                   RCC_APB2ENR_SPI1EN_Msk            /*!< SPI 1 clock enable */
@@ -1732,7 +1732,7 @@ typedef struct
 #define RCC_APB2ENR_IOPGEN                   RCC_APB2ENR_IOPGEN_Msk            /*!< I/O port G clock enable */
 #define RCC_APB2ENR_TIM8EN_Pos               (13U)                             
 #define RCC_APB2ENR_TIM8EN_Msk               (0x1UL << RCC_APB2ENR_TIM8EN_Pos)  /*!< 0x00002000 */
-#define RCC_APB2ENR_TIM8EN                   RCC_APB2ENR_TIM8EN_Msk            /*!< TIM8 Timer clock enable */
+#define RCC_APB2ENR_TIM8EN                   RCC_APB2ENR_TIM8EN_Msk            /*!< TIM8 定时器 clock enable */
 #define RCC_APB2ENR_ADC3EN_Pos               (15U)                             
 #define RCC_APB2ENR_ADC3EN_Msk               (0x1UL << RCC_APB2ENR_ADC3EN_Pos)  /*!< 0x00008000 */
 #define RCC_APB2ENR_ADC3EN                   RCC_APB2ENR_ADC3EN_Msk            /*!< DMA1 clock enable */
@@ -1742,10 +1742,10 @@ typedef struct
 /*****************  Bit definition for RCC_APB1ENR register  ******************/
 #define RCC_APB1ENR_TIM2EN_Pos               (0U)                              
 #define RCC_APB1ENR_TIM2EN_Msk               (0x1UL << RCC_APB1ENR_TIM2EN_Pos)  /*!< 0x00000001 */
-#define RCC_APB1ENR_TIM2EN                   RCC_APB1ENR_TIM2EN_Msk            /*!< Timer 2 clock enabled*/
+#define RCC_APB1ENR_TIM2EN                   RCC_APB1ENR_TIM2EN_Msk            /*!< 定时器 2 clock enabled*/
 #define RCC_APB1ENR_TIM3EN_Pos               (1U)                              
 #define RCC_APB1ENR_TIM3EN_Msk               (0x1UL << RCC_APB1ENR_TIM3EN_Pos)  /*!< 0x00000002 */
-#define RCC_APB1ENR_TIM3EN                   RCC_APB1ENR_TIM3EN_Msk            /*!< Timer 3 clock enable */
+#define RCC_APB1ENR_TIM3EN                   RCC_APB1ENR_TIM3EN_Msk            /*!< 定时器 3 clock enable */
 #define RCC_APB1ENR_WWDGEN_Pos               (11U)                             
 #define RCC_APB1ENR_WWDGEN_Msk               (0x1UL << RCC_APB1ENR_WWDGEN_Pos)  /*!< 0x00000800 */
 #define RCC_APB1ENR_WWDGEN                   RCC_APB1ENR_WWDGEN_Msk            /*!< Window Watchdog clock enable */
@@ -1769,7 +1769,7 @@ typedef struct
 
 #define RCC_APB1ENR_TIM4EN_Pos               (2U)                              
 #define RCC_APB1ENR_TIM4EN_Msk               (0x1UL << RCC_APB1ENR_TIM4EN_Pos)  /*!< 0x00000004 */
-#define RCC_APB1ENR_TIM4EN                   RCC_APB1ENR_TIM4EN_Msk            /*!< Timer 4 clock enable */
+#define RCC_APB1ENR_TIM4EN                   RCC_APB1ENR_TIM4EN_Msk            /*!< 定时器 4 clock enable */
 #define RCC_APB1ENR_SPI2EN_Pos               (14U)                             
 #define RCC_APB1ENR_SPI2EN_Msk               (0x1UL << RCC_APB1ENR_SPI2EN_Pos)  /*!< 0x00004000 */
 #define RCC_APB1ENR_SPI2EN                   RCC_APB1ENR_SPI2EN_Msk            /*!< SPI 2 clock enable */
@@ -1786,13 +1786,13 @@ typedef struct
 
 #define RCC_APB1ENR_TIM5EN_Pos               (3U)                              
 #define RCC_APB1ENR_TIM5EN_Msk               (0x1UL << RCC_APB1ENR_TIM5EN_Pos)  /*!< 0x00000008 */
-#define RCC_APB1ENR_TIM5EN                   RCC_APB1ENR_TIM5EN_Msk            /*!< Timer 5 clock enable */
+#define RCC_APB1ENR_TIM5EN                   RCC_APB1ENR_TIM5EN_Msk            /*!< 定时器 5 clock enable */
 #define RCC_APB1ENR_TIM6EN_Pos               (4U)                              
 #define RCC_APB1ENR_TIM6EN_Msk               (0x1UL << RCC_APB1ENR_TIM6EN_Pos)  /*!< 0x00000010 */
-#define RCC_APB1ENR_TIM6EN                   RCC_APB1ENR_TIM6EN_Msk            /*!< Timer 6 clock enable */
+#define RCC_APB1ENR_TIM6EN                   RCC_APB1ENR_TIM6EN_Msk            /*!< 定时器 6 clock enable */
 #define RCC_APB1ENR_TIM7EN_Pos               (5U)                              
 #define RCC_APB1ENR_TIM7EN_Msk               (0x1UL << RCC_APB1ENR_TIM7EN_Pos)  /*!< 0x00000020 */
-#define RCC_APB1ENR_TIM7EN                   RCC_APB1ENR_TIM7EN_Msk            /*!< Timer 7 clock enable */
+#define RCC_APB1ENR_TIM7EN                   RCC_APB1ENR_TIM7EN_Msk            /*!< 定时器 7 clock enable */
 #define RCC_APB1ENR_SPI3EN_Pos               (15U)                             
 #define RCC_APB1ENR_SPI3EN_Msk               (0x1UL << RCC_APB1ENR_SPI3EN_Pos)  /*!< 0x00008000 */
 #define RCC_APB1ENR_SPI3EN                   RCC_APB1ENR_SPI3EN_Msk            /*!< SPI 3 clock enable */
@@ -3010,7 +3010,7 @@ typedef struct
 
 /******************************************************************************/
 /*                                                                            */
-/*                    External Interrupt/Event Controller                     */
+/*                    外部中断/Event Controller                     */
 /*                                                                            */
 /******************************************************************************/
 
@@ -4416,7 +4416,7 @@ typedef struct
 
 /*****************************************************************************/
 /*                                                                           */
-/*                               Timers (TIM)                                */
+/*                               定时器s (TIM)                                */
 /*                                                                           */
 /*****************************************************************************/
 /*******************  Bit definition for TIM_CR1 register  *******************/
@@ -5113,7 +5113,7 @@ typedef struct
 
 #define WWDG_CFR_WDGTB_Pos                  (7U)                               
 #define WWDG_CFR_WDGTB_Msk                  (0x3UL << WWDG_CFR_WDGTB_Pos)       /*!< 0x00000180 */
-#define WWDG_CFR_WDGTB                      WWDG_CFR_WDGTB_Msk                 /*!< WDGTB[1:0] bits (Timer Base) */
+#define WWDG_CFR_WDGTB                      WWDG_CFR_WDGTB_Msk                 /*!< WDGTB[1:0] bits (定时器 Base) */
 #define WWDG_CFR_WDGTB_0                    (0x1UL << WWDG_CFR_WDGTB_Pos)       /*!< 0x00000080 */
 #define WWDG_CFR_WDGTB_1                    (0x2UL << WWDG_CFR_WDGTB_Pos)       /*!< 0x00000100 */
 

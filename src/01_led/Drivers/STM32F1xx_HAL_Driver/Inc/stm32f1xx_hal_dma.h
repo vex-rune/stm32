@@ -67,7 +67,7 @@ typedef struct
                                            @note The circular buffer mode cannot be used if the memory-to-memory
                                                  data transfer is configured on the selected Channel */
 
-  uint32_t Priority;                  /*!< Specifies the software priority for the DMAy Channelx.
+  uint32_t Priority;                  /*!< Specifies the software 优先级 for the DMAy Channelx.
                                            This parameter can be a value of @ref DMA_Priority_level */
 } DMA_InitTypeDef;
 
@@ -362,7 +362,7 @@ typedef struct __DMA_HandleTypeDef
 /** @addtogroup DMA_Exported_Functions_Group1
   * @{
   */
-/* Initialization and de-initialization functions *****************************/
+/* 初始化和反初始化函数 *****************************/
 HAL_StatusTypeDef HAL_DMA_Init(DMA_HandleTypeDef *hdma);
 HAL_StatusTypeDef HAL_DMA_DeInit (DMA_HandleTypeDef *hdma);
 /**
@@ -372,7 +372,7 @@ HAL_StatusTypeDef HAL_DMA_DeInit (DMA_HandleTypeDef *hdma);
 /** @addtogroup DMA_Exported_Functions_Group2
   * @{
   */
-/* IO operation functions *****************************************************/
+/* IO 操作函数 *****************************************************/
 HAL_StatusTypeDef HAL_DMA_Start (DMA_HandleTypeDef *hdma, uint32_t SrcAddress, uint32_t DstAddress, uint32_t DataLength);
 HAL_StatusTypeDef HAL_DMA_Start_IT(DMA_HandleTypeDef *hdma, uint32_t SrcAddress, uint32_t DstAddress, uint32_t DataLength);
 HAL_StatusTypeDef HAL_DMA_Abort(DMA_HandleTypeDef *hdma);

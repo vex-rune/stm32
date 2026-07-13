@@ -95,7 +95,7 @@
 * MPU Region Attribute and Size Register Value
 * 
 * \param DisableExec       Instruction access disable bit, 1= disable instruction fetches.
-* \param AccessPermission  Data access permissions, allows you to configure read/write access for User and Privileged mode.
+* \param AccessPermission  Data access permissions, allows you to configure read/write access for User and Privileged 模式。
 * \param AccessAttributes  Memory access attribution, see \ref ARM_MPU_ACCESS_.
 * \param SubRegionDisable  Sub-region disable field.
 * \param Size              Region size of the region to be configured, for example 4K, 8K.
@@ -109,7 +109,7 @@
 * MPU Region Attribute and Size Register Value
 * 
 * \param DisableExec       Instruction access disable bit, 1= disable instruction fetches.
-* \param AccessPermission  Data access permissions, allows you to configure read/write access for User and Privileged mode.
+* \param AccessPermission  Data access permissions, allows you to configure read/write access for User and Privileged 模式。
 * \param TypeExtField      Type extension field, allows you to configure memory access type, for example strongly ordered, peripheral.
 * \param IsShareable       Region is shareable between multiple bus masters.
 * \param IsCacheable       Region is cacheable, i.e. its value may be kept in cache.

@@ -58,12 +58,12 @@
   * @{
   */
 
-/** @defgroup RCCEx_Exported_Functions_Group1 Peripheral Control functions
-  *  @brief  Extended Peripheral Control functions
+/** @defgroup RCCEx_Exported_Functions_Group1 外设控制函数
+  *  @brief  Extended 外设控制函数
   *
 @verbatim
  ===============================================================================
-                ##### Extended Peripheral Control functions  #####
+                ##### Extended 外设控制函数  #####
  ===============================================================================
     [..]
     This subsection provides a set of functions allowing to control the RCC Clocks
@@ -115,7 +115,7 @@ HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *PeriphClk
 
     /* As soon as function is called to change RTC clock source, activation of the
        power domain is done. */
-    /* Requires to enable write access to Backup Domain of necessary */
+    /* Requires to enable write 访问 Backup Domain of necessary */
     if (__HAL_RCC_PWR_IS_CLK_DISABLED())
     {
       __HAL_RCC_PWR_CLK_ENABLE();
@@ -124,7 +124,7 @@ HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *PeriphClk
 
     if (HAL_IS_BIT_CLR(PWR->CR, PWR_CR_DBP))
     {
-      /* Enable write access to Backup domain */
+      /* Enable write 访问 Backup domain */
       SET_BIT(PWR->CR, PWR_CR_DBP);
 
       /* Wait for Backup domain Write protection disable */
@@ -218,7 +218,7 @@ HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *PeriphClk
   /* Check if PLL I2S need to be enabled */
   if (pllactive == 1)
   {
-    /* Enable PLL I2S only if not active */
+    /* 使能 PLL I2S only if not active */
     if (HAL_IS_BIT_CLR(RCC->CR, RCC_CR_PLL3ON))
     {
       /* Check the parameters */
@@ -602,7 +602,7 @@ uint32_t HAL_RCCEx_GetPeriphCLKFreq(uint32_t PeriphClk)
   */
 
 /**
-  * @brief  Enable PLLI2S
+  * @brief  使能 PLLI2S
   * @param  PLLI2SInit pointer to an RCC_PLLI2SInitTypeDef structure that
   *         contains the configuration information for the PLLI2S
   * @note   The PLLI2S configuration not modified if used by I2S2 or I2S3 Interface.
@@ -728,7 +728,7 @@ HAL_StatusTypeDef HAL_RCCEx_DisablePLLI2S(void)
   */
 
 /**
-  * @brief  Enable PLL2
+  * @brief  使能 PLL2
   * @param  PLL2Init pointer to an RCC_PLL2InitTypeDef structure that
   *         contains the configuration information for the PLL2
   * @note   The PLL2 configuration not modified if used indirectly as system clock.

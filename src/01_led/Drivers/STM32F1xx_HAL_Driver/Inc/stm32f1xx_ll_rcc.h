@@ -1378,7 +1378,7 @@ __STATIC_INLINE void LL_RCC_ReleaseBackupDomainReset(void)
   */
 
 /**
-  * @brief  Enable PLL
+  * @brief  使能 PLL
   * @rmtoll CR           PLLON         LL_RCC_PLL_Enable
   * @retval None
   */
@@ -1598,7 +1598,7 @@ __STATIC_INLINE uint32_t LL_RCC_PLL_GetPrediv(void)
   */
 
 /**
-  * @brief  Enable PLLI2S
+  * @brief  使能 PLLI2S
   * @rmtoll CR           PLL3ON        LL_RCC_PLLI2S_Enable
   * @retval None
   */
@@ -1695,7 +1695,7 @@ __STATIC_INLINE uint32_t LL_RCC_PLLI2S_GetMultiplicator(void)
   */
 
 /**
-  * @brief  Enable PLL2
+  * @brief  使能 PLL2
   * @rmtoll CR           PLL2ON        LL_RCC_PLL2_Enable
   * @retval None
   */
@@ -2077,7 +2077,7 @@ __STATIC_INLINE void LL_RCC_EnableIT_HSERDY(void)
 }
 
 /**
-  * @brief  Enable PLL ready interrupt
+  * @brief  使能 PLL ready interrupt
   * @rmtoll CIR         PLLRDYIE      LL_RCC_EnableIT_PLLRDY
   * @retval None
   */
@@ -2088,7 +2088,7 @@ __STATIC_INLINE void LL_RCC_EnableIT_PLLRDY(void)
 
 #if defined(RCC_PLLI2S_SUPPORT)
 /**
-  * @brief  Enable PLLI2S ready interrupt
+  * @brief  使能 PLLI2S ready interrupt
   * @rmtoll CIR          PLL3RDYIE     LL_RCC_EnableIT_PLLI2SRDY
   * @retval None
   */
@@ -2100,7 +2100,7 @@ __STATIC_INLINE void LL_RCC_EnableIT_PLLI2SRDY(void)
 
 #if defined(RCC_PLL2_SUPPORT)
 /**
-  * @brief  Enable PLL2 ready interrupt
+  * @brief  使能 PLL2 ready interrupt
   * @rmtoll CIR          PLL2RDYIE     LL_RCC_EnableIT_PLL2RDY
   * @retval None
   */

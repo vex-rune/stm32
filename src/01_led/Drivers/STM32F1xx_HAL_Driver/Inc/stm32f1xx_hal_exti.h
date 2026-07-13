@@ -284,11 +284,11 @@ HAL_StatusTypeDef HAL_EXTI_GetHandle(EXTI_HandleTypeDef *hexti, uint32_t ExtiLin
   * @}
   */
 
-/** @defgroup EXTI_Exported_Functions_Group2 IO operation functions
-  * @brief    IO operation functions
+/** @defgroup EXTI_Exported_Functions_Group2 IO 操作函数
+  * @brief    IO 操作函数
   * @{
   */
-/* IO operation functions *****************************************************/
+/* IO 操作函数 *****************************************************/
 void              HAL_EXTI_IRQHandler(EXTI_HandleTypeDef *hexti);
 uint32_t          HAL_EXTI_GetPending(EXTI_HandleTypeDef *hexti, uint32_t Edge);
 void              HAL_EXTI_ClearPending(EXTI_HandleTypeDef *hexti, uint32_t Edge);

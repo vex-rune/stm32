@@ -104,12 +104,12 @@
   */
 
 
-/** @defgroup CORTEX_Exported_Functions_Group1 Initialization and de-initialization functions
+/** @defgroup CORTEX_Exported_Functions_Group1 初始化和反初始化函数
   *  @brief    Initialization and Configuration functions 
   *
 @verbatim    
   ==============================================================================
-              ##### Initialization and de-initialization functions #####
+              ##### 初始化和反初始化函数 #####
   ==============================================================================
     [..]
       This section provides the CORTEX HAL driver functions allowing to configure Interrupts
@@ -121,22 +121,22 @@
 
 
 /**
-  * @brief  Sets the priority grouping field (preemption priority and subpriority)
+  * @brief  Sets the 优先级 grouping field (preemption 优先级 and sub优先级)
   *         using the required unlock sequence.
-  * @param  PriorityGroup: The priority grouping bits length. 
+  * @param  PriorityGroup: The 优先级 grouping bits length. 
   *         This parameter can be one of the following values:
-  *         @arg NVIC_PRIORITYGROUP_0: 0 bits for preemption priority
-  *                                    4 bits for subpriority
-  *         @arg NVIC_PRIORITYGROUP_1: 1 bits for preemption priority
-  *                                    3 bits for subpriority
-  *         @arg NVIC_PRIORITYGROUP_2: 2 bits for preemption priority
-  *                                    2 bits for subpriority
-  *         @arg NVIC_PRIORITYGROUP_3: 3 bits for preemption priority
-  *                                    1 bits for subpriority
-  *         @arg NVIC_PRIORITYGROUP_4: 4 bits for preemption priority
-  *                                    0 bits for subpriority
+  *         @arg NVIC_PRIORITYGROUP_0: 0 bits for preemption 优先级
+  *                                    4 bits for sub优先级
+  *         @arg NVIC_PRIORITYGROUP_1: 1 bits for preemption 优先级
+  *                                    3 bits for sub优先级
+  *         @arg NVIC_PRIORITYGROUP_2: 2 bits for preemption 优先级
+  *                                    2 bits for sub优先级
+  *         @arg NVIC_PRIORITYGROUP_3: 3 bits for preemption 优先级
+  *                                    1 bits for sub优先级
+  *         @arg NVIC_PRIORITYGROUP_4: 4 bits for preemption 优先级
+  *                                    0 bits for sub优先级
   * @note   When the NVIC_PriorityGroup_0 is selected, IRQ preemption is no more possible. 
-  *         The pending IRQ priority will be managed only by the subpriority. 
+  *         The pending IRQ 优先级 will be managed only by the sub优先级. 
   * @retval None
   */
 void HAL_NVIC_SetPriorityGrouping(uint32_t PriorityGroup)
@@ -149,16 +149,16 @@ void HAL_NVIC_SetPriorityGrouping(uint32_t PriorityGroup)
 }
 
 /**
-  * @brief  Sets the priority of an interrupt.
+  * @brief  Sets the 优先级 of an interrupt.
   * @param  IRQn: External interrupt number.
   *         This parameter can be an enumerator of IRQn_Type enumeration
   *         (For the complete STM32 Devices IRQ Channels list, please refer to the appropriate CMSIS device file (stm32f10xx.h))
-  * @param  PreemptPriority: The preemption priority for the IRQn channel.
+  * @param  PreemptPriority: The preemption 优先级 for the IRQn channel.
   *         This parameter can be a value between 0 and 15
-  *         A lower priority value indicates a higher priority 
-  * @param  SubPriority: the subpriority level for the IRQ channel.
+  *         A lower 优先级 value indicates a higher 优先级 
+  * @param  SubPriority: the sub优先级 level for the IRQ channel.
   *         This parameter can be a value between 0 and 15
-  *         A lower priority value indicates a higher priority.          
+  *         A lower 优先级 value indicates a higher 优先级.          
   * @retval None
   */
 void HAL_NVIC_SetPriority(IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t SubPriority)
@@ -176,7 +176,7 @@ void HAL_NVIC_SetPriority(IRQn_Type IRQn, uint32_t PreemptPriority, uint32_t Sub
 
 /**
   * @brief  Enables a device specific interrupt in the NVIC interrupt controller.
-  * @note   To configure interrupts priority correctly, the NVIC_PriorityGroupConfig()
+  * @note   To configure interrupts 优先级 correctly, the NVIC_PriorityGroupConfig()
   *         function should be called before. 
   * @param  IRQn External interrupt number.
   *         This parameter can be an enumerator of IRQn_Type enumeration
@@ -219,11 +219,11 @@ void HAL_NVIC_SystemReset(void)
 }
 
 /**
-  * @brief  Initializes the System Timer and its interrupt, and starts the System Tick Timer.
+  * @brief  Initializes the System 定时器 and its interrupt, and starts the System Tick 定时器.
   *         Counter is in free running mode to generate periodic interrupts.
   * @param  TicksNumb: Specifies the ticks Number of ticks between two interrupts.
-  * @retval status:  - 0  Function succeeded.
-  *                  - 1  Function failed.
+  * @retval status:  - 0  函数执行成功.
+  *                  - 1  函数执行失败.
   */
 uint32_t HAL_SYSTICK_Config(uint32_t TicksNumb)
 {
@@ -233,12 +233,12 @@ uint32_t HAL_SYSTICK_Config(uint32_t TicksNumb)
   * @}
   */
 
-/** @defgroup CORTEX_Exported_Functions_Group2 Peripheral Control functions
+/** @defgroup CORTEX_Exported_Functions_Group2 外设控制函数
   *  @brief   Cortex control functions 
   *
 @verbatim   
   ==============================================================================
-                      ##### Peripheral Control functions #####
+                      ##### 外设控制函数 #####
   ==============================================================================
     [..]
       This subsection provides a set of functions allowing to control the CORTEX
@@ -269,7 +269,7 @@ void HAL_MPU_Disable(void)
 /**
   * @brief  Enable the MPU.
   * @param  MPU_Control: Specifies the control mode of the MPU during hard fault, 
-  *          NMI, FAULTMASK and privileged access to the default memory 
+  *          NMI, FAULTMASK and privileged 访问 the default memory 
   *          This parameter can be one of the following values:
   *            @arg MPU_HFNMI_PRIVDEF_NONE
   *            @arg MPU_HARDFAULT_NMI
@@ -363,7 +363,7 @@ void HAL_MPU_ConfigRegion(MPU_Region_InitTypeDef *MPU_Init)
 #endif /* __MPU_PRESENT */
 
 /**
-  * @brief  Gets the priority grouping field from the NVIC Interrupt Controller.
+  * @brief  Gets the 优先级 grouping field from the NVIC Interrupt Controller.
   * @retval Priority grouping field (SCB->AIRCR [10:8] PRIGROUP field)
   */
 uint32_t HAL_NVIC_GetPriorityGrouping(void)
@@ -373,31 +373,31 @@ uint32_t HAL_NVIC_GetPriorityGrouping(void)
 }
 
 /**
-  * @brief  Gets the priority of an interrupt.
+  * @brief  Gets the 优先级 of an interrupt.
   * @param  IRQn: External interrupt number.
   *         This parameter can be an enumerator of IRQn_Type enumeration
   *         (For the complete STM32 Devices IRQ Channels list, please refer to the appropriate CMSIS device file (stm32f10xxx.h))
-  * @param   PriorityGroup: the priority grouping bits length.
+  * @param   PriorityGroup: the 优先级 grouping bits length.
   *         This parameter can be one of the following values:
-  *           @arg NVIC_PRIORITYGROUP_0: 0 bits for preemption priority
-  *                                      4 bits for subpriority
-  *           @arg NVIC_PRIORITYGROUP_1: 1 bits for preemption priority
-  *                                      3 bits for subpriority
-  *           @arg NVIC_PRIORITYGROUP_2: 2 bits for preemption priority
-  *                                      2 bits for subpriority
-  *           @arg NVIC_PRIORITYGROUP_3: 3 bits for preemption priority
-  *                                      1 bits for subpriority
-  *           @arg NVIC_PRIORITYGROUP_4: 4 bits for preemption priority
-  *                                      0 bits for subpriority
-  * @param  pPreemptPriority: Pointer on the Preemptive priority value (starting from 0).
-  * @param  pSubPriority: Pointer on the Subpriority value (starting from 0).
+  *           @arg NVIC_PRIORITYGROUP_0: 0 bits for preemption 优先级
+  *                                      4 bits for sub优先级
+  *           @arg NVIC_PRIORITYGROUP_1: 1 bits for preemption 优先级
+  *                                      3 bits for sub优先级
+  *           @arg NVIC_PRIORITYGROUP_2: 2 bits for preemption 优先级
+  *                                      2 bits for sub优先级
+  *           @arg NVIC_PRIORITYGROUP_3: 3 bits for preemption 优先级
+  *                                      1 bits for sub优先级
+  *           @arg NVIC_PRIORITYGROUP_4: 4 bits for preemption 优先级
+  *                                      0 bits for sub优先级
+  * @param  pPreemptPriority: Pointer on the Preemptive 优先级 value (starting from 0).
+  * @param  pSubPriority: Pointer on the Sub优先级 value (starting from 0).
   * @retval None
   */
 void HAL_NVIC_GetPriority(IRQn_Type IRQn, uint32_t PriorityGroup, uint32_t *pPreemptPriority, uint32_t *pSubPriority)
 {
   /* Check the parameters */
   assert_param(IS_NVIC_PRIORITY_GROUP(PriorityGroup));
- /* Get priority for Cortex-M system or device specific interrupts */
+ /* Get 优先级 for Cortex-M system or device specific interrupts */
   NVIC_DecodePriority(NVIC_GetPriority(IRQn), PriorityGroup, pPreemptPriority, pSubPriority);
 }
 

@@ -31,35 +31,35 @@ extern "C" {
   * @{
   */
 
-/** @addtogroup GPIO
+/** @addtogroup GPIO（通用输入输出）（通用输入输出）
   * @{
   */
 
 /* Exported types ------------------------------------------------------------*/
-/** @defgroup GPIO_Exported_Types GPIO Exported Types
+/** @defgroup GPIO（通用输入输出）（通用输入输出）_Exported_Types GPIO（通用输入输出）（通用输入输出） Exported Types
   * @{
   */
 
 /**
-  * @brief GPIO Init structure definition
+  * @brief GPIO（通用输入输出）（通用输入输出） Init structure definition
   */
 typedef struct
 {
-  uint32_t Pin;       /*!< Specifies the GPIO pins to be configured.
-                           This parameter can be any value of @ref GPIO_pins_define */
+  uint32_t Pin;       /*!< Specifies the GPIO（通用输入输出）（通用输入输出） pins to be configured.
+                           This parameter can be any value of @ref GPIO（通用输入输出）（通用输入输出）_pins_define */
 
   uint32_t Mode;      /*!< Specifies the operating mode for the selected pins.
-                           This parameter can be a value of @ref GPIO_mode_define */
+                           This parameter can be a value of @ref GPIO（通用输入输出）（通用输入输出）_mode_define */
 
   uint32_t Pull;      /*!< Specifies the Pull-up or Pull-Down activation for the selected pins.
-                           This parameter can be a value of @ref GPIO_pull_define */
+                           This parameter can be a value of @ref GPIO（通用输入输出）（通用输入输出）_pull_define */
 
   uint32_t Speed;     /*!< Specifies the speed for the selected pins.
-                           This parameter can be a value of @ref GPIO_speed_define */
+                           This parameter can be a value of @ref GPIO（通用输入输出）（通用输入输出）_speed_define */
 } GPIO_InitTypeDef;
 
 /**
-  * @brief  GPIO Bit SET and Bit RESET enumeration
+  * @brief  GPIO（通用输入输出）（通用输入输出） Bit SET and Bit RESET enumeration
   */
 typedef enum
 {
@@ -72,11 +72,11 @@ typedef enum
 
 /* Exported constants --------------------------------------------------------*/
 
-/** @defgroup GPIO_Exported_Constants GPIO Exported Constants
+/** @defgroup GPIO（通用输入输出）（通用输入输出）_Exported_Constants GPIO（通用输入输出）（通用输入输出） Exported Constants
   * @{
   */
 
-/** @defgroup GPIO_pins_define GPIO pins define
+/** @defgroup GPIO（通用输入输出）（通用输入输出）_pins_define GPIO（通用输入输出）（通用输入输出） pins define
   * @{
   */
 #define GPIO_PIN_0                 ((uint16_t)0x0001)  /* Pin 0 selected    */
@@ -102,10 +102,10 @@ typedef enum
   * @}
   */
 
-/** @defgroup GPIO_mode_define GPIO mode define
-  * @brief GPIO Configuration Mode
+/** @defgroup GPIO（通用输入输出）（通用输入输出）_mode_define GPIO（通用输入输出）（通用输入输出） mode define
+  * @brief GPIO（通用输入输出）（通用输入输出） Configuration Mode
   *        Elements values convention: 0xX0yz00YZ
-  *           - X  : GPIO mode or EXTI Mode
+  *           - X  : GPIO（通用输入输出）（通用输入输出） mode or EXTI Mode
   *           - y  : External IT or Event trigger detection
   *           - z  : IO configuration on External IT or Event
   *           - Y  : Output type (Push Pull or Open Drain)
@@ -121,9 +121,9 @@ typedef enum
 
 #define  GPIO_MODE_ANALOG                       0x00000003u   /*!< Analog Mode  */
 
-#define  GPIO_MODE_IT_RISING                    0x10110000u   /*!< External Interrupt Mode with Rising edge trigger detection          */
-#define  GPIO_MODE_IT_FALLING                   0x10210000u   /*!< External Interrupt Mode with Falling edge trigger detection         */
-#define  GPIO_MODE_IT_RISING_FALLING            0x10310000u   /*!< External Interrupt Mode with Rising/Falling edge trigger detection  */
+#define  GPIO_MODE_IT_RISING                    0x10110000u   /*!< 外部中断 Mode with Rising edge trigger detection          */
+#define  GPIO_MODE_IT_FALLING                   0x10210000u   /*!< 外部中断 Mode with Falling edge trigger detection         */
+#define  GPIO_MODE_IT_RISING_FALLING            0x10310000u   /*!< 外部中断 Mode with Rising/Falling edge trigger detection  */
 
 #define  GPIO_MODE_EVT_RISING                   0x10120000u   /*!< External Event Mode with Rising edge trigger detection               */
 #define  GPIO_MODE_EVT_FALLING                  0x10220000u   /*!< External Event Mode with Falling edge trigger detection              */
@@ -133,8 +133,8 @@ typedef enum
   * @}
   */
 
-/** @defgroup GPIO_speed_define  GPIO speed define
-  * @brief GPIO Output Maximum frequency
+/** @defgroup GPIO（通用输入输出）（通用输入输出）_speed_define  GPIO（通用输入输出）（通用输入输出） speed define
+  * @brief GPIO（通用输入输出）（通用输入输出） Output Maximum frequency
   * @{
   */
 #define  GPIO_SPEED_FREQ_LOW              (GPIO_CRL_MODE0_1) /*!< Low speed */
@@ -145,8 +145,8 @@ typedef enum
   * @}
   */
 
-/** @defgroup GPIO_pull_define GPIO pull define
-  * @brief GPIO Pull-Up or Pull-Down Activation
+/** @defgroup GPIO（通用输入输出）（通用输入输出）_pull_define GPIO（通用输入输出）（通用输入输出） pull define
+  * @brief GPIO（通用输入输出）（通用输入输出） Pull-Up or Pull-Down Activation
   * @{
   */
 #define  GPIO_NOPULL        0x00000000u   /*!< No Pull-up or Pull-down activation  */
@@ -161,14 +161,14 @@ typedef enum
   */
 
 /* Exported macro ------------------------------------------------------------*/
-/** @defgroup GPIO_Exported_Macros GPIO Exported Macros
+/** @defgroup GPIO（通用输入输出）（通用输入输出）_Exported_Macros GPIO（通用输入输出）（通用输入输出） Exported Macros
   * @{
   */
 
 /**
   * @brief  Checks whether the specified EXTI line flag is set or not.
   * @param  __EXTI_LINE__: specifies the EXTI line flag to check.
-  *         This parameter can be GPIO_PIN_x where x can be(0..15)
+  *         This parameter can be GPIO（通用输入输出）（通用输入输出）_PIN_x where x can be(0..15)
   * @retval The new state of __EXTI_LINE__ (SET or RESET).
   */
 #define __HAL_GPIO_EXTI_GET_FLAG(__EXTI_LINE__) (EXTI->PR & (__EXTI_LINE__))
@@ -176,7 +176,7 @@ typedef enum
 /**
   * @brief  Clears the EXTI's line pending flags.
   * @param  __EXTI_LINE__: specifies the EXTI lines flags to clear.
-  *         This parameter can be any combination of GPIO_PIN_x where x can be (0..15)
+  *         This parameter can be any combination of GPIO（通用输入输出）（通用输入输出）_PIN_x where x can be (0..15)
   * @retval None
   */
 #define __HAL_GPIO_EXTI_CLEAR_FLAG(__EXTI_LINE__) (EXTI->PR = (__EXTI_LINE__))
@@ -184,7 +184,7 @@ typedef enum
 /**
   * @brief  Checks whether the specified EXTI line is asserted or not.
   * @param  __EXTI_LINE__: specifies the EXTI line to check.
-  *          This parameter can be GPIO_PIN_x where x can be(0..15)
+  *          This parameter can be GPIO（通用输入输出）（通用输入输出）_PIN_x where x can be(0..15)
   * @retval The new state of __EXTI_LINE__ (SET or RESET).
   */
 #define __HAL_GPIO_EXTI_GET_IT(__EXTI_LINE__) (EXTI->PR & (__EXTI_LINE__))
@@ -192,7 +192,7 @@ typedef enum
 /**
   * @brief  Clears the EXTI's line pending bits.
   * @param  __EXTI_LINE__: specifies the EXTI lines to clear.
-  *          This parameter can be any combination of GPIO_PIN_x where x can be (0..15)
+  *          This parameter can be any combination of GPIO（通用输入输出）（通用输入输出）_PIN_x where x can be (0..15)
   * @retval None
   */
 #define __HAL_GPIO_EXTI_CLEAR_IT(__EXTI_LINE__) (EXTI->PR = (__EXTI_LINE__))
@@ -200,7 +200,7 @@ typedef enum
 /**
   * @brief  Generates a Software interrupt on selected EXTI line.
   * @param  __EXTI_LINE__: specifies the EXTI line to check.
-  *          This parameter can be GPIO_PIN_x where x can be(0..15)
+  *          This parameter can be GPIO（通用输入输出）（通用输入输出）_PIN_x where x can be(0..15)
   * @retval None
   */
 #define __HAL_GPIO_EXTI_GENERATE_SWIT(__EXTI_LINE__) (EXTI->SWIER |= (__EXTI_LINE__))
@@ -208,28 +208,28 @@ typedef enum
   * @}
   */
 
-/* Include GPIO HAL Extension module */
+/* Include GPIO（通用输入输出）（通用输入输出） HAL Extension module */
 #include "stm32f1xx_hal_gpio_ex.h"
 
 /* Exported functions --------------------------------------------------------*/
-/** @addtogroup GPIO_Exported_Functions
+/** @addtogroup GPIO（通用输入输出）（通用输入输出）_Exported_Functions
   * @{
   */
 
-/** @addtogroup GPIO_Exported_Functions_Group1
+/** @addtogroup GPIO（通用输入输出）（通用输入输出）_Exported_Functions_Group1
   * @{
   */
-/* Initialization and de-initialization functions *****************************/
+/* 初始化和反初始化函数 *****************************/
 void  HAL_GPIO_Init(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init);
 void  HAL_GPIO_DeInit(GPIO_TypeDef  *GPIOx, uint32_t GPIO_Pin);
 /**
   * @}
   */
 
-/** @addtogroup GPIO_Exported_Functions_Group2
+/** @addtogroup GPIO（通用输入输出）（通用输入输出）_Exported_Functions_Group2
   * @{
   */
-/* IO operation functions *****************************************************/
+/* IO 操作函数 *****************************************************/
 GPIO_PinState HAL_GPIO_ReadPin(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin);
 void HAL_GPIO_WritePin(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, GPIO_PinState PinState);
 void HAL_GPIO_TogglePin(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin);
@@ -247,7 +247,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 /* Private types -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private constants ---------------------------------------------------------*/
-/** @defgroup GPIO_Private_Constants GPIO Private Constants
+/** @defgroup GPIO（通用输入输出）（通用输入输出）_Private_Constants GPIO（通用输入输出）（通用输入输出） Private Constants
   * @{
   */
 
@@ -256,7 +256,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
   */
 
 /* Private macros ------------------------------------------------------------*/
-/** @defgroup GPIO_Private_Macros GPIO Private Macros
+/** @defgroup GPIO（通用输入输出）（通用输入输出）_Private_Macros GPIO（通用输入输出）（通用输入输出） Private Macros
   * @{
   */
 #define IS_GPIO_PIN_ACTION(ACTION) (((ACTION) == GPIO_PIN_RESET) || ((ACTION) == GPIO_PIN_SET))
@@ -282,7 +282,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
   */
 
 /* Private functions ---------------------------------------------------------*/
-/** @defgroup GPIO_Private_Functions GPIO Private Functions
+/** @defgroup GPIO（通用输入输出）（通用输入输出）_Private_Functions GPIO（通用输入输出）（通用输入输出） Private Functions
   * @{
   */
 
@@ -302,5 +302,5 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 }
 #endif
 
-#endif /* STM32F1xx_HAL_GPIO_H */
+#endif /* STM32F1xx_HAL_GPIO（通用输入输出）（通用输入输出）_H */
 

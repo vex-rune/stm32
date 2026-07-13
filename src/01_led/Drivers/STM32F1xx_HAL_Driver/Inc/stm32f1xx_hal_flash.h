@@ -253,7 +253,7 @@ typedef struct
 /** @addtogroup FLASH_Exported_Functions_Group1
   * @{
   */
-/* IO operation functions *****************************************************/
+/* IO 操作函数 *****************************************************/
 HAL_StatusTypeDef HAL_FLASH_Program(uint32_t TypeProgram, uint32_t Address, uint64_t Data);
 HAL_StatusTypeDef HAL_FLASH_Program_IT(uint32_t TypeProgram, uint32_t Address, uint64_t Data);
 
@@ -270,7 +270,7 @@ void       HAL_FLASH_OperationErrorCallback(uint32_t ReturnValue);
 /** @addtogroup FLASH_Exported_Functions_Group2
   * @{
   */
-/* Peripheral Control functions ***********************************************/
+/* 外设控制函数 ***********************************************/
 HAL_StatusTypeDef HAL_FLASH_Unlock(void);
 HAL_StatusTypeDef HAL_FLASH_Lock(void);
 HAL_StatusTypeDef HAL_FLASH_OB_Unlock(void);

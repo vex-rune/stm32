@@ -1,6 +1,6 @@
 /**************************************************************************//**
  * @file     core_armv8mbl.h
- * @brief    CMSIS Armv8-M Baseline Core Peripheral Access Layer Header File
+ * @brief    CMSIS Armv8-M Baseline Core 外设访问层 Header File
  * @version  V5.0.7
  * @date     22. June 2018
  ******************************************************************************/
@@ -41,11 +41,11 @@
   \page CMSIS_MISRA_Exceptions  MISRA-C:2004 Compliance Exceptions
   CMSIS violates the following MISRA-C:2004 rules:
 
-   \li Required Rule 8.5, object/function definition in header file.<br>
-     Function definitions in header files are used to allow 'inlining'.
+   \li Required Rule 8.5, object/function definition in 头文件。<br>
+     Function definitions in 头文件s are used to allow 'inlining'.
 
    \li Required Rule 18.4, declaration of union type or object of union type: '{...}'.<br>
-     Unions are used for effective representation of core registers.
+     Unions are used for effective representation of 内核寄存器s.
 
    \li Advisory Rule 19.7, Function-like macro defined.<br>
      Function-like macros are used to allow more efficient code.
@@ -184,7 +184,7 @@
     \defgroup CMSIS_glob_defs CMSIS Global Defines
 
     <strong>IO Type Qualifiers</strong> are used
-    \li to specify the access to peripheral variables.
+    \li to specify the 访问 peripheral variables.
     \li for automatic generation of peripheral register debug information.
 */
 #ifdef __cplusplus
@@ -206,8 +206,8 @@
 
 /*******************************************************************************
  *                 Register Abstraction
-  Core Register contain:
-  - Core Register
+  内核寄存器 contain:
+  - 内核寄存器
   - Core NVIC Register
   - Core SCB Register
   - Core SysTick Register
@@ -223,7 +223,7 @@
 /**
   \ingroup    CMSIS_core_register
   \defgroup   CMSIS_CORE  Status and Control Registers
-  \brief      Core Register type definitions.
+  \brief      内核寄存器 type definitions.
   @{
  */
 
@@ -340,13 +340,13 @@ typedef union
 
 /**
   \ingroup    CMSIS_core_register
-  \defgroup   CMSIS_NVIC  Nested Vectored Interrupt Controller (NVIC)
+  \defgroup   CMSIS_NVIC  嵌套向量中断控制器（NVIC）
   \brief      Type definitions for the NVIC Registers
   @{
  */
 
 /**
-  \brief  Structure type to access the Nested Vectored Interrupt Controller (NVIC).
+  \brief  Structure type to access the 嵌套向量中断控制器（NVIC）.
  */
 typedef struct
 {
@@ -383,7 +383,7 @@ typedef struct
   __IM  uint32_t CPUID;                  /*!< Offset: 0x000 (R/ )  CPUID Base Register */
   __IOM uint32_t ICSR;                   /*!< Offset: 0x004 (R/W)  Interrupt Control and State Register */
 #if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
-  __IOM uint32_t VTOR;                   /*!< Offset: 0x008 (R/W)  Vector Table Offset Register */
+  __IOM uint32_t VTOR;                   /*!< Offset: 0x008 (R/W)  中断向量表偏移寄存器 */
 #else
         uint32_t RESERVED0;
 #endif
@@ -452,7 +452,7 @@ typedef struct
 #define SCB_ICSR_VECTACTIVE_Msk            (0x1FFUL /*<< SCB_ICSR_VECTACTIVE_Pos*/)       /*!< SCB ICSR: VECTACTIVE Mask */
 
 #if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
-/* SCB Vector Table Offset Register Definitions */
+/* SCB 中断向量表偏移寄存器 Definitions */
 #define SCB_VTOR_TBLOFF_Pos                 7U                                            /*!< SCB VTOR: TBLOFF Position */
 #define SCB_VTOR_TBLOFF_Msk                (0x1FFFFFFUL << SCB_VTOR_TBLOFF_Pos)           /*!< SCB VTOR: TBLOFF Mask */
 #endif
@@ -547,13 +547,13 @@ typedef struct
 
 /**
   \ingroup  CMSIS_core_register
-  \defgroup CMSIS_SysTick     System Tick Timer (SysTick)
-  \brief    Type definitions for the System Timer Registers.
+  \defgroup CMSIS_SysTick     系统节拍定时器（SysTick）
+  \brief    Type definitions for the System 定时器 Registers.
   @{
  */
 
 /**
-  \brief  Structure type to access the System Timer (SysTick).
+  \brief  Structure type to access the System 定时器 (SysTick).
  */
 typedef struct
 {
@@ -813,13 +813,13 @@ typedef struct
 #if defined (__MPU_PRESENT) && (__MPU_PRESENT == 1U)
 /**
   \ingroup  CMSIS_core_register
-  \defgroup CMSIS_MPU     Memory Protection Unit (MPU)
-  \brief    Type definitions for the Memory Protection Unit (MPU)
+  \defgroup CMSIS_MPU     内存保护单元（MPU）
+  \brief    Type definitions for the 内存保护单元（MPU）
   @{
  */
 
 /**
-  \brief  Structure type to access the Memory Protection Unit (MPU).
+  \brief  Structure type to access the 内存保护单元（MPU）.
  */
 typedef struct
 {
@@ -988,8 +988,8 @@ typedef struct
 typedef struct
 {
   __IOM uint32_t DHCSR;                  /*!< Offset: 0x000 (R/W)  Debug Halting Control and Status Register */
-  __OM  uint32_t DCRSR;                  /*!< Offset: 0x004 ( /W)  Debug Core Register Selector Register */
-  __IOM uint32_t DCRDR;                  /*!< Offset: 0x008 (R/W)  Debug Core Register Data Register */
+  __OM  uint32_t DCRSR;                  /*!< Offset: 0x004 ( /W)  Debug 内核寄存器 Selector Register */
+  __IOM uint32_t DCRDR;                  /*!< Offset: 0x008 (R/W)  Debug 内核寄存器 Data Register */
   __IOM uint32_t DEMCR;                  /*!< Offset: 0x00C (R/W)  Debug Exception and Monitor Control Register */
         uint32_t RESERVED4[1U];
   __IOM uint32_t DAUTHCTRL;              /*!< Offset: 0x014 (R/W)  Debug Authentication Control Register */
@@ -1033,7 +1033,7 @@ typedef struct
 #define CoreDebug_DHCSR_C_DEBUGEN_Pos       0U                                            /*!< CoreDebug DHCSR: C_DEBUGEN Position */
 #define CoreDebug_DHCSR_C_DEBUGEN_Msk      (1UL /*<< CoreDebug_DHCSR_C_DEBUGEN_Pos*/)     /*!< CoreDebug DHCSR: C_DEBUGEN Mask */
 
-/* Debug Core Register Selector Register Definitions */
+/* Debug 内核寄存器 Selector Register Definitions */
 #define CoreDebug_DCRSR_REGWnR_Pos         16U                                            /*!< CoreDebug DCRSR: REGWnR Position */
 #define CoreDebug_DCRSR_REGWnR_Msk         (1UL << CoreDebug_DCRSR_REGWnR_Pos)            /*!< CoreDebug DCRSR: REGWnR Mask */
 
@@ -1120,8 +1120,8 @@ typedef struct
 
 
   #define SCB                 ((SCB_Type       *)     SCB_BASE         ) /*!< SCB configuration struct */
-  #define SysTick             ((SysTick_Type   *)     SysTick_BASE     ) /*!< SysTick configuration struct */
-  #define NVIC                ((NVIC_Type      *)     NVIC_BASE        ) /*!< NVIC configuration struct */
+  #define SysTick             ((SysTick_Type   *)     SysTick_BASE     ) /*!< SysTick 配置 struct */
+  #define NVIC                ((NVIC_Type      *)     NVIC_BASE        ) /*!< NVIC 配置 struct */
   #define DWT                 ((DWT_Type       *)     DWT_BASE         ) /*!< DWT configuration struct */
   #define TPI                 ((TPI_Type       *)     TPI_BASE         ) /*!< TPI configuration struct */
   #define CoreDebug           ((CoreDebug_Type *)     CoreDebug_BASE   ) /*!< Core Debug configuration struct */
@@ -1144,8 +1144,8 @@ typedef struct
   #define SCB_BASE_NS         (SCS_BASE_NS +  0x0D00UL)                  /*!< System Control Block Base Address (non-secure address space) */
 
   #define SCB_NS              ((SCB_Type       *)     SCB_BASE_NS      ) /*!< SCB configuration struct          (non-secure address space) */
-  #define SysTick_NS          ((SysTick_Type   *)     SysTick_BASE_NS  ) /*!< SysTick configuration struct      (non-secure address space) */
-  #define NVIC_NS             ((NVIC_Type      *)     NVIC_BASE_NS     ) /*!< NVIC configuration struct         (non-secure address space) */
+  #define SysTick_NS          ((SysTick_Type   *)     SysTick_BASE_NS  ) /*!< SysTick 配置 struct      (non-secure address space) */
+  #define NVIC_NS             ((NVIC_Type      *)     NVIC_BASE_NS     ) /*!< NVIC 配置 struct         (non-secure address space) */
   #define CoreDebug_NS        ((CoreDebug_Type *)     CoreDebug_BASE_NS) /*!< Core Debug configuration struct   (non-secure address space) */
 
   #if defined (__MPU_PRESENT) && (__MPU_PRESENT == 1U)
@@ -1163,7 +1163,7 @@ typedef struct
   Core Function Interface contains:
   - Core NVIC Functions
   - Core SysTick Functions
-  - Core Register Access Functions
+  - 内核寄存器 Access Functions
  ******************************************************************************/
 /**
   \defgroup CMSIS_Core_FunctionInterface Functions and Instructions Reference
@@ -1437,12 +1437,12 @@ __STATIC_INLINE uint32_t NVIC_ClearTargetState(IRQn_Type IRQn)
 
 /**
   \brief   Set Interrupt Priority
-  \details Sets the priority of a device specific interrupt or a processor exception.
+  \details Sets the 优先级 of a device specific interrupt or a processor exception.
            The interrupt number can be positive to specify a device specific interrupt,
            or negative to specify a processor exception.
   \param [in]      IRQn  Interrupt number.
-  \param [in]  priority  Priority to set.
-  \note    The priority cannot be set for every processor exception.
+  \param [in]  优先级  Priority to set.
+  \note    The 优先级 cannot be set for every processor exception.
  */
 __STATIC_INLINE void __NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
 {
@@ -1461,12 +1461,12 @@ __STATIC_INLINE void __NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
 
 /**
   \brief   Get Interrupt Priority
-  \details Reads the priority of a device specific interrupt or a processor exception.
+  \details Reads the 优先级 of a device specific interrupt or a processor exception.
            The interrupt number can be positive to specify a device specific interrupt,
            or negative to specify a processor exception.
   \param [in]   IRQn  Interrupt number.
   \return             Interrupt Priority.
-                      Value is aligned automatically to the implemented priority bits of the microcontroller.
+                      Value is aligned automatically to the implemented 优先级 bits of the microcontroller.
  */
 __STATIC_INLINE uint32_t __NVIC_GetPriority(IRQn_Type IRQn)
 {
@@ -1484,14 +1484,14 @@ __STATIC_INLINE uint32_t __NVIC_GetPriority(IRQn_Type IRQn)
 
 /**
   \brief   Encode Priority
-  \details Encodes the priority for an interrupt with the given priority group,
-           preemptive priority value, and subpriority value.
-           In case of a conflict between priority grouping and available
-           priority bits (__NVIC_PRIO_BITS), the smallest possible priority group is set.
-  \param [in]     PriorityGroup  Used priority group.
-  \param [in]   PreemptPriority  Preemptive priority value (starting from 0).
-  \param [in]       SubPriority  Subpriority value (starting from 0).
-  \return                        Encoded priority. Value can be used in the function \ref NVIC_SetPriority().
+  \details Encodes the 优先级 for an interrupt with the given 优先级 group,
+           preemptive 优先级 value, and sub优先级 value.
+           In case of a conflict between 优先级 grouping and available
+           优先级 bits (__NVIC_PRIO_BITS), the smallest possible 优先级 group is set.
+  \param [in]     PriorityGroup  Used 优先级 group.
+  \param [in]   PreemptPriority  Preemptive 优先级 value (starting from 0).
+  \param [in]       SubPriority  Sub优先级 value (starting from 0).
+  \return                        Encoded 优先级. Value can be used in the function \ref NVIC_SetPriority().
  */
 __STATIC_INLINE uint32_t NVIC_EncodePriority (uint32_t PriorityGroup, uint32_t PreemptPriority, uint32_t SubPriority)
 {
@@ -1511,14 +1511,14 @@ __STATIC_INLINE uint32_t NVIC_EncodePriority (uint32_t PriorityGroup, uint32_t P
 
 /**
   \brief   Decode Priority
-  \details Decodes an interrupt priority value with a given priority group to
-           preemptive priority value and subpriority value.
-           In case of a conflict between priority grouping and available
-           priority bits (__NVIC_PRIO_BITS) the smallest possible priority group is set.
+  \details Decodes an interrupt 优先级 value with a given 优先级 group to
+           preemptive 优先级 value and sub优先级 value.
+           In case of a conflict between 优先级 grouping and available
+           优先级 bits (__NVIC_PRIO_BITS) the smallest possible 优先级 group is set.
   \param [in]         Priority   Priority value, which can be retrieved with the function \ref NVIC_GetPriority().
-  \param [in]     PriorityGroup  Used priority group.
-  \param [out] pPreemptPriority  Preemptive priority value (starting from 0).
-  \param [out]     pSubPriority  Subpriority value (starting from 0).
+  \param [in]     PriorityGroup  Used 优先级 group.
+  \param [out] pPreemptPriority  Preemptive 优先级 value (starting from 0).
+  \param [out]     pSubPriority  Sub优先级 value (starting from 0).
  */
 __STATIC_INLINE void NVIC_DecodePriority (uint32_t Priority, uint32_t PriorityGroup, uint32_t* const pPreemptPriority, uint32_t* const pSubPriority)
 {
@@ -1718,12 +1718,12 @@ __STATIC_INLINE uint32_t TZ_NVIC_GetActive_NS(IRQn_Type IRQn)
 
 /**
   \brief   Set Interrupt Priority (non-secure)
-  \details Sets the priority of a non-secure device specific interrupt or a non-secure processor exception when in secure state.
+  \details Sets the 优先级 of a non-secure device specific interrupt or a non-secure processor exception when in secure state.
            The interrupt number can be positive to specify a device specific interrupt,
            or negative to specify a processor exception.
   \param [in]      IRQn  Interrupt number.
-  \param [in]  priority  Priority to set.
-  \note    The priority cannot be set for every non-secure processor exception.
+  \param [in]  优先级  Priority to set.
+  \note    The 优先级 cannot be set for every non-secure processor exception.
  */
 __STATIC_INLINE void TZ_NVIC_SetPriority_NS(IRQn_Type IRQn, uint32_t priority)
 {
@@ -1742,11 +1742,11 @@ __STATIC_INLINE void TZ_NVIC_SetPriority_NS(IRQn_Type IRQn, uint32_t priority)
 
 /**
   \brief   Get Interrupt Priority (non-secure)
-  \details Reads the priority of a non-secure device specific interrupt or a non-secure processor exception when in secure state.
+  \details Reads the 优先级 of a non-secure device specific interrupt or a non-secure processor exception when in secure state.
            The interrupt number can be positive to specify a device specific interrupt,
            or negative to specify a processor exception.
   \param [in]   IRQn  Interrupt number.
-  \return             Interrupt Priority. Value is aligned automatically to the implemented priority bits of the microcontroller.
+  \return             Interrupt Priority. Value is aligned automatically to the implemented 优先级 bits of the microcontroller.
  */
 __STATIC_INLINE uint32_t TZ_NVIC_GetPriority_NS(IRQn_Type IRQn)
 {
@@ -1847,11 +1847,11 @@ __STATIC_INLINE void TZ_SAU_Disable(void)
 
 /**
   \brief   System Tick Configuration
-  \details Initializes the System Timer and its interrupt, and starts the System Tick Timer.
+  \details Initializes the System 定时器 and its interrupt, and starts the System Tick 定时器.
            Counter is in free running mode to generate periodic interrupts.
   \param [in]  ticks  Number of ticks between two interrupts.
-  \return          0  Function succeeded.
-  \return          1  Function failed.
+  \return          0  函数执行成功.
+  \return          1  函数执行失败.
   \note    When the variable <b>__Vendor_SysTickConfig</b> is set to 1, then the
            function <b>SysTick_Config</b> is not included. In this case, the file <b><i>device</i>.h</b>
            must contain a vendor-specific implementation of this function.
@@ -1868,18 +1868,18 @@ __STATIC_INLINE uint32_t SysTick_Config(uint32_t ticks)
   SysTick->VAL   = 0UL;                                             /* Load the SysTick Counter Value */
   SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk |
                    SysTick_CTRL_TICKINT_Msk   |
-                   SysTick_CTRL_ENABLE_Msk;                         /* Enable SysTick IRQ and SysTick Timer */
+                   SysTick_CTRL_ENABLE_Msk;                         /* Enable SysTick IRQ and SysTick 定时器 */
   return (0UL);                                                     /* Function successful */
 }
 
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
 /**
   \brief   System Tick Configuration (non-secure)
-  \details Initializes the non-secure System Timer and its interrupt when in secure state, and starts the System Tick Timer.
+  \details Initializes the non-secure System 定时器 and its interrupt when in secure state, and starts the System Tick 定时器.
            Counter is in free running mode to generate periodic interrupts.
   \param [in]  ticks  Number of ticks between two interrupts.
-  \return          0  Function succeeded.
-  \return          1  Function failed.
+  \return          0  函数执行成功.
+  \return          1  函数执行失败.
   \note    When the variable <b>__Vendor_SysTickConfig</b> is set to 1, then the
            function <b>TZ_SysTick_Config_NS</b> is not included. In this case, the file <b><i>device</i>.h</b>
            must contain a vendor-specific implementation of this function.
@@ -1897,7 +1897,7 @@ __STATIC_INLINE uint32_t TZ_SysTick_Config_NS(uint32_t ticks)
   SysTick_NS->VAL   = 0UL;                                                /* Load the SysTick Counter Value */
   SysTick_NS->CTRL  = SysTick_CTRL_CLKSOURCE_Msk |
                       SysTick_CTRL_TICKINT_Msk   |
-                      SysTick_CTRL_ENABLE_Msk;                            /* Enable SysTick IRQ and SysTick Timer */
+                      SysTick_CTRL_ENABLE_Msk;                            /* Enable SysTick IRQ and SysTick 定时器 */
   return (0UL);                                                           /* Function successful */
 }
 #endif /* defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U) */

@@ -419,7 +419,7 @@ HAL_StatusTypeDef HAL_EXTI_GetHandle(EXTI_HandleTypeDef *hexti, uint32_t ExtiLin
   *
 @verbatim
  ===============================================================================
-                       ##### IO operation functions #####
+                       ##### IO 操作函数 #####
  ===============================================================================
 
 @endverbatim

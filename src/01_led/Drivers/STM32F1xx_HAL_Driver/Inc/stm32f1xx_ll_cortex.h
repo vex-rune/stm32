@@ -90,7 +90,7 @@ extern "C" {
   */
 #define LL_MPU_CTRL_HFNMI_PRIVDEF_NONE     0x00000000U                                       /*!< Disable NMI and privileged SW access */
 #define LL_MPU_CTRL_HARDFAULT_NMI          MPU_CTRL_HFNMIENA_Msk                             /*!< Enables the operation of MPU during hard fault, NMI, and FAULTMASK handlers */
-#define LL_MPU_CTRL_PRIVILEGED_DEFAULT     MPU_CTRL_PRIVDEFENA_Msk                           /*!< Enable privileged software access to default memory map */
+#define LL_MPU_CTRL_PRIVILEGED_DEFAULT     MPU_CTRL_PRIVDEFENA_Msk                           /*!< Enable privileged software 访问 default memory map */
 #define LL_MPU_CTRL_HFNMI_PRIVDEF          (MPU_CTRL_HFNMIENA_Msk | MPU_CTRL_PRIVDEFENA_Msk) /*!< Enable NMI and privileged SW access */
 /**
   * @}
@@ -325,7 +325,7 @@ __STATIC_INLINE void LL_LPM_EnableDeepSleep(void)
 }
 
 /**
-  * @brief  Configures sleep-on-exit when returning from Handler mode to Thread mode.
+  * @brief  Configures sleep-on-exit when returning from Handler mode to Thread 模式。
   * @note   Setting this bit to 1 enables an interrupt-driven application to avoid returning to an
   *         empty main application.
   * @rmtoll SCB_SCR      SLEEPONEXIT   LL_LPM_EnableSleepOnExit
@@ -338,7 +338,7 @@ __STATIC_INLINE void LL_LPM_EnableSleepOnExit(void)
 }
 
 /**
-  * @brief  Do not sleep when returning to Thread mode.
+  * @brief  Do not sleep when returning to Thread 模式。
   * @rmtoll SCB_SCR      SLEEPONEXIT   LL_LPM_DisableSleepOnExit
   * @retval None
   */

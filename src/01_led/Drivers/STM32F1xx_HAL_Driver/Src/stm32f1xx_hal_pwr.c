@@ -128,21 +128,21 @@ static void PWR_OverloadWfe(void)
   * @{
   */
 
-/** @defgroup PWR_Exported_Functions_Group1 Initialization and de-initialization functions 
-  *  @brief   Initialization and de-initialization functions
+/** @defgroup PWR_Exported_Functions_Group1 初始化和反初始化函数 
+  *  @brief   初始化和反初始化函数
   *
 @verbatim
  ===============================================================================
-              ##### Initialization and de-initialization functions #####
+              ##### 初始化和反初始化函数 #####
  ===============================================================================
     [..]
       After reset, the backup domain (RTC registers, RTC backup data
       registers) is protected against possible unwanted
       write accesses.
-      To enable access to the RTC Domain and RTC registers, proceed as follows:
+      To enable 访问 the RTC Domain and RTC registers, proceed as follows:
         (+) Enable the Power Controller (PWR) APB1 interface clock using the
             __HAL_RCC_PWR_CLK_ENABLE() macro.
-        (+) Enable access to RTC domain using the HAL_PWR_EnableBkUpAccess() function.
+        (+) Enable 访问 RTC domain using the HAL_PWR_EnableBkUpAccess() function.
 
 @endverbatim
   * @{
@@ -159,7 +159,7 @@ void HAL_PWR_DeInit(void)
 }
 
 /**
-  * @brief  Enables access to the backup domain (RTC registers, RTC
+  * @brief  Enables 访问 the backup domain (RTC registers, RTC
   *         backup data registers ).
   * @note   If the HSE divided by 128 is used as the RTC clock, the
   *         Backup Domain Access should be kept enabled.
@@ -167,12 +167,12 @@ void HAL_PWR_DeInit(void)
   */
 void HAL_PWR_EnableBkUpAccess(void)
 {
-  /* Enable access to RTC and backup registers */
+  /* Enable 访问 RTC and backup registers */
   *(__IO uint32_t *) CR_DBP_BB = (uint32_t)ENABLE;
 }
 
 /**
-  * @brief  Disables access to the backup domain (RTC registers, RTC
+  * @brief  Disables 访问 the backup domain (RTC registers, RTC
   *         backup data registers).
   * @note   If the HSE divided by 128 is used as the RTC clock, the
   *         Backup Domain Access should be kept enabled.
@@ -180,7 +180,7 @@ void HAL_PWR_EnableBkUpAccess(void)
   */
 void HAL_PWR_DisableBkUpAccess(void)
 {
-  /* Disable access to RTC and backup registers */
+  /* Disable 访问 RTC and backup registers */
   *(__IO uint32_t *) CR_DBP_BB = (uint32_t)DISABLE;
 }
 
@@ -188,12 +188,12 @@ void HAL_PWR_DisableBkUpAccess(void)
   * @}
   */
 
-/** @defgroup PWR_Exported_Functions_Group2 Peripheral Control functions 
+/** @defgroup PWR_Exported_Functions_Group2 外设控制函数 
   * @brief    Low Power modes configuration functions
   *
 @verbatim
  ===============================================================================
-                 ##### Peripheral Control functions #####
+                 ##### 外设控制函数 #####
  ===============================================================================
      
     *** PVD configuration ***
@@ -206,12 +206,12 @@ void HAL_PWR_DisableBkUpAccess(void)
           than the PVD threshold. This event is internally connected to the EXTI
           line16 and can generate an interrupt if enabled. This is done through
           __HAL_PVD_EXTI_ENABLE_IT() macro.
-      (+) The PVD is stopped in Standby mode.
+      (+) The PVD is stopped in Standby 模式。
 
     *** WakeUp pin configuration ***
     ================================
     [..]
-      (+) WakeUp pin is used to wake up the system from Standby mode. This pin is
+      (+) WakeUp pin is used to wake up the system from Standby 模式。 This pin is
           forced in input pull-down configuration and is active on rising edges.
       (+) There is one WakeUp pin:
           WakeUp Pin 1 on PA.00.
@@ -239,19 +239,19 @@ void HAL_PWR_DisableBkUpAccess(void)
      
       (+) Exit:
         (++) WFI entry mode, Any peripheral interrupt acknowledged by the nested vectored interrupt
-             controller (NVIC) can wake up the device from Sleep mode.
-        (++) WFE entry mode, Any wakeup event can wake up the device from Sleep mode.
-           (+++) Any peripheral interrupt w/o NVIC configuration & SEVONPEND bit set in the Cortex (HAL_PWR_EnableSEVOnPend)
+             controller (NVIC) can wake up the device from Sleep 模式。
+        (++) WFE entry mode, Any wakeup event can wake up the device from Sleep 模式。
+           (+++) Any peripheral interrupt w/o NVIC 配置 & SEVONPEND bit set in the Cortex (HAL_PWR_EnableSEVOnPend)
            (+++) Any EXTI Line (Internal or External) configured in Event mode
 
    *** Stop mode ***
    =================
     [..]
       The Stop mode is based on the Cortex-M3 deepsleep mode combined with peripheral
-      clock gating. The voltage regulator can be configured either in normal or low-power mode.
+      clock gating. The voltage regulator can be configured either in normal or low-power 模式。
       In Stop mode, all clocks in the 1.8 V domain are stopped, the PLL, the HSI and the HSE RC 
       oscillators are disabled. SRAM and register contents are preserved.
-      In Stop mode, all I/O pins keep the same state as in Run mode.
+      In Stop mode, all I/O pins keep the same state as in Run 模式。
 
       (+) Entry:
            The Stop mode is entered using the HAL_PWR_EnterSTOPMode(PWR_REGULATOR_VALUE, PWR_SLEEPENTRY_WFx )
@@ -262,7 +262,7 @@ void HAL_PWR_DisableBkUpAccess(void)
           (++) PWR_SLEEPENTRY_WFx= PWR_SLEEPENTRY_WFE: enter STOP mode with WFE instruction
       (+) Exit:
           (++) WFI entry mode, Any EXTI Line (Internal or External) configured in Interrupt mode with NVIC configured
-          (++) WFE entry mode, Any EXTI Line (Internal or External) configured in Event mode.
+          (++) WFE entry mode, Any EXTI Line (Internal or External) configured in Event 模式。
 
    *** Standby mode ***
    ====================
@@ -402,8 +402,8 @@ void HAL_PWR_DisableWakeUpPin(uint32_t WakeUpPinx)
 }
 
 /**
-  * @brief Enters Sleep mode.
-  * @note  In Sleep mode, all I/O pins keep the same state as in Run mode.
+  * @brief Enters Sleep 模式。
+  * @note  In Sleep mode, all I/O pins keep the same state as in Run 模式。
   * @param Regulator: Regulator state as no effect in SLEEP mode -  allows to support portability from legacy software
   * @param SLEEPEntry: Specifies if SLEEP mode is entered with WFI or WFE instruction.
   *           When WFI entry is used, tick interrupt have to be disabled if not desired as 
@@ -428,12 +428,12 @@ void HAL_PWR_EnterSLEEPMode(uint32_t Regulator, uint8_t SLEEPEntry)
   /* Select SLEEP mode entry -------------------------------------------------*/
   if(SLEEPEntry == PWR_SLEEPENTRY_WFI)
   {
-    /* Request Wait For Interrupt */
+    /* Request 等待中断 */
     __WFI();
   }
   else
   {
-    /* Request Wait For Event */
+    /* Request 等待事件 */
     __SEV();
     __WFE();
     __WFE();
@@ -441,15 +441,15 @@ void HAL_PWR_EnterSLEEPMode(uint32_t Regulator, uint8_t SLEEPEntry)
 }
 
 /**
-  * @brief Enters Stop mode. 
-  * @note  In Stop mode, all I/O pins keep the same state as in Run mode.
+  * @brief Enters Stop 模式。 
+  * @note  In Stop mode, all I/O pins keep the same state as in Run 模式。
   * @note  When exiting Stop mode by using an interrupt or a wakeup event,
   *        HSI RC oscillator is selected as system clock.
   * @note  When the voltage regulator operates in low power mode, an additional
-  *         startup delay is incurred when waking up from Stop mode. 
+  *         startup delay is incurred when waking up from Stop 模式。 
   *         By keeping the internal regulator ON during Stop mode, the consumption
   *         is higher although the startup time is reduced.    
-  * @param Regulator: Specifies the regulator state in Stop mode.
+  * @param Regulator: Specifies the regulator state in Stop 模式。
   *          This parameter can be one of the following values:
   *            @arg PWR_MAINREGULATOR_ON: Stop mode with regulator ON
   *            @arg PWR_LOWPOWERREGULATOR_ON: Stop mode with low power regulator ON
@@ -477,12 +477,12 @@ void HAL_PWR_EnterSTOPMode(uint32_t Regulator, uint8_t STOPEntry)
   /* Select Stop mode entry --------------------------------------------------*/
   if(STOPEntry == PWR_STOPENTRY_WFI)
   {
-    /* Request Wait For Interrupt */
+    /* Request 等待中断 */
     __WFI();
   }
   else
   {
-    /* Request Wait For Event */
+    /* Request 等待事件 */
     __SEV();
     PWR_OverloadWfe(); /* WFE redefine locally */
     PWR_OverloadWfe(); /* WFE redefine locally */
@@ -492,7 +492,7 @@ void HAL_PWR_EnterSTOPMode(uint32_t Regulator, uint8_t STOPEntry)
 }
 
 /**
-  * @brief Enters Standby mode.
+  * @brief Enters Standby 模式。
   * @note  In Standby mode, all I/O pins are high impedance except for:
   *          - Reset pad (still available) 
   *          - TAMPER pin if configured for tamper or calibration out.
@@ -511,13 +511,13 @@ void HAL_PWR_EnterSTANDBYMode(void)
 #if defined ( __CC_ARM)
   __force_stores();
 #endif
-  /* Request Wait For Interrupt */
+  /* Request 等待中断 */
   __WFI();
 }
 
 
 /**
-  * @brief Indicates Sleep-On-Exit when returning from Handler mode to Thread mode. 
+  * @brief Indicates Sleep-On-Exit when returning from Handler mode to Thread 模式。 
   * @note Set SLEEPONEXIT bit of SCR register. When this bit is set, the processor 
   *       re-enters SLEEP mode when an interruption handling is over.
   *       Setting this bit is useful when the processor is expected to run only on
@@ -532,7 +532,7 @@ void HAL_PWR_EnableSleepOnExit(void)
 
 
 /**
-  * @brief Disables Sleep-On-Exit feature when returning from Handler mode to Thread mode. 
+  * @brief Disables Sleep-On-Exit feature when returning from Handler mode to Thread 模式。 
   * @note Clears SLEEPONEXIT bit of SCR register. When this bit is set, the processor 
   *       re-enters SLEEP mode when an interruption handling is over.          
   * @retval None

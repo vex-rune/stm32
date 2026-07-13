@@ -152,12 +152,12 @@
   * @{
   */
 
-/** @defgroup GPIO_Exported_Functions_Group1 Initialization and de-initialization functions
+/** @defgroup GPIO_Exported_Functions_Group1 初始化和反初始化函数
  *  @brief    Initialization and Configuration functions
  *
 @verbatim
  ===============================================================================
-              ##### Initialization and de-initialization functions #####
+              ##### 初始化和反初始化函数 #####
  ===============================================================================
   [..]
     This section provides functions allowing to initialize and de-initialize the GPIOs
@@ -169,7 +169,7 @@
 
 
 /**
-  * @brief  Initializes the GPIOx peripheral according to the specified parameters in the GPIO_Init.
+  * @brief  按照指定的参数初始化 GPIOx 外设， parameters in the GPIO_Init.
   * @param  GPIOx: where x can be (A..G depending on device used) to select the GPIO peripheral
   * @param  GPIO_Init: pointer to a GPIO_InitTypeDef structure that contains
   *         the configuration information for the specified GPIO peripheral.
@@ -284,7 +284,7 @@ void HAL_GPIO_Init(GPIO_TypeDef  *GPIOx, GPIO_InitTypeDef *GPIO_Init)
       MODIFY_REG((*configregister), ((GPIO_CRL_MODE0 | GPIO_CRL_CNF0) << registeroffset), (config << registeroffset));
 
       /*--------------------- EXTI Mode Configuration ------------------------*/
-      /* Configure the External Interrupt or event for the current IO */
+      /* Configure the 外部中断 or event for the current IO */
       if ((GPIO_Init->Mode & EXTI_MODE) == EXTI_MODE)
       {
         /* Enable AFIO Clock */
@@ -369,7 +369,7 @@ void HAL_GPIO_DeInit(GPIO_TypeDef  *GPIOx, uint32_t GPIO_Pin)
     if (iocurrent)
     {
       /*------------------------- EXTI Mode Configuration --------------------*/
-      /* Clear the External Interrupt or Event for the current IO */
+      /* Clear the 外部中断 or Event for the current IO */
 
       tmp = AFIO->EXTICR[position >> 2u];
       tmp &= 0x0FuL << (4u * (position & 0x03u));
@@ -407,12 +407,12 @@ void HAL_GPIO_DeInit(GPIO_TypeDef  *GPIOx, uint32_t GPIO_Pin)
   * @}
   */
 
-/** @defgroup GPIO_Exported_Functions_Group2 IO operation functions
+/** @defgroup GPIO_Exported_Functions_Group2 IO 操作函数
  *  @brief   GPIO Read and Write
  *
 @verbatim
  ===============================================================================
-                       ##### IO operation functions #####
+                       ##### IO 操作函数 #####
  ===============================================================================
   [..]
     This subsection provides a set of functions allowing to manage the GPIOs.

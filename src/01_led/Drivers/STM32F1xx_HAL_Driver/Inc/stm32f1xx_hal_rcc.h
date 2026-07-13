@@ -1150,7 +1150,7 @@ typedef struct
   * @{
   */
 
-/* Initialization and de-initialization functions  ******************************/
+/* 初始化和反初始化函数  ******************************/
 HAL_StatusTypeDef HAL_RCC_DeInit(void);
 HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *RCC_OscInitStruct);
 HAL_StatusTypeDef HAL_RCC_ClockConfig(RCC_ClkInitTypeDef  *RCC_ClkInitStruct, uint32_t FLatency);
@@ -1163,7 +1163,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(RCC_ClkInitTypeDef  *RCC_ClkInitStruct, ui
   * @{
   */
 
-/* Peripheral Control functions  ************************************************/
+/* 外设控制函数  ************************************************/
 void              HAL_RCC_MCOConfig(uint32_t RCC_MCOx, uint32_t RCC_MCOSource, uint32_t RCC_MCODiv);
 void              HAL_RCC_EnableCSS(void);
 void              HAL_RCC_DisableCSS(void);

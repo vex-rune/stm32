@@ -628,12 +628,12 @@ __weak void HAL_FLASH_OperationErrorCallback(uint32_t ReturnValue)
   * @}
   */
 
-/** @defgroup FLASH_Exported_Functions_Group2 Peripheral Control functions 
+/** @defgroup FLASH_Exported_Functions_Group2 外设控制函数 
  *  @brief   management functions 
  *
 @verbatim   
  ===============================================================================
-                      ##### Peripheral Control functions #####
+                      ##### 外设控制函数 #####
  ===============================================================================  
     [..]
     This subsection provides a set of functions allowing to control the FLASH 

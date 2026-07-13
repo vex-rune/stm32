@@ -113,17 +113,17 @@ static void DMA_SetConfig(DMA_HandleTypeDef *hdma, uint32_t SrcAddress, uint32_t
   * @{
   */
 
-/** @defgroup DMA_Exported_Functions_Group1 Initialization and de-initialization functions
-  *  @brief   Initialization and de-initialization functions 
+/** @defgroup DMA_Exported_Functions_Group1 初始化和反初始化函数
+  *  @brief   初始化和反初始化函数 
   *
 @verbatim
  ===============================================================================
-             ##### Initialization and de-initialization functions  #####
+             ##### 初始化和反初始化函数  #####
  ===============================================================================
     [..]
     This section provides functions allowing to initialize the DMA Channel source
     and destination addresses, incrementation and data sizes, transfer direction, 
-    circular/normal mode selection, memory-to-memory mode selection and Channel priority value.
+    circular/normal mode selection, memory-to-memory mode selection and Channel 优先级 value.
     [..]
     The HAL_DMA_Init() function follows the DMA configuration procedures as described in
     reference manual.  
@@ -292,7 +292,7 @@ HAL_StatusTypeDef HAL_DMA_DeInit(DMA_HandleTypeDef *hdma)
   *
 @verbatim
  ===============================================================================
-                      #####  IO operation functions  #####
+                      #####  IO 操作函数  #####
  ===============================================================================
     [..]  This section provides functions allowing to:
       (+) Configure the source, destination address and data length and Start DMA transfer
@@ -448,7 +448,7 @@ HAL_StatusTypeDef HAL_DMA_Abort(DMA_HandleTypeDef *hdma)
 }
 
 /**
-  * @brief  Aborts the DMA Transfer in Interrupt mode.
+  * @brief  Aborts the DMA Transfer in Interrupt 模式。
   * @param  hdma  : pointer to a DMA_HandleTypeDef structure that contains
   *                 the configuration information for the specified DMA Channel.
   * @retval HAL status
@@ -794,12 +794,12 @@ HAL_StatusTypeDef HAL_DMA_UnRegisterCallback(DMA_HandleTypeDef *hdma, HAL_DMA_Ca
   * @}
   */
 
-/** @defgroup DMA_Exported_Functions_Group3 Peripheral State and Errors functions
-  *  @brief    Peripheral State and Errors functions
+/** @defgroup DMA_Exported_Functions_Group3 外设状态与错误处理函数
+  *  @brief    外设状态与错误处理函数
   *
 @verbatim
  ===============================================================================
-            ##### Peripheral State and Errors functions #####
+            ##### 外设状态与错误处理函数 #####
  ===============================================================================  
     [..]
     This subsection provides functions allowing to

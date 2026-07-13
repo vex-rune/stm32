@@ -2307,7 +2307,7 @@ __STATIC_INLINE uint32_t LL_GPIO_AF_GetEXTISource(uint32_t Line)
   */
 
 #if defined(USE_FULL_LL_DRIVER)
-/** @defgroup GPIO_LL_EF_Init Initialization and de-initialization functions
+/** @defgroup GPIO_LL_EF_Init 初始化和反初始化函数
   * @{
   */
 

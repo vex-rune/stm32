@@ -90,7 +90,7 @@ typedef struct
 
                                         This feature can be modified afterwards using unitary function @ref LL_DMA_SetDataTransferDirection(). */
 
-  uint32_t Mode;                   /*!< Specifies the normal or circular operation mode.
+  uint32_t Mode;                   /*!< Specifies the normal or circular operation 模式。
                                         This parameter can be a value of @ref DMA_LL_EC_MODE
                                         @note: The circular buffer mode cannot be used if the memory to memory
                                                data transfer direction is configured on the selected Channel
@@ -128,7 +128,7 @@ typedef struct
 
                                         This feature can be modified afterwards using unitary function @ref LL_DMA_SetDataLength(). */
 
-  uint32_t Priority;               /*!< Specifies the channel priority level.
+  uint32_t Priority;               /*!< Specifies the channel 优先级 level.
                                         This parameter can be a value of @ref DMA_LL_EC_PRIORITY
 
                                         This feature can be modified afterwards using unitary function @ref LL_DMA_SetChannelPriorityLevel(). */
@@ -627,7 +627,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetMode(DMA_TypeDef *DMAx, uint32_t Channel)
 }
 
 /**
-  * @brief  Set Peripheral increment mode.
+  * @brief  Set Peripheral increment 模式。
   * @rmtoll CCR          PINC          LL_DMA_SetPeriphIncMode
   * @param  DMAx DMAx Instance
   * @param  Channel This parameter can be one of the following values:
@@ -650,7 +650,7 @@ __STATIC_INLINE void LL_DMA_SetPeriphIncMode(DMA_TypeDef *DMAx, uint32_t Channel
 }
 
 /**
-  * @brief  Get Peripheral increment mode.
+  * @brief  Get Peripheral increment 模式。
   * @rmtoll CCR          PINC          LL_DMA_GetPeriphIncMode
   * @param  DMAx DMAx Instance
   * @param  Channel This parameter can be one of the following values:
@@ -672,7 +672,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetPeriphIncMode(DMA_TypeDef *DMAx, uint32_t Cha
 }
 
 /**
-  * @brief  Set Memory increment mode.
+  * @brief  Set Memory increment 模式。
   * @rmtoll CCR          MINC          LL_DMA_SetMemoryIncMode
   * @param  DMAx DMAx Instance
   * @param  Channel This parameter can be one of the following values:
@@ -695,7 +695,7 @@ __STATIC_INLINE void LL_DMA_SetMemoryIncMode(DMA_TypeDef *DMAx, uint32_t Channel
 }
 
 /**
-  * @brief  Get Memory increment mode.
+  * @brief  Get Memory increment 模式。
   * @rmtoll CCR          MINC          LL_DMA_GetMemoryIncMode
   * @param  DMAx DMAx Instance
   * @param  Channel This parameter can be one of the following values:
@@ -811,7 +811,7 @@ __STATIC_INLINE uint32_t LL_DMA_GetMemorySize(DMA_TypeDef *DMAx, uint32_t Channe
 }
 
 /**
-  * @brief  Set Channel priority level.
+  * @brief  Set Channel 优先级 level.
   * @rmtoll CCR          PL            LL_DMA_SetChannelPriorityLevel
   * @param  DMAx DMAx Instance
   * @param  Channel This parameter can be one of the following values:
@@ -836,7 +836,7 @@ __STATIC_INLINE void LL_DMA_SetChannelPriorityLevel(DMA_TypeDef *DMAx, uint32_t 
 }
 
 /**
-  * @brief  Get Channel priority level.
+  * @brief  Get Channel 优先级 level.
   * @rmtoll CCR          PL            LL_DMA_GetChannelPriorityLevel
   * @param  DMAx DMAx Instance
   * @param  Channel This parameter can be one of the following values:
@@ -1923,7 +1923,7 @@ __STATIC_INLINE uint32_t LL_DMA_IsEnabledIT_TE(DMA_TypeDef *DMAx, uint32_t Chann
   */
 
 #if defined(USE_FULL_LL_DRIVER)
-/** @defgroup DMA_LL_EF_Init Initialization and de-initialization functions
+/** @defgroup DMA_LL_EF_Init 初始化和反初始化函数
   * @{
   */
 

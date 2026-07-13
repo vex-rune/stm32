@@ -157,7 +157,7 @@ extern "C" {
   */
 
 /**
-  * @brief  Enable access to the backup domain
+  * @brief  Enable 访问 the backup domain
   * @rmtoll CR    DBP       LL_PWR_EnableBkUpAccess
   * @retval None
   */
@@ -167,7 +167,7 @@ __STATIC_INLINE void LL_PWR_EnableBkUpAccess(void)
 }
 
 /**
-  * @brief  Disable access to the backup domain
+  * @brief  Disable 访问 the backup domain
   * @rmtoll CR    DBP       LL_PWR_DisableBkUpAccess
   * @retval None
   */

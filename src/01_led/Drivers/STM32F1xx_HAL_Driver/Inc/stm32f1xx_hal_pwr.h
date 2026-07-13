@@ -98,9 +98,9 @@ typedef struct
   * @{
   */
 #define PWR_PVD_MODE_NORMAL                 0x00000000U   /*!< basic mode is used */
-#define PWR_PVD_MODE_IT_RISING              0x00010001U   /*!< External Interrupt Mode with Rising edge trigger detection */
-#define PWR_PVD_MODE_IT_FALLING             0x00010002U   /*!< External Interrupt Mode with Falling edge trigger detection */
-#define PWR_PVD_MODE_IT_RISING_FALLING      0x00010003U   /*!< External Interrupt Mode with Rising/Falling edge trigger detection */
+#define PWR_PVD_MODE_IT_RISING              0x00010001U   /*!< 外部中断 Mode with Rising edge trigger detection */
+#define PWR_PVD_MODE_IT_FALLING             0x00010002U   /*!< 外部中断 Mode with Falling edge trigger detection */
+#define PWR_PVD_MODE_IT_RISING_FALLING      0x00010003U   /*!< 外部中断 Mode with Rising/Falling edge trigger detection */
 #define PWR_PVD_MODE_EVENT_RISING           0x00020001U   /*!< Event Mode with Rising edge trigger detection */
 #define PWR_PVD_MODE_EVENT_FALLING          0x00020002U   /*!< Event Mode with Falling edge trigger detection */
 #define PWR_PVD_MODE_EVENT_RISING_FALLING   0x00020003U   /*!< Event Mode with Rising/Falling edge trigger detection */
@@ -179,7 +179,7 @@ typedef struct
   *                  An additional wakeup event is detected if the WKUP pin is enabled
   *                  (by setting the EWUP bit) when the WKUP pin level is already high.
   *            @arg PWR_FLAG_SB: StandBy flag. This flag indicates that the system was
-  *                  resumed from StandBy mode.
+  *                  resumed from StandBy 模式。
   *            @arg PWR_FLAG_PVDO: PVD Output. This flag is valid only if PVD is enabled
   *                  by the HAL_PWR_EnablePVD() function. The PVD is stopped by Standby mode
   *                  For this reason, this bit is equal to 0 after Standby or reset
@@ -320,11 +320,11 @@ typedef struct
   * @{
   */
   
-/** @addtogroup PWR_Exported_Functions_Group1 Initialization and de-initialization functions 
+/** @addtogroup PWR_Exported_Functions_Group1 初始化和反初始化函数 
   * @{
   */
 
-/* Initialization and de-initialization functions *******************************/
+/* 初始化和反初始化函数 *******************************/
 void HAL_PWR_DeInit(void);
 void HAL_PWR_EnableBkUpAccess(void);
 void HAL_PWR_DisableBkUpAccess(void);
@@ -333,11 +333,11 @@ void HAL_PWR_DisableBkUpAccess(void);
   * @}
   */
 
-/** @addtogroup PWR_Exported_Functions_Group2 Peripheral Control functions 
+/** @addtogroup PWR_Exported_Functions_Group2 外设控制函数 
   * @{
   */
 
-/* Peripheral Control functions  ************************************************/
+/* 外设控制函数  ************************************************/
 void HAL_PWR_ConfigPVD(PWR_PVDTypeDef *sConfigPVD);
 /* #define HAL_PWR_ConfigPVD 12*/
 void HAL_PWR_EnablePVD(void);

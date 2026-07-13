@@ -109,12 +109,12 @@ static void RCC_Delay(uint32_t mdelay);
   * @{
   */
 
-/** @defgroup RCC_Exported_Functions_Group1 Initialization and de-initialization functions
+/** @defgroup RCC_Exported_Functions_Group1 初始化和反初始化函数
   *  @brief    Initialization and Configuration functions
   *
   @verbatim
   ===============================================================================
-           ##### Initialization and de-initialization functions #####
+           ##### 初始化和反初始化函数 #####
   ===============================================================================
     [..]
       This section provides functions allowing to configure the internal/external oscillators
@@ -527,7 +527,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *RCC_OscInitStruct)
     assert_param(IS_RCC_LSE(RCC_OscInitStruct->LSEState));
 
     /* Update LSE configuration in Backup Domain control register    */
-    /* Requires to enable write access to Backup Domain of necessary */
+    /* Requires to enable write 访问 Backup Domain of necessary */
     if (__HAL_RCC_PWR_IS_CLK_DISABLED())
     {
       __HAL_RCC_PWR_CLK_ENABLE();
@@ -536,7 +536,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *RCC_OscInitStruct)
 
     if (HAL_IS_BIT_CLR(PWR->CR, PWR_CR_DBP))
     {
-      /* Enable write access to Backup domain */
+      /* Enable write 访问 Backup domain */
       SET_BIT(PWR->CR, PWR_CR_DBP);
 
       /* Wait for Backup domain Write protection disable */
@@ -951,12 +951,12 @@ if (((RCC_ClkInitStruct->ClockType) & RCC_CLOCKTYPE_PCLK1) == RCC_CLOCKTYPE_PCLK
   * @}
   */
 
-/** @defgroup RCC_Exported_Functions_Group2 Peripheral Control functions
+/** @defgroup RCC_Exported_Functions_Group2 外设控制函数
   *  @brief   RCC clocks control functions
   *
   @verbatim
   ===============================================================================
-                  ##### Peripheral Control functions #####
+                  ##### 外设控制函数 #####
   ===============================================================================
     [..]
     This subsection provides a set of functions allowing to control the RCC Clocks
@@ -968,7 +968,7 @@ if (((RCC_ClkInitStruct->ClockType) & RCC_CLOCKTYPE_PCLK1) == RCC_CLOCKTYPE_PCLK
 
 /**
   * @brief  Selects the clock source to output on MCO pin.
-  * @note   MCO pin should be configured in alternate function mode.
+  * @note   MCO pin should be configured in alternate function 模式。
   * @param  RCC_MCOx specifies the output direction for the clock source.
   *          This parameter can be one of the following values:
   *            @arg @ref RCC_MCO1 Clock source to output on MCO1 pin(PA8).
@@ -1070,7 +1070,7 @@ void HAL_RCC_DisableCSS(void)
   *         value for HSE crystal.
   *
   * @note   This function can be used by the user application to compute the
-  *         baud-rate for the communication peripherals or configure other parameters.
+  *         baud-rate for the communication peripherals or 配置其他参数。
   *
   * @note   Each time SYSCLK changes, this function must be called to update the
   *         right SYSCLK value. Otherwise, any configuration based on this function will be incorrect.

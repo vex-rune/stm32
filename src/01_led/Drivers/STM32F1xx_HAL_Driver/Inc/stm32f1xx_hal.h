@@ -278,7 +278,7 @@ extern HAL_TickFreqTypeDef uwTickFreq;
 /** @addtogroup HAL_Exported_Functions_Group1
   * @{
   */
-/* Initialization and de-initialization functions  ******************************/
+/* 初始化和反初始化函数  ******************************/
 HAL_StatusTypeDef HAL_Init(void);
 HAL_StatusTypeDef HAL_DeInit(void);
 void HAL_MspInit(void);
@@ -291,7 +291,7 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority);
 /** @addtogroup HAL_Exported_Functions_Group2
   * @{
   */
-/* Peripheral Control functions  ************************************************/
+/* 外设控制函数  ************************************************/
 void HAL_IncTick(void);
 void HAL_Delay(uint32_t Delay);
 uint32_t HAL_GetTick(void);

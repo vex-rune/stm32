@@ -90,11 +90,11 @@ HAL_TickFreqTypeDef uwTickFreq = HAL_TICK_FREQ_DEFAULT;  /* 1KHz */
   */
 
 /** @defgroup HAL_Exported_Functions_Group1 Initialization and de-initialization Functions
- *  @brief    Initialization and de-initialization functions
+ *  @brief    初始化和反初始化函数
  *
 @verbatim
  ===============================================================================
-              ##### Initialization and de-initialization functions #####
+              ##### 初始化和反初始化函数 #####
  ===============================================================================
    [..]  This section provides functions allowing to:
       (+) Initializes the Flash interface, the NVIC allocation and initial clock
@@ -102,7 +102,7 @@ HAL_TickFreqTypeDef uwTickFreq = HAL_TICK_FREQ_DEFAULT;  /* 1KHz */
           and the backup domain when enabled.
       (+) de-Initializes common part of the HAL.
       (+) Configure The time base source to have 1ms time base with a dedicated
-          Tick interrupt priority.
+          Tick interrupt 优先级.
         (++) SysTick timer is used by default as source of time base, but user
              can eventually implement his proper time base source (a general purpose
              timer for example or other time source), keeping in mind that Time base
@@ -113,7 +113,7 @@ HAL_TickFreqTypeDef uwTickFreq = HAL_TICK_FREQ_DEFAULT;  /* 1KHz */
              when clock is configured, by HAL_RCC_ClockConfig().
         (++) Source of time base is configured  to generate interrupts at regular
              time intervals. Care must be taken if HAL_Delay() is called from a
-             peripheral ISR process, the Tick interrupt line must have higher priority
+             peripheral ISR process, the Tick interrupt line must have higher 优先级
             (numerically lower) than the peripheral interrupt. Otherwise the caller
             ISR process will be blocked.
        (++) functions affecting time base configurations are declared as __weak
@@ -218,17 +218,17 @@ __weak void HAL_MspDeInit(void)
 /**
   * @brief This function configures the source of the time base.
   *        The time source is configured  to have 1ms time base with a dedicated
-  *        Tick interrupt priority.
+  *        Tick interrupt 优先级.
   * @note This function is called  automatically at the beginning of program after
   *       reset by HAL_Init() or at any time when clock is reconfigured  by HAL_RCC_ClockConfig().
   * @note In the default implementation, SysTick timer is the source of time base.
   *       It is used to generate interrupts at regular time intervals.
   *       Care must be taken if HAL_Delay() is called from a peripheral ISR process,
-  *       The SysTick interrupt must have higher priority (numerically lower)
+  *       The SysTick interrupt must have higher 优先级 (numerically lower)
   *       than the peripheral interrupt. Otherwise the caller ISR process will be blocked.
   *       The function is declared as __weak  to be overwritten  in case of other
   *       implementation  in user file.
-  * @param TickPriority Tick interrupt priority.
+  * @param TickPriority Tick interrupt 优先级.
   * @retval HAL status
   */
 __weak HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
@@ -239,7 +239,7 @@ __weak HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
     return HAL_ERROR;
   }
 
-  /* Configure the SysTick IRQ priority */
+  /* Configure the SysTick IRQ 优先级 */
   if (TickPriority < (1UL << __NVIC_PRIO_BITS))
   {
     HAL_NVIC_SetPriority(SysTick_IRQn, TickPriority, 0U);
@@ -307,8 +307,8 @@ __weak uint32_t HAL_GetTick(void)
 }
 
 /**
-  * @brief This function returns a tick priority.
-  * @retval tick priority
+  * @brief This function returns a tick 优先级.
+  * @retval tick 优先级
   */
 uint32_t HAL_GetTickPrio(void)
 {
@@ -521,14 +521,14 @@ void HAL_DBGMCU_DisableDBGSleepMode(void)
   * Note: On all STM32F1 devices:
   *       If the system tick timer interrupt is enabled during the Stop mode
   *       debug (DBG_STOP bit set in the DBGMCU_CR register ), it will wakeup
-  *       the system from Stop mode.
+  *       the system from Stop 模式。
   *       Workaround: To debug the Stop mode, disable the system tick timer
   *       interrupt.
   *       Refer to errata sheet of these devices for more details.
   * Note: On all STM32F1 devices:
   *       If the system tick timer interrupt is enabled during the Stop mode
   *       debug (DBG_STOP bit set in the DBGMCU_CR register ), it will wakeup
-  *       the system from Stop mode.
+  *       the system from Stop 模式。
   *       Workaround: To debug the Stop mode, disable the system tick timer
   *       interrupt.
   *       Refer to errata sheet of these devices for more details.

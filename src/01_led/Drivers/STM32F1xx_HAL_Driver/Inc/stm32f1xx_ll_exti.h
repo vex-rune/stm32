@@ -850,7 +850,7 @@ __STATIC_INLINE void LL_EXTI_ClearFlag_0_31(uint32_t ExtiLine)
   */
 
 #if defined(USE_FULL_LL_DRIVER)
-/** @defgroup EXTI_LL_EF_Init Initialization and de-initialization functions
+/** @defgroup EXTI_LL_EF_Init 初始化和反初始化函数
   * @{
   */
 

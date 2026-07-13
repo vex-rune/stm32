@@ -744,7 +744,7 @@ typedef struct
 /** @addtogroup FLASHEx_Exported_Functions_Group1
   * @{
   */
-/* IO operation functions *****************************************************/
+/* IO 操作函数 *****************************************************/
 HAL_StatusTypeDef  HAL_FLASHEx_Erase(FLASH_EraseInitTypeDef *pEraseInit, uint32_t *PageError);
 HAL_StatusTypeDef  HAL_FLASHEx_Erase_IT(FLASH_EraseInitTypeDef *pEraseInit);
 
@@ -755,7 +755,7 @@ HAL_StatusTypeDef  HAL_FLASHEx_Erase_IT(FLASH_EraseInitTypeDef *pEraseInit);
 /** @addtogroup FLASHEx_Exported_Functions_Group2
   * @{
   */
-/* Peripheral Control functions ***********************************************/
+/* 外设控制函数 ***********************************************/
 HAL_StatusTypeDef  HAL_FLASHEx_OBErase(void);
 HAL_StatusTypeDef  HAL_FLASHEx_OBProgram(FLASH_OBProgramInitTypeDef *pOBInit);
 void               HAL_FLASHEx_OBGetConfig(FLASH_OBProgramInitTypeDef *pOBInit);

@@ -1,6 +1,6 @@
 /**************************************************************************//**
  * @file     core_cm7.h
- * @brief    CMSIS Cortex-M7 Core Peripheral Access Layer Header File
+ * @brief    CMSIS Cortex-M7 Core 外设访问层 Header File
  * @version  V5.0.8
  * @date     04. June 2018
  ******************************************************************************/
@@ -41,11 +41,11 @@
   \page CMSIS_MISRA_Exceptions  MISRA-C:2004 Compliance Exceptions
   CMSIS violates the following MISRA-C:2004 rules:
 
-   \li Required Rule 8.5, object/function definition in header file.<br>
-     Function definitions in header files are used to allow 'inlining'.
+   \li Required Rule 8.5, object/function definition in 头文件。<br>
+     Function definitions in 头文件s are used to allow 'inlining'.
 
    \li Required Rule 18.4, declaration of union type or object of union type: '{...}'.<br>
-     Unions are used for effective representation of core registers.
+     Unions are used for effective representation of 内核寄存器s.
 
    \li Advisory Rule 19.7, Function-like macro defined.<br>
      Function-like macros are used to allow more efficient code.
@@ -225,7 +225,7 @@
     \defgroup CMSIS_glob_defs CMSIS Global Defines
 
     <strong>IO Type Qualifiers</strong> are used
-    \li to specify the access to peripheral variables.
+    \li to specify the 访问 peripheral variables.
     \li for automatic generation of peripheral register debug information.
 */
 #ifdef __cplusplus
@@ -247,8 +247,8 @@
 
 /*******************************************************************************
  *                 Register Abstraction
-  Core Register contain:
-  - Core Register
+  内核寄存器 contain:
+  - 内核寄存器
   - Core NVIC Register
   - Core SCB Register
   - Core SysTick Register
@@ -264,7 +264,7 @@
 /**
   \ingroup    CMSIS_core_register
   \defgroup   CMSIS_CORE  Status and Control Registers
-  \brief      Core Register type definitions.
+  \brief      内核寄存器 type definitions.
   @{
  */
 
@@ -410,13 +410,13 @@ typedef union
 
 /**
   \ingroup    CMSIS_core_register
-  \defgroup   CMSIS_NVIC  Nested Vectored Interrupt Controller (NVIC)
+  \defgroup   CMSIS_NVIC  嵌套向量中断控制器（NVIC）
   \brief      Type definitions for the NVIC Registers
   @{
  */
 
 /**
-  \brief  Structure type to access the Nested Vectored Interrupt Controller (NVIC).
+  \brief  Structure type to access the 嵌套向量中断控制器（NVIC）.
  */
 typedef struct
 {
@@ -435,7 +435,7 @@ typedef struct
   __OM  uint32_t STIR;                   /*!< Offset: 0xE00 ( /W)  Software Trigger Interrupt Register */
 }  NVIC_Type;
 
-/* Software Triggered Interrupt Register Definitions */
+/* 软件触发中断寄存器 Definitions */
 #define NVIC_STIR_INTID_Pos                 0U                                         /*!< STIR: INTLINESNUM Position */
 #define NVIC_STIR_INTID_Msk                (0x1FFUL /*<< NVIC_STIR_INTID_Pos*/)        /*!< STIR: INTLINESNUM Mask */
 
@@ -456,7 +456,7 @@ typedef struct
 {
   __IM  uint32_t CPUID;                  /*!< Offset: 0x000 (R/ )  CPUID Base Register */
   __IOM uint32_t ICSR;                   /*!< Offset: 0x004 (R/W)  Interrupt Control and State Register */
-  __IOM uint32_t VTOR;                   /*!< Offset: 0x008 (R/W)  Vector Table Offset Register */
+  __IOM uint32_t VTOR;                   /*!< Offset: 0x008 (R/W)  中断向量表偏移寄存器 */
   __IOM uint32_t AIRCR;                  /*!< Offset: 0x00C (R/W)  Application Interrupt and Reset Control Register */
   __IOM uint32_t SCR;                    /*!< Offset: 0x010 (R/W)  System Control Register */
   __IOM uint32_t CCR;                    /*!< Offset: 0x014 (R/W)  Configuration Control Register */
@@ -480,7 +480,7 @@ typedef struct
   __IOM uint32_t CSSELR;                 /*!< Offset: 0x084 (R/W)  Cache Size Selection Register */
   __IOM uint32_t CPACR;                  /*!< Offset: 0x088 (R/W)  Coprocessor Access Control Register */
         uint32_t RESERVED3[93U];
-  __OM  uint32_t STIR;                   /*!< Offset: 0x200 ( /W)  Software Triggered Interrupt Register */
+  __OM  uint32_t STIR;                   /*!< Offset: 0x200 ( /W)  软件触发中断寄存器 */
         uint32_t RESERVED4[15U];
   __IM  uint32_t MVFR0;                  /*!< Offset: 0x240 (R/ )  Media and VFP Feature Register 0 */
   __IM  uint32_t MVFR1;                  /*!< Offset: 0x244 (R/ )  Media and VFP Feature Register 1 */
@@ -553,7 +553,7 @@ typedef struct
 #define SCB_ICSR_VECTACTIVE_Pos             0U                                            /*!< SCB ICSR: VECTACTIVE Position */
 #define SCB_ICSR_VECTACTIVE_Msk            (0x1FFUL /*<< SCB_ICSR_VECTACTIVE_Pos*/)       /*!< SCB ICSR: VECTACTIVE Mask */
 
-/* SCB Vector Table Offset Register Definitions */
+/* SCB 中断向量表偏移寄存器 Definitions */
 #define SCB_VTOR_TBLOFF_Pos                 7U                                            /*!< SCB VTOR: TBLOFF Position */
 #define SCB_VTOR_TBLOFF_Msk                (0x1FFFFFFUL << SCB_VTOR_TBLOFF_Pos)           /*!< SCB VTOR: TBLOFF Mask */
 
@@ -808,7 +808,7 @@ typedef struct
 #define SCB_CSSELR_IND_Pos                  0U                                            /*!< SCB CSSELR: InD Position */
 #define SCB_CSSELR_IND_Msk                 (1UL /*<< SCB_CSSELR_IND_Pos*/)                /*!< SCB CSSELR: InD Mask */
 
-/* SCB Software Triggered Interrupt Register Definitions */
+/* SCB 软件触发中断寄存器 Definitions */
 #define SCB_STIR_INTID_Pos                  0U                                            /*!< SCB STIR: INTID Position */
 #define SCB_STIR_INTID_Msk                 (0x1FFUL /*<< SCB_STIR_INTID_Pos*/)            /*!< SCB STIR: INTID Mask */
 
@@ -950,13 +950,13 @@ typedef struct
 
 /**
   \ingroup  CMSIS_core_register
-  \defgroup CMSIS_SysTick     System Tick Timer (SysTick)
-  \brief    Type definitions for the System Timer Registers.
+  \defgroup CMSIS_SysTick     系统节拍定时器（SysTick）
+  \brief    Type definitions for the System 定时器 Registers.
   @{
  */
 
 /**
-  \brief  Structure type to access the System Timer (SysTick).
+  \brief  Structure type to access the System 定时器 (SysTick).
  */
 typedef struct
 {
@@ -1417,13 +1417,13 @@ typedef struct
 #if defined (__MPU_PRESENT) && (__MPU_PRESENT == 1U)
 /**
   \ingroup  CMSIS_core_register
-  \defgroup CMSIS_MPU     Memory Protection Unit (MPU)
-  \brief    Type definitions for the Memory Protection Unit (MPU)
+  \defgroup CMSIS_MPU     内存保护单元（MPU）
+  \brief    Type definitions for the 内存保护单元（MPU）
   @{
  */
 
 /**
-  \brief  Structure type to access the Memory Protection Unit (MPU).
+  \brief  Structure type to access the 内存保护单元（MPU）.
  */
 typedef struct
 {
@@ -1513,13 +1513,13 @@ typedef struct
 
 /**
   \ingroup  CMSIS_core_register
-  \defgroup CMSIS_FPU     Floating Point Unit (FPU)
-  \brief    Type definitions for the Floating Point Unit (FPU)
+  \defgroup CMSIS_FPU     浮点运算单元（FPU）
+  \brief    Type definitions for the 浮点运算单元（FPU）
   @{
  */
 
 /**
-  \brief  Structure type to access the Floating Point Unit (FPU).
+  \brief  Structure type to access the 浮点运算单元（FPU）.
  */
 typedef struct
 {
@@ -1633,8 +1633,8 @@ typedef struct
 typedef struct
 {
   __IOM uint32_t DHCSR;                  /*!< Offset: 0x000 (R/W)  Debug Halting Control and Status Register */
-  __OM  uint32_t DCRSR;                  /*!< Offset: 0x004 ( /W)  Debug Core Register Selector Register */
-  __IOM uint32_t DCRDR;                  /*!< Offset: 0x008 (R/W)  Debug Core Register Data Register */
+  __OM  uint32_t DCRSR;                  /*!< Offset: 0x004 ( /W)  Debug 内核寄存器 Selector Register */
+  __IOM uint32_t DCRDR;                  /*!< Offset: 0x008 (R/W)  Debug 内核寄存器 Data Register */
   __IOM uint32_t DEMCR;                  /*!< Offset: 0x00C (R/W)  Debug Exception and Monitor Control Register */
 } CoreDebug_Type;
 
@@ -1675,7 +1675,7 @@ typedef struct
 #define CoreDebug_DHCSR_C_DEBUGEN_Pos       0U                                            /*!< CoreDebug DHCSR: C_DEBUGEN Position */
 #define CoreDebug_DHCSR_C_DEBUGEN_Msk      (1UL /*<< CoreDebug_DHCSR_C_DEBUGEN_Pos*/)     /*!< CoreDebug DHCSR: C_DEBUGEN Mask */
 
-/* Debug Core Register Selector Register Definitions */
+/* Debug 内核寄存器 Selector Register Definitions */
 #define CoreDebug_DCRSR_REGWnR_Pos         16U                                            /*!< CoreDebug DCRSR: REGWnR Position */
 #define CoreDebug_DCRSR_REGWnR_Msk         (1UL << CoreDebug_DCRSR_REGWnR_Pos)            /*!< CoreDebug DCRSR: REGWnR Mask */
 
@@ -1770,8 +1770,8 @@ typedef struct
 
 #define SCnSCB              ((SCnSCB_Type    *)     SCS_BASE      )   /*!< System control Register not in SCB */
 #define SCB                 ((SCB_Type       *)     SCB_BASE      )   /*!< SCB configuration struct */
-#define SysTick             ((SysTick_Type   *)     SysTick_BASE  )   /*!< SysTick configuration struct */
-#define NVIC                ((NVIC_Type      *)     NVIC_BASE     )   /*!< NVIC configuration struct */
+#define SysTick             ((SysTick_Type   *)     SysTick_BASE  )   /*!< SysTick 配置 struct */
+#define NVIC                ((NVIC_Type      *)     NVIC_BASE     )   /*!< NVIC 配置 struct */
 #define ITM                 ((ITM_Type       *)     ITM_BASE      )   /*!< ITM configuration struct */
 #define DWT                 ((DWT_Type       *)     DWT_BASE      )   /*!< DWT configuration struct */
 #define TPI                 ((TPI_Type       *)     TPI_BASE      )   /*!< TPI configuration struct */
@@ -1795,7 +1795,7 @@ typedef struct
   - Core NVIC Functions
   - Core SysTick Functions
   - Core Debug Functions
-  - Core Register Access Functions
+  - 内核寄存器 Access Functions
  ******************************************************************************/
 /**
   \defgroup CMSIS_Core_FunctionInterface Functions and Instructions Reference
@@ -1855,11 +1855,11 @@ typedef struct
 
 /**
   \brief   Set Priority Grouping
-  \details Sets the priority grouping field using the required unlock sequence.
+  \details Sets the 优先级 grouping field using the required unlock sequence.
            The parameter PriorityGroup is assigned to the field SCB->AIRCR [10:8] PRIGROUP field.
            Only values from 0..7 are used.
-           In case of a conflict between priority grouping and available
-           priority bits (__NVIC_PRIO_BITS), the smallest possible priority group is set.
+           In case of a conflict between 优先级 grouping and available
+           优先级 bits (__NVIC_PRIO_BITS), the smallest possible 优先级 group is set.
   \param [in]      PriorityGroup  Priority grouping field.
  */
 __STATIC_INLINE void __NVIC_SetPriorityGrouping(uint32_t PriorityGroup)
@@ -1871,14 +1871,14 @@ __STATIC_INLINE void __NVIC_SetPriorityGrouping(uint32_t PriorityGroup)
   reg_value &= ~((uint32_t)(SCB_AIRCR_VECTKEY_Msk | SCB_AIRCR_PRIGROUP_Msk)); /* clear bits to change               */
   reg_value  =  (reg_value                                   |
                 ((uint32_t)0x5FAUL << SCB_AIRCR_VECTKEY_Pos) |
-                (PriorityGroupTmp << SCB_AIRCR_PRIGROUP_Pos)  );              /* Insert write key and priority group */
+                (PriorityGroupTmp << SCB_AIRCR_PRIGROUP_Pos)  );              /* Insert write key and 优先级 group */
   SCB->AIRCR =  reg_value;
 }
 
 
 /**
   \brief   Get Priority Grouping
-  \details Reads the priority grouping field from the NVIC Interrupt Controller.
+  \details Reads the 优先级 grouping field from the NVIC Interrupt Controller.
   \return                Priority grouping field (SCB->AIRCR [10:8] PRIGROUP field).
  */
 __STATIC_INLINE uint32_t __NVIC_GetPriorityGrouping(void)
@@ -2014,12 +2014,12 @@ __STATIC_INLINE uint32_t __NVIC_GetActive(IRQn_Type IRQn)
 
 /**
   \brief   Set Interrupt Priority
-  \details Sets the priority of a device specific interrupt or a processor exception.
+  \details Sets the 优先级 of a device specific interrupt or a processor exception.
            The interrupt number can be positive to specify a device specific interrupt,
            or negative to specify a processor exception.
   \param [in]      IRQn  Interrupt number.
-  \param [in]  priority  Priority to set.
-  \note    The priority cannot be set for every processor exception.
+  \param [in]  优先级  Priority to set.
+  \note    The 优先级 cannot be set for every processor exception.
  */
 __STATIC_INLINE void __NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
 {
@@ -2036,12 +2036,12 @@ __STATIC_INLINE void __NVIC_SetPriority(IRQn_Type IRQn, uint32_t priority)
 
 /**
   \brief   Get Interrupt Priority
-  \details Reads the priority of a device specific interrupt or a processor exception.
+  \details Reads the 优先级 of a device specific interrupt or a processor exception.
            The interrupt number can be positive to specify a device specific interrupt,
            or negative to specify a processor exception.
   \param [in]   IRQn  Interrupt number.
   \return             Interrupt Priority.
-                      Value is aligned automatically to the implemented priority bits of the microcontroller.
+                      Value is aligned automatically to the implemented 优先级 bits of the microcontroller.
  */
 __STATIC_INLINE uint32_t __NVIC_GetPriority(IRQn_Type IRQn)
 {
@@ -2059,14 +2059,14 @@ __STATIC_INLINE uint32_t __NVIC_GetPriority(IRQn_Type IRQn)
 
 /**
   \brief   Encode Priority
-  \details Encodes the priority for an interrupt with the given priority group,
-           preemptive priority value, and subpriority value.
-           In case of a conflict between priority grouping and available
-           priority bits (__NVIC_PRIO_BITS), the smallest possible priority group is set.
-  \param [in]     PriorityGroup  Used priority group.
-  \param [in]   PreemptPriority  Preemptive priority value (starting from 0).
-  \param [in]       SubPriority  Subpriority value (starting from 0).
-  \return                        Encoded priority. Value can be used in the function \ref NVIC_SetPriority().
+  \details Encodes the 优先级 for an interrupt with the given 优先级 group,
+           preemptive 优先级 value, and sub优先级 value.
+           In case of a conflict between 优先级 grouping and available
+           优先级 bits (__NVIC_PRIO_BITS), the smallest possible 优先级 group is set.
+  \param [in]     PriorityGroup  Used 优先级 group.
+  \param [in]   PreemptPriority  Preemptive 优先级 value (starting from 0).
+  \param [in]       SubPriority  Sub优先级 value (starting from 0).
+  \return                        Encoded 优先级. Value can be used in the function \ref NVIC_SetPriority().
  */
 __STATIC_INLINE uint32_t NVIC_EncodePriority (uint32_t PriorityGroup, uint32_t PreemptPriority, uint32_t SubPriority)
 {
@@ -2086,14 +2086,14 @@ __STATIC_INLINE uint32_t NVIC_EncodePriority (uint32_t PriorityGroup, uint32_t P
 
 /**
   \brief   Decode Priority
-  \details Decodes an interrupt priority value with a given priority group to
-           preemptive priority value and subpriority value.
-           In case of a conflict between priority grouping and available
-           priority bits (__NVIC_PRIO_BITS) the smallest possible priority group is set.
+  \details Decodes an interrupt 优先级 value with a given 优先级 group to
+           preemptive 优先级 value and sub优先级 value.
+           In case of a conflict between 优先级 grouping and available
+           优先级 bits (__NVIC_PRIO_BITS) the smallest possible 优先级 group is set.
   \param [in]         Priority   Priority value, which can be retrieved with the function \ref NVIC_GetPriority().
-  \param [in]     PriorityGroup  Used priority group.
-  \param [out] pPreemptPriority  Preemptive priority value (starting from 0).
-  \param [out]     pSubPriority  Subpriority value (starting from 0).
+  \param [in]     PriorityGroup  Used 优先级 group.
+  \param [out] pPreemptPriority  Preemptive 优先级 value (starting from 0).
+  \param [out]     pSubPriority  Sub优先级 value (starting from 0).
  */
 __STATIC_INLINE void NVIC_DecodePriority (uint32_t Priority, uint32_t PriorityGroup, uint32_t* const pPreemptPriority, uint32_t* const pSubPriority)
 {
@@ -2150,7 +2150,7 @@ __NO_RETURN __STATIC_INLINE void __NVIC_SystemReset(void)
                                                                        buffered write are completed before reset */
   SCB->AIRCR  = (uint32_t)((0x5FAUL << SCB_AIRCR_VECTKEY_Pos)    |
                            (SCB->AIRCR & SCB_AIRCR_PRIGROUP_Msk) |
-                            SCB_AIRCR_SYSRESETREQ_Msk    );         /* Keep priority group unchanged */
+                            SCB_AIRCR_SYSRESETREQ_Msk    );         /* Keep 优先级 group unchanged */
   __DSB();                                                          /* Ensure completion of memory access */
 
   for(;;)                                                           /* wait until reset */
@@ -2552,11 +2552,11 @@ __STATIC_INLINE void SCB_CleanInvalidateDCache_by_Addr (uint32_t *addr, int32_t 
 
 /**
   \brief   System Tick Configuration
-  \details Initializes the System Timer and its interrupt, and starts the System Tick Timer.
+  \details Initializes the System 定时器 and its interrupt, and starts the System Tick 定时器.
            Counter is in free running mode to generate periodic interrupts.
   \param [in]  ticks  Number of ticks between two interrupts.
-  \return          0  Function succeeded.
-  \return          1  Function failed.
+  \return          0  函数执行成功.
+  \return          1  函数执行失败.
   \note    When the variable <b>__Vendor_SysTickConfig</b> is set to 1, then the
            function <b>SysTick_Config</b> is not included. In this case, the file <b><i>device</i>.h</b>
            must contain a vendor-specific implementation of this function.
@@ -2573,7 +2573,7 @@ __STATIC_INLINE uint32_t SysTick_Config(uint32_t ticks)
   SysTick->VAL   = 0UL;                                             /* Load the SysTick Counter Value */
   SysTick->CTRL  = SysTick_CTRL_CLKSOURCE_Msk |
                    SysTick_CTRL_TICKINT_Msk   |
-                   SysTick_CTRL_ENABLE_Msk;                         /* Enable SysTick IRQ and SysTick Timer */
+                   SysTick_CTRL_ENABLE_Msk;                         /* Enable SysTick IRQ and SysTick 定时器 */
   return (0UL);                                                     /* Function successful */
 }
 

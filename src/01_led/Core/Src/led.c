@@ -7,18 +7,18 @@
 
 
 // led 引脚数组
- uint16_t leds[] = {
-    LED_RED_PIN,
-    LED_GREEN_PIN,
-    LED_BLUE_PIN,
+uint16_t leds[] = {
+    led1_Pin,
+    led2_Pin,
+    led3_Pin,
 };
 
 // led 流水灯控制顺序 1 -> 2 -> 3 -> 2 -> 1
 uint16_t led_order[] = {
-    LED_RED_PIN,
-    LED_GREEN_PIN,
-    LED_BLUE_PIN,
-    LED_GREEN_PIN
+    led1_Pin,
+    led2_Pin,
+    led3_Pin,
+    led2_Pin
 };
 
 // led初始化
@@ -38,8 +38,6 @@ void led_start(void)
         HAL_GPIO_TogglePin(GPIOA, led_order[i]);
         HAL_Delay(500);
     }
-    
-
 }
 
 
@@ -52,6 +50,17 @@ void led_stop(void)
         HAL_GPIO_WritePin(GPIOA, leds[i], GPIO_PIN_RESET);
     }
 }
+
+void led_on_by_index(const int index)
+{
+    HAL_GPIO_WritePin(GPIOA, leds[index], GPIO_PIN_RESET);
+}
+
+void led_off_by_index(const int index)
+{
+    HAL_GPIO_WritePin(GPIOA, leds[index], GPIO_PIN_SET);
+}
+
 
 
 

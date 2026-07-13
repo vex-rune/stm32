@@ -1,6 +1,6 @@
 /**************************************************************************//**
  * @file     cmsis_iccarm.h
- * @brief    CMSIS compiler ICCARM (IAR Compiler for Arm) header file
+ * @brief    CMSIS compiler ICCARM (IAR Compiler for Arm) 头文件
  * @version  V5.0.7
  * @date     19. June 2018
  ******************************************************************************/

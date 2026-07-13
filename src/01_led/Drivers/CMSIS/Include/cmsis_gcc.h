@@ -1,6 +1,6 @@
 /**************************************************************************//**
  * @file     cmsis_gcc.h
- * @brief    CMSIS compiler GCC header file
+ * @brief    CMSIS compiler GCC 头文件
  * @version  V5.0.4
  * @date     09. April 2018
  ******************************************************************************/
@@ -115,16 +115,16 @@
 #endif
 
 
-/* ###########################  Core Function Access  ########################### */
+/* ###########################  内核函数访问  ########################### */
 /** \ingroup  CMSIS_Core_FunctionInterface
-    \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+    \defgroup CMSIS_Core_RegAccFunctions CMSIS 内核寄存器 Access Functions
   @{
  */
 
 /**
-  \brief   Enable IRQ Interrupts
-  \details Enables IRQ interrupts by clearing the I-bit in the CPSR.
-           Can only be executed in Privileged modes.
+  \brief   使能 IRQ 中断
+  \details 通过清除 CPSR（当前程序状态寄存器）中的 I 位来使能 IRQ 中断。
+           只能在特权模式下执行。
  */
 __STATIC_FORCEINLINE void __enable_irq(void)
 {
@@ -133,9 +133,9 @@ __STATIC_FORCEINLINE void __enable_irq(void)
 
 
 /**
-  \brief   Disable IRQ Interrupts
-  \details Disables IRQ interrupts by setting the I-bit in the CPSR.
-           Can only be executed in Privileged modes.
+  \brief   关闭 IRQ 中断
+  \details 通过置位 CPSR 中的 I 位来关闭 IRQ 中断。
+           只能在特权模式下执行。
  */
 __STATIC_FORCEINLINE void __disable_irq(void)
 {
@@ -144,9 +144,9 @@ __STATIC_FORCEINLINE void __disable_irq(void)
 
 
 /**
-  \brief   Get Control Register
-  \details Returns the content of the Control Register.
-  \return               Control Register value
+  \brief   读取 Control 寄存器
+  \details 返回 Control（控制）寄存器的值。
+  \return               Control 寄存器的值
  */
 __STATIC_FORCEINLINE uint32_t __get_CONTROL(void)
 {
@@ -159,9 +159,9 @@ __STATIC_FORCEINLINE uint32_t __get_CONTROL(void)
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
-  \brief   Get Control Register (non-secure)
-  \details Returns the content of the non-secure Control Register when in secure mode.
-  \return               non-secure Control Register value
+  \brief   读取非安全 Control 寄存器
+  \details 在安全模式下返回非安全 Control 寄存器的值。
+  \return               non-secure Control 寄存器的值
  */
 __STATIC_FORCEINLINE uint32_t __TZ_get_CONTROL_NS(void)
 {
@@ -174,9 +174,9 @@ __STATIC_FORCEINLINE uint32_t __TZ_get_CONTROL_NS(void)
 
 
 /**
-  \brief   Set Control Register
-  \details Writes the given value to the Control Register.
-  \param [in]    control  Control Register value to set
+  \brief   设置 Control 寄存器
+  \details 把指定的值写入 Control 寄存器。
+  \param [in]    control  要写入 Control 寄存器的值
  */
 __STATIC_FORCEINLINE void __set_CONTROL(uint32_t control)
 {
@@ -186,9 +186,9 @@ __STATIC_FORCEINLINE void __set_CONTROL(uint32_t control)
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
-  \brief   Set Control Register (non-secure)
-  \details Writes the given value to the non-secure Control Register when in secure state.
-  \param [in]    control  Control Register value to set
+  \brief   设置非安全 Control 寄存器
+  \details 在安全状态下把指定的值写入非安全 Control 寄存器。
+  \param [in]    control  要写入 Control 寄存器的值
  */
 __STATIC_FORCEINLINE void __TZ_set_CONTROL_NS(uint32_t control)
 {
@@ -198,9 +198,9 @@ __STATIC_FORCEINLINE void __TZ_set_CONTROL_NS(uint32_t control)
 
 
 /**
-  \brief   Get IPSR Register
-  \details Returns the content of the IPSR Register.
-  \return               IPSR Register value
+  \brief   读取 IPSR 寄存器
+  \details 返回 IPSR（中断程序状态寄存器）的值。
+  \return               IPSR 寄存器的值
  */
 __STATIC_FORCEINLINE uint32_t __get_IPSR(void)
 {
@@ -212,9 +212,9 @@ __STATIC_FORCEINLINE uint32_t __get_IPSR(void)
 
 
 /**
-  \brief   Get APSR Register
-  \details Returns the content of the APSR Register.
-  \return               APSR Register value
+  \brief   读取 APSR 寄存器
+  \details 返回 APSR（应用程序状态寄存器）的值。
+  \return               APSR 寄存器的值
  */
 __STATIC_FORCEINLINE uint32_t __get_APSR(void)
 {
@@ -226,9 +226,9 @@ __STATIC_FORCEINLINE uint32_t __get_APSR(void)
 
 
 /**
-  \brief   Get xPSR Register
-  \details Returns the content of the xPSR Register.
-  \return               xPSR Register value
+  \brief   读取 xPSR 寄存器
+  \details 返回 xPSR（组合程序状态寄存器）的值。
+  \return               xPSR 寄存器的值
  */
 __STATIC_FORCEINLINE uint32_t __get_xPSR(void)
 {
@@ -240,9 +240,9 @@ __STATIC_FORCEINLINE uint32_t __get_xPSR(void)
 
 
 /**
-  \brief   Get Process Stack Pointer
-  \details Returns the current value of the Process Stack Pointer (PSP).
-  \return               PSP Register value
+  \brief   读取进程栈指针
+  \details 返回进程栈指针 PSP（Process Stack Pointer）的当前值。
+  \return               PSP 寄存器的值
  */
 __STATIC_FORCEINLINE uint32_t __get_PSP(void)
 {
@@ -255,9 +255,9 @@ __STATIC_FORCEINLINE uint32_t __get_PSP(void)
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
-  \brief   Get Process Stack Pointer (non-secure)
-  \details Returns the current value of the non-secure Process Stack Pointer (PSP) when in secure state.
-  \return               PSP Register value
+  \brief   读取非安全进程栈指针
+  \details 在安全状态下返回非安全进程栈指针 PSP 的当前值。
+  \return               PSP 寄存器的值
  */
 __STATIC_FORCEINLINE uint32_t __TZ_get_PSP_NS(void)
 {
@@ -270,9 +270,9 @@ __STATIC_FORCEINLINE uint32_t __TZ_get_PSP_NS(void)
 
 
 /**
-  \brief   Set Process Stack Pointer
-  \details Assigns the given value to the Process Stack Pointer (PSP).
-  \param [in]    topOfProcStack  Process Stack Pointer value to set
+  \brief   设置进程栈指针
+  \details 把指定的值赋给进程栈指针 PSP。
+  \param [in]    topOfProcStack  要写入 PSP 的值
  */
 __STATIC_FORCEINLINE void __set_PSP(uint32_t topOfProcStack)
 {
@@ -282,9 +282,9 @@ __STATIC_FORCEINLINE void __set_PSP(uint32_t topOfProcStack)
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
-  \brief   Set Process Stack Pointer (non-secure)
-  \details Assigns the given value to the non-secure Process Stack Pointer (PSP) when in secure state.
-  \param [in]    topOfProcStack  Process Stack Pointer value to set
+  \brief   设置非安全进程栈指针
+  \details 在安全状态下把指定的值赋给非安全进程栈指针 PSP。
+  \param [in]    topOfProcStack  要写入 PSP 的值
  */
 __STATIC_FORCEINLINE void __TZ_set_PSP_NS(uint32_t topOfProcStack)
 {
@@ -294,9 +294,9 @@ __STATIC_FORCEINLINE void __TZ_set_PSP_NS(uint32_t topOfProcStack)
 
 
 /**
-  \brief   Get Main Stack Pointer
-  \details Returns the current value of the Main Stack Pointer (MSP).
-  \return               MSP Register value
+  \brief   读取主栈指针
+  \details 返回主栈指针 MSP（Main Stack Pointer）的当前值。
+  \return               MSP 寄存器的值
  */
 __STATIC_FORCEINLINE uint32_t __get_MSP(void)
 {
@@ -309,9 +309,9 @@ __STATIC_FORCEINLINE uint32_t __get_MSP(void)
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
-  \brief   Get Main Stack Pointer (non-secure)
-  \details Returns the current value of the non-secure Main Stack Pointer (MSP) when in secure state.
-  \return               MSP Register value
+  \brief   读取非安全主栈指针
+  \details 在安全状态下返回非安全主栈指针 MSP 的当前值。
+  \return               MSP 寄存器的值
  */
 __STATIC_FORCEINLINE uint32_t __TZ_get_MSP_NS(void)
 {
@@ -324,9 +324,9 @@ __STATIC_FORCEINLINE uint32_t __TZ_get_MSP_NS(void)
 
 
 /**
-  \brief   Set Main Stack Pointer
-  \details Assigns the given value to the Main Stack Pointer (MSP).
-  \param [in]    topOfMainStack  Main Stack Pointer value to set
+  \brief   设置主栈指针
+  \details 把指定的值赋给主栈指针 MSP。
+  \param [in]    topOfMainStack  要写入 MSP 的值
  */
 __STATIC_FORCEINLINE void __set_MSP(uint32_t topOfMainStack)
 {
@@ -336,9 +336,9 @@ __STATIC_FORCEINLINE void __set_MSP(uint32_t topOfMainStack)
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
-  \brief   Set Main Stack Pointer (non-secure)
-  \details Assigns the given value to the non-secure Main Stack Pointer (MSP) when in secure state.
-  \param [in]    topOfMainStack  Main Stack Pointer value to set
+  \brief   设置非安全主栈指针
+  \details 在安全状态下把指定的值赋给非安全主栈指针 MSP。
+  \param [in]    topOfMainStack  要写入 MSP 的值
  */
 __STATIC_FORCEINLINE void __TZ_set_MSP_NS(uint32_t topOfMainStack)
 {
@@ -349,9 +349,9 @@ __STATIC_FORCEINLINE void __TZ_set_MSP_NS(uint32_t topOfMainStack)
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
-  \brief   Get Stack Pointer (non-secure)
-  \details Returns the current value of the non-secure Stack Pointer (SP) when in secure state.
-  \return               SP Register value
+  \brief   读取非安全栈指针
+  \details 在安全状态下返回非安全栈指针 SP 的当前值。
+  \return               SP 寄存器的值
  */
 __STATIC_FORCEINLINE uint32_t __TZ_get_SP_NS(void)
 {
@@ -363,9 +363,9 @@ __STATIC_FORCEINLINE uint32_t __TZ_get_SP_NS(void)
 
 
 /**
-  \brief   Set Stack Pointer (non-secure)
-  \details Assigns the given value to the non-secure Stack Pointer (SP) when in secure state.
-  \param [in]    topOfStack  Stack Pointer value to set
+  \brief   设置非安全栈指针
+  \details 在安全状态下把指定的值赋给非安全栈指针 SP。
+  \param [in]    topOfStack  要写入 SP 的值
  */
 __STATIC_FORCEINLINE void __TZ_set_SP_NS(uint32_t topOfStack)
 {
@@ -375,9 +375,9 @@ __STATIC_FORCEINLINE void __TZ_set_SP_NS(uint32_t topOfStack)
 
 
 /**
-  \brief   Get Priority Mask
-  \details Returns the current state of the priority mask bit from the Priority Mask Register.
-  \return               Priority Mask value
+  \brief   读取优先级屏蔽位
+  \details 返回优先级屏蔽寄存器（优先级屏蔽值 Register）中当前优先级屏蔽位的状态。
+  \return               优先级屏蔽值
  */
 __STATIC_FORCEINLINE uint32_t __get_PRIMASK(void)
 {
@@ -390,9 +390,9 @@ __STATIC_FORCEINLINE uint32_t __get_PRIMASK(void)
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
-  \brief   Get Priority Mask (non-secure)
-  \details Returns the current state of the non-secure priority mask bit from the Priority Mask Register when in secure state.
-  \return               Priority Mask value
+  \brief   读取非安全优先级屏蔽位
+  \details 在安全状态下返回非安全优先级屏蔽寄存器中当前优先级屏蔽位的状态。
+  \return               优先级屏蔽值
  */
 __STATIC_FORCEINLINE uint32_t __TZ_get_PRIMASK_NS(void)
 {
@@ -405,9 +405,9 @@ __STATIC_FORCEINLINE uint32_t __TZ_get_PRIMASK_NS(void)
 
 
 /**
-  \brief   Set Priority Mask
-  \details Assigns the given value to the Priority Mask Register.
-  \param [in]    priMask  Priority Mask
+  \brief   设置优先级屏蔽位
+  \details 把指定的值赋给优先级屏蔽寄存器。
+  \param [in]    priMask  优先级屏蔽值
  */
 __STATIC_FORCEINLINE void __set_PRIMASK(uint32_t priMask)
 {
@@ -417,9 +417,9 @@ __STATIC_FORCEINLINE void __set_PRIMASK(uint32_t priMask)
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
-  \brief   Set Priority Mask (non-secure)
-  \details Assigns the given value to the non-secure Priority Mask Register when in secure state.
-  \param [in]    priMask  Priority Mask
+  \brief   设置非安全优先级屏蔽位
+  \details 在安全状态下把指定的值赋给非安全优先级屏蔽寄存器。
+  \param [in]    priMask  优先级屏蔽值
  */
 __STATIC_FORCEINLINE void __TZ_set_PRIMASK_NS(uint32_t priMask)
 {
@@ -432,9 +432,9 @@ __STATIC_FORCEINLINE void __TZ_set_PRIMASK_NS(uint32_t priMask)
      (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
      (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1))    )
 /**
-  \brief   Enable FIQ
-  \details Enables FIQ interrupts by clearing the F-bit in the CPSR.
-           Can only be executed in Privileged modes.
+  \brief   使能 FIQ 中断
+  \details 通过清除 CPSR 中的 F 位来使能 FIQ 中断。
+           只能在特权模式下执行。
  */
 __STATIC_FORCEINLINE void __enable_fault_irq(void)
 {
@@ -443,9 +443,9 @@ __STATIC_FORCEINLINE void __enable_fault_irq(void)
 
 
 /**
-  \brief   Disable FIQ
-  \details Disables FIQ interrupts by setting the F-bit in the CPSR.
-           Can only be executed in Privileged modes.
+  \brief   关闭 FIQ 中断
+  \details 通过置位 CPSR 中的 F 位来关闭 FIQ 中断。
+           只能在特权模式下执行。
  */
 __STATIC_FORCEINLINE void __disable_fault_irq(void)
 {
@@ -454,9 +454,9 @@ __STATIC_FORCEINLINE void __disable_fault_irq(void)
 
 
 /**
-  \brief   Get Base Priority
-  \details Returns the current value of the Base Priority register.
-  \return               Base Priority register value
+  \brief   读取 BASEPRI 寄存器
+  \details 返回 Base Priority（基础优先级）寄存器的当前值。
+  \return               Base Priority 寄存器的值
  */
 __STATIC_FORCEINLINE uint32_t __get_BASEPRI(void)
 {
@@ -469,9 +469,9 @@ __STATIC_FORCEINLINE uint32_t __get_BASEPRI(void)
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
-  \brief   Get Base Priority (non-secure)
-  \details Returns the current value of the non-secure Base Priority register when in secure state.
-  \return               Base Priority register value
+  \brief   读取非安全 BASEPRI 寄存器
+  \details 在安全状态下返回非安全 Base Priority 寄存器的当前值。
+  \return               Base Priority 寄存器的值
  */
 __STATIC_FORCEINLINE uint32_t __TZ_get_BASEPRI_NS(void)
 {
@@ -484,9 +484,9 @@ __STATIC_FORCEINLINE uint32_t __TZ_get_BASEPRI_NS(void)
 
 
 /**
-  \brief   Set Base Priority
-  \details Assigns the given value to the Base Priority register.
-  \param [in]    basePri  Base Priority value to set
+  \brief   设置 BASEPRI 寄存器
+  \details 把指定的值赋给 Base Priority 寄存器。
+  \param [in]    basePri  要写入 Base Priority 寄存器的值
  */
 __STATIC_FORCEINLINE void __set_BASEPRI(uint32_t basePri)
 {
@@ -496,9 +496,9 @@ __STATIC_FORCEINLINE void __set_BASEPRI(uint32_t basePri)
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
-  \brief   Set Base Priority (non-secure)
-  \details Assigns the given value to the non-secure Base Priority register when in secure state.
-  \param [in]    basePri  Base Priority value to set
+  \brief   设置非安全 BASEPRI 寄存器
+  \details 在安全状态下把指定的值赋给非安全 Base Priority 寄存器。
+  \param [in]    basePri  要写入 Base Priority 寄存器的值
  */
 __STATIC_FORCEINLINE void __TZ_set_BASEPRI_NS(uint32_t basePri)
 {
@@ -508,10 +508,10 @@ __STATIC_FORCEINLINE void __TZ_set_BASEPRI_NS(uint32_t basePri)
 
 
 /**
-  \brief   Set Base Priority with condition
-  \details Assigns the given value to the Base Priority register only if BASEPRI masking is disabled,
-           or the new value increases the BASEPRI priority level.
-  \param [in]    basePri  Base Priority value to set
+  \brief   设置 BASEPRI 寄存器 with condition
+  \details 只有当 BASEPRI 屏蔽被关闭时，才把给定值赋给 Base Priority 寄存器，
+           或者新值会提升 BASEPRI 优先级。
+  \param [in]    basePri  要写入 Base Priority 寄存器的值
  */
 __STATIC_FORCEINLINE void __set_BASEPRI_MAX(uint32_t basePri)
 {
@@ -520,9 +520,9 @@ __STATIC_FORCEINLINE void __set_BASEPRI_MAX(uint32_t basePri)
 
 
 /**
-  \brief   Get Fault Mask
-  \details Returns the current value of the Fault Mask register.
-  \return               Fault Mask register value
+  \brief   读取 FAULTMASK 寄存器
+  \details 返回 Fault Mask（异常屏蔽）寄存器的当前值。
+  \return               Fault Mask 寄存器的值
  */
 __STATIC_FORCEINLINE uint32_t __get_FAULTMASK(void)
 {
@@ -535,9 +535,9 @@ __STATIC_FORCEINLINE uint32_t __get_FAULTMASK(void)
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
-  \brief   Get Fault Mask (non-secure)
-  \details Returns the current value of the non-secure Fault Mask register when in secure state.
-  \return               Fault Mask register value
+  \brief   读取非安全 FAULTMASK 寄存器
+  \details 在安全状态下返回非安全 Fault Mask 寄存器的当前值。
+  \return               Fault Mask 寄存器的值
  */
 __STATIC_FORCEINLINE uint32_t __TZ_get_FAULTMASK_NS(void)
 {
@@ -550,9 +550,9 @@ __STATIC_FORCEINLINE uint32_t __TZ_get_FAULTMASK_NS(void)
 
 
 /**
-  \brief   Set Fault Mask
-  \details Assigns the given value to the Fault Mask register.
-  \param [in]    faultMask  Fault Mask value to set
+  \brief   设置 FAULTMASK 寄存器
+  \details 把指定的值赋给 Fault Mask 寄存器。
+  \param [in]    faultMask  Fault Mask 的值
  */
 __STATIC_FORCEINLINE void __set_FAULTMASK(uint32_t faultMask)
 {
@@ -562,9 +562,9 @@ __STATIC_FORCEINLINE void __set_FAULTMASK(uint32_t faultMask)
 
 #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
 /**
-  \brief   Set Fault Mask (non-secure)
-  \details Assigns the given value to the non-secure Fault Mask register when in secure state.
-  \param [in]    faultMask  Fault Mask value to set
+  \brief   设置非安全 FAULTMASK 寄存器
+  \details 在安全状态下把指定的值赋给非安全 Fault Mask 寄存器。
+  \param [in]    faultMask  Fault Mask 的值
  */
 __STATIC_FORCEINLINE void __TZ_set_FAULTMASK_NS(uint32_t faultMask)
 {
@@ -581,13 +581,13 @@ __STATIC_FORCEINLINE void __TZ_set_FAULTMASK_NS(uint32_t faultMask)
      (defined (__ARM_ARCH_8M_BASE__ ) && (__ARM_ARCH_8M_BASE__ == 1))    )
 
 /**
-  \brief   Get Process Stack Pointer Limit
-  Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
-  Stack Pointer Limit register hence zero is returned always in non-secure
-  mode.
+  \brief   读取进程栈指针 Limit
+  不支持 ARMv8-M Main Extensions 的设备（如 Cortex-M23）没有非安全的
+  栈指针限制寄存器，因此在非安全模式下总是返回 0。
+  模式。
   
-  \details Returns the current value of the Process Stack Pointer Limit (PSPLIM).
-  \return               PSPLIM Register value
+  \details 返回进程栈指针限制 PSPLIM（Process Stack Pointer Limit）的当前值。
+  \return               PSPLIM 寄存器的值
  */
 __STATIC_FORCEINLINE uint32_t __get_PSPLIM(void)
 {
@@ -604,12 +604,12 @@ __STATIC_FORCEINLINE uint32_t __get_PSPLIM(void)
 
 #if (defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3))
 /**
-  \brief   Get Process Stack Pointer Limit (non-secure)
-  Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
-  Stack Pointer Limit register hence zero is returned always.
+  \brief   读取非安全 PSPLIM 寄存器
+  不支持 ARMv8-M Main Extensions 的设备（如 Cortex-M23）没有非安全的
+  栈指针限制寄存器，因此总是返回 0。
 
-  \details Returns the current value of the non-secure Process Stack Pointer Limit (PSPLIM) when in secure state.
-  \return               PSPLIM Register value
+  \details 在安全状态下返回非安全进程栈指针限制 PSPLIM 的当前值。
+  \return               PSPLIM 寄存器的值
  */
 __STATIC_FORCEINLINE uint32_t __TZ_get_PSPLIM_NS(void)
 {
@@ -626,13 +626,13 @@ __STATIC_FORCEINLINE uint32_t __TZ_get_PSPLIM_NS(void)
 
 
 /**
-  \brief   Set Process Stack Pointer Limit
-  Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
-  Stack Pointer Limit register hence the write is silently ignored in non-secure
-  mode.
+  \brief   设置进程栈指针 Limit
+  不支持 ARMv8-M Main Extensions 的设备（如 Cortex-M23）没有非安全的
+  栈指针限制寄存器，因此在非安全模式下写入会被静默忽略。
+  模式。
   
-  \details Assigns the given value to the Process Stack Pointer Limit (PSPLIM).
-  \param [in]    ProcStackPtrLimit  Process Stack Pointer Limit value to set
+  \details 把指定的值赋给进程栈指针限制 PSPLIM。
+  \param [in]    ProcStackPtrLimit  要写入进程栈指针限制寄存器的值
  */
 __STATIC_FORCEINLINE void __set_PSPLIM(uint32_t ProcStackPtrLimit)
 {
@@ -648,12 +648,12 @@ __STATIC_FORCEINLINE void __set_PSPLIM(uint32_t ProcStackPtrLimit)
 
 #if (defined (__ARM_FEATURE_CMSE  ) && (__ARM_FEATURE_CMSE   == 3))
 /**
-  \brief   Set Process Stack Pointer (non-secure)
-  Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
-  Stack Pointer Limit register hence the write is silently ignored.
+  \brief   设置非安全进程栈指针
+  不支持 ARMv8-M Main Extensions 的设备（如 Cortex-M23）没有非安全的
+  栈指针限制寄存器，因此写入会被静默忽略。
 
-  \details Assigns the given value to the non-secure Process Stack Pointer Limit (PSPLIM) when in secure state.
-  \param [in]    ProcStackPtrLimit  Process Stack Pointer Limit value to set
+  \details 在安全状态下把指定的值赋给非安全进程栈指针限制 PSPLIM。
+  \param [in]    ProcStackPtrLimit  要写入进程栈指针限制寄存器的值
  */
 __STATIC_FORCEINLINE void __TZ_set_PSPLIM_NS(uint32_t ProcStackPtrLimit)
 {
@@ -668,13 +668,13 @@ __STATIC_FORCEINLINE void __TZ_set_PSPLIM_NS(uint32_t ProcStackPtrLimit)
 
 
 /**
-  \brief   Get Main Stack Pointer Limit
-  Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
-  Stack Pointer Limit register hence zero is returned always in non-secure
-  mode.
+  \brief   读取主栈指针 Limit
+  不支持 ARMv8-M Main Extensions 的设备（如 Cortex-M23）没有非安全的
+  栈指针限制寄存器，因此在非安全模式下总是返回 0。
+  模式。
 
-  \details Returns the current value of the Main Stack Pointer Limit (MSPLIM).
-  \return               MSPLIM Register value
+  \details 返回主栈指针限制 MSPLIM（Main Stack Pointer Limit）的当前值。
+  \return               MSPLIM 寄存器的值
  */
 __STATIC_FORCEINLINE uint32_t __get_MSPLIM(void)
 {
@@ -692,12 +692,12 @@ __STATIC_FORCEINLINE uint32_t __get_MSPLIM(void)
 
 #if (defined (__ARM_FEATURE_CMSE  ) && (__ARM_FEATURE_CMSE   == 3))
 /**
-  \brief   Get Main Stack Pointer Limit (non-secure)
-  Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
-  Stack Pointer Limit register hence zero is returned always.
+  \brief   读取非安全 MSPLIM 寄存器
+  不支持 ARMv8-M Main Extensions 的设备（如 Cortex-M23）没有非安全的
+  栈指针限制寄存器，因此总是返回 0。
 
-  \details Returns the current value of the non-secure Main Stack Pointer Limit(MSPLIM) when in secure state.
-  \return               MSPLIM Register value
+  \details 在安全状态下返回非安全主栈指针限制 MSPLIM 的当前值。
+  \return               MSPLIM 寄存器的值
  */
 __STATIC_FORCEINLINE uint32_t __TZ_get_MSPLIM_NS(void)
 {
@@ -714,13 +714,13 @@ __STATIC_FORCEINLINE uint32_t __TZ_get_MSPLIM_NS(void)
 
 
 /**
-  \brief   Set Main Stack Pointer Limit
-  Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
-  Stack Pointer Limit register hence the write is silently ignored in non-secure
-  mode.
+  \brief   设置 MSPLIM 寄存器
+  不支持 ARMv8-M Main Extensions 的设备（如 Cortex-M23）没有非安全的
+  栈指针限制寄存器，因此在非安全模式下写入会被静默忽略。
+  模式。
 
-  \details Assigns the given value to the Main Stack Pointer Limit (MSPLIM).
-  \param [in]    MainStackPtrLimit  Main Stack Pointer Limit value to set
+  \details 把指定的值赋给主栈指针限制 MSPLIM。
+  \param [in]    MainStackPtrLimit  要写入主栈指针限制寄存器的值
  */
 __STATIC_FORCEINLINE void __set_MSPLIM(uint32_t MainStackPtrLimit)
 {
@@ -736,12 +736,12 @@ __STATIC_FORCEINLINE void __set_MSPLIM(uint32_t MainStackPtrLimit)
 
 #if (defined (__ARM_FEATURE_CMSE  ) && (__ARM_FEATURE_CMSE   == 3))
 /**
-  \brief   Set Main Stack Pointer Limit (non-secure)
-  Devices without ARMv8-M Main Extensions (i.e. Cortex-M23) lack the non-secure
-  Stack Pointer Limit register hence the write is silently ignored.
+  \brief   设置非安全 MSPLIM 寄存器
+  不支持 ARMv8-M Main Extensions 的设备（如 Cortex-M23）没有非安全的
+  栈指针限制寄存器，因此写入会被静默忽略。
 
-  \details Assigns the given value to the non-secure Main Stack Pointer Limit (MSPLIM) when in secure state.
-  \param [in]    MainStackPtrLimit  Main Stack Pointer value to set
+  \details 在安全状态下把指定的值赋给非安全主栈指针限制 MSPLIM。
+  \param [in]    MainStackPtrLimit  要写入 MSP 的值
  */
 __STATIC_FORCEINLINE void __TZ_set_MSPLIM_NS(uint32_t MainStackPtrLimit)
 {
@@ -759,9 +759,9 @@ __STATIC_FORCEINLINE void __TZ_set_MSPLIM_NS(uint32_t MainStackPtrLimit)
 
 
 /**
-  \brief   Get FPSCR
-  \details Returns the current value of the Floating Point Status/Control register.
-  \return               Floating Point Status/Control register value
+  \brief   读取 FPSCR 寄存器
+  \details 返回 Floating Point Status/Control（浮点状态/控制）寄存器的当前值。
+  \return               浮点状态/控制寄存器的值
  */
 __STATIC_FORCEINLINE uint32_t __get_FPSCR(void)
 {
@@ -785,9 +785,9 @@ __STATIC_FORCEINLINE uint32_t __get_FPSCR(void)
 
 
 /**
-  \brief   Set FPSCR
-  \details Assigns the given value to the Floating Point Status/Control register.
-  \param [in]    fpscr  Floating Point Status/Control value to set
+  \brief   设置 FPSCR 寄存器
+  \details 把指定的值赋给 Floating Point Status/Control 寄存器。
+  \param [in]    fpscr  要写入的浮点状态/控制寄存器的值
  */
 __STATIC_FORCEINLINE void __set_FPSCR(uint32_t fpscr)
 {
@@ -810,9 +810,9 @@ __STATIC_FORCEINLINE void __set_FPSCR(uint32_t fpscr)
 /*@} end of CMSIS_Core_RegAccFunctions */
 
 
-/* ##########################  Core Instruction Access  ######################### */
+/* ##########################  内核指令访问  ######################### */
 /** \defgroup CMSIS_Core_InstructionInterface CMSIS Core Instruction Interface
-  Access to dedicated instructions
+  访问专用指令
   @{
 */
 
@@ -830,38 +830,38 @@ __STATIC_FORCEINLINE void __set_FPSCR(uint32_t fpscr)
 #endif
 
 /**
-  \brief   No Operation
-  \details No Operation does nothing. This instruction can be used for code alignment purposes.
+  \brief   空操作
+  \details 空操作（NOP）什么也不做。该指令可用于代码对齐。
  */
 #define __NOP()                             __ASM volatile ("nop")
 
 /**
-  \brief   Wait For Interrupt
-  \details Wait For Interrupt is a hint instruction that suspends execution until one of a number of events occurs.
+  \brief   等待中断
+  \details 等待中断（WFI）是一条提示指令，它暂停执行直到某一事件发生。
  */
 #define __WFI()                             __ASM volatile ("wfi")
 
 
 /**
-  \brief   Wait For Event
-  \details Wait For Event is a hint instruction that permits the processor to enter
-           a low-power state until one of a number of events occurs.
+  \brief   等待事件
+  \details 等待事件（WFE）是一条提示指令，它允许处理器进入
+           低功耗状态，直到某一事件发生。
  */
 #define __WFE()                             __ASM volatile ("wfe")
 
 
 /**
-  \brief   Send Event
-  \details Send Event is a hint instruction. It causes an event to be signaled to the CPU.
+  \brief   发送事件
+  \details 发送事件（SEV）是一条提示指令，它会向 CPU 发出一个事件信号。
  */
 #define __SEV()                             __ASM volatile ("sev")
 
 
 /**
-  \brief   Instruction Synchronization Barrier
-  \details Instruction Synchronization Barrier flushes the pipeline in the processor,
-           so that all instructions following the ISB are fetched from cache or memory,
-           after the instruction has been completed.
+  \brief   指令同步屏障
+  \details 指令同步屏障（ISB）会清空处理器流水线，
+           使 ISB 之后的所有指令都从 cache 或内存中重新取指，
+           直到该指令执行完成。
  */
 __STATIC_FORCEINLINE void __ISB(void)
 {
@@ -870,9 +870,9 @@ __STATIC_FORCEINLINE void __ISB(void)
 
 
 /**
-  \brief   Data Synchronization Barrier
-  \details Acts as a special kind of Data Memory Barrier.
-           It completes when all explicit memory accesses before this instruction complete.
+  \brief   数据同步屏障
+  \details 它是一种特殊的数据内存屏障（数据内存屏障）。
+           只有当该指令之前的所有显式内存访问都完成时，它才完成。
  */
 __STATIC_FORCEINLINE void __DSB(void)
 {
@@ -881,9 +881,9 @@ __STATIC_FORCEINLINE void __DSB(void)
 
 
 /**
-  \brief   Data Memory Barrier
-  \details Ensures the apparent order of the explicit memory operations before
-           and after the instruction, without ensuring their completion.
+  \brief   数据内存屏障
+  \details 保证指令前后显式内存操作看上去是有序的，
+           但并不保证它们一定完成。
  */
 __STATIC_FORCEINLINE void __DMB(void)
 {
@@ -892,10 +892,10 @@ __STATIC_FORCEINLINE void __DMB(void)
 
 
 /**
-  \brief   Reverse byte order (32 bit)
-  \details Reverses the byte order in unsigned integer value. For example, 0x12345678 becomes 0x78563412.
-  \param [in]    value  Value to reverse
-  \return               Reversed value
+  \brief   字节序反转（32 位）
+  \details 把一个无符号整数的字节顺序反转。例如 0x12345678 变为 0x78563412。
+  \param [in]    value  需要反转的值
+  \return               反转后的值
  */
 __STATIC_FORCEINLINE uint32_t __REV(uint32_t value)
 {
@@ -911,10 +911,10 @@ __STATIC_FORCEINLINE uint32_t __REV(uint32_t value)
 
 
 /**
-  \brief   Reverse byte order (16 bit)
-  \details Reverses the byte order within each halfword of a word. For example, 0x12345678 becomes 0x34127856.
-  \param [in]    value  Value to reverse
-  \return               Reversed value
+  \brief   字节序反转（16 位）
+  \details 把一个字中每个半字的字节顺序反转。例如 0x12345678 变为 0x34127856。
+  \param [in]    value  需要反转的值
+  \return               反转后的值
  */
 __STATIC_FORCEINLINE uint32_t __REV16(uint32_t value)
 {
@@ -926,10 +926,10 @@ __STATIC_FORCEINLINE uint32_t __REV16(uint32_t value)
 
 
 /**
-  \brief   Reverse byte order (16 bit)
-  \details Reverses the byte order in a 16-bit value and returns the signed 16-bit result. For example, 0x0080 becomes 0x8000.
-  \param [in]    value  Value to reverse
-  \return               Reversed value
+  \brief   字节序反转（16 位）
+  \details 反转一个 16 位值的字节顺序，并返回带符号 16 位结果。例如 0x0080 变为 0x8000。
+  \param [in]    value  需要反转的值
+  \return               反转后的值
  */
 __STATIC_FORCEINLINE int16_t __REVSH(int16_t value)
 {
@@ -945,11 +945,11 @@ __STATIC_FORCEINLINE int16_t __REVSH(int16_t value)
 
 
 /**
-  \brief   Rotate Right in unsigned value (32 bit)
-  \details Rotate Right (immediate) provides the value of the contents of a register rotated by a variable number of bits.
-  \param [in]    op1  Value to rotate
-  \param [in]    op2  Number of Bits to rotate
-  \return               Rotated value
+  \brief   无符号值循环右移（32 位）
+  \details 循环右移（立即数）将寄存器的内容按变量指定的位数循环右移。
+  \param [in]    op1  要循环移位的值
+  \param [in]    op2  循环移位的位数
+  \return               循环移位后的值
  */
 __STATIC_FORCEINLINE uint32_t __ROR(uint32_t op1, uint32_t op2)
 {
@@ -963,20 +963,20 @@ __STATIC_FORCEINLINE uint32_t __ROR(uint32_t op1, uint32_t op2)
 
 
 /**
-  \brief   Breakpoint
-  \details Causes the processor to enter Debug state.
-           Debug tools can use this to investigate system state when the instruction at a particular address is reached.
-  \param [in]    value  is ignored by the processor.
-                 If required, a debugger can use it to store additional information about the breakpoint.
+  \brief   断点
+  \details 使处理器进入调试状态。
+           当执行到指定地址的指令时，调试工具可以利用它来检查系统状态。
+  \param [in]    value  被处理器忽略。
+                 如果需要，调试器可以用它来存储关于断点的额外信息。
  */
 #define __BKPT(value)                       __ASM volatile ("bkpt "#value)
 
 
 /**
-  \brief   Reverse bit order of value
-  \details Reverses the bit order of the given value.
-  \param [in]    value  Value to reverse
-  \return               Reversed value
+  \brief   按位反转
+  \details 把给定值的位顺序反转。
+  \param [in]    value  需要反转的值
+  \return               反转后的值
  */
 __STATIC_FORCEINLINE uint32_t __RBIT(uint32_t value)
 {
@@ -1003,10 +1003,10 @@ __STATIC_FORCEINLINE uint32_t __RBIT(uint32_t value)
 
 
 /**
-  \brief   Count leading zeros
-  \details Counts the number of leading zeros of a data value.
-  \param [in]  value  Value to count the leading zeros
-  \return             number of leading zeros in value
+  \brief   前导零计数
+  \details 统计一个数据值中前导零的个数。
+  \param [in]  value  需要统计前导零的值
+  \return             value 中前导零的个数
  */
 #define __CLZ             (uint8_t)__builtin_clz
 
@@ -1016,10 +1016,10 @@ __STATIC_FORCEINLINE uint32_t __RBIT(uint32_t value)
      (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) || \
      (defined (__ARM_ARCH_8M_BASE__ ) && (__ARM_ARCH_8M_BASE__ == 1))    )
 /**
-  \brief   LDR Exclusive (8 bit)
-  \details Executes a exclusive LDR instruction for 8 bit value.
-  \param [in]    ptr  Pointer to data
-  \return             value of type uint8_t at (*ptr)
+  \brief   独占式 LDR 加载（8 位）
+  \details 对 8 位数据执行一次独占式 LDR 指令。
+  \param [in]    ptr  数据指针
+  \return             (*ptr) 处的 uint8_t 值
  */
 __STATIC_FORCEINLINE uint8_t __LDREXB(volatile uint8_t *addr)
 {
@@ -1038,10 +1038,10 @@ __STATIC_FORCEINLINE uint8_t __LDREXB(volatile uint8_t *addr)
 
 
 /**
-  \brief   LDR Exclusive (16 bit)
-  \details Executes a exclusive LDR instruction for 16 bit values.
-  \param [in]    ptr  Pointer to data
-  \return        value of type uint16_t at (*ptr)
+  \brief   独占式 LDR 加载（16 位）
+  \details 对 16 位数据执行一次独占式 LDR 指令。
+  \param [in]    ptr  数据指针
+  \return        (*ptr) 处的 uint16_t 值
  */
 __STATIC_FORCEINLINE uint16_t __LDREXH(volatile uint16_t *addr)
 {
@@ -1060,10 +1060,10 @@ __STATIC_FORCEINLINE uint16_t __LDREXH(volatile uint16_t *addr)
 
 
 /**
-  \brief   LDR Exclusive (32 bit)
-  \details Executes a exclusive LDR instruction for 32 bit values.
-  \param [in]    ptr  Pointer to data
-  \return        value of type uint32_t at (*ptr)
+  \brief   独占式 LDR 加载（32 位）
+  \details 对 32 位数据执行一次独占式 LDR 指令。
+  \param [in]    ptr  数据指针
+  \return        (*ptr) 处的 uint32_t 值
  */
 __STATIC_FORCEINLINE uint32_t __LDREXW(volatile uint32_t *addr)
 {
@@ -1075,12 +1075,12 @@ __STATIC_FORCEINLINE uint32_t __LDREXW(volatile uint32_t *addr)
 
 
 /**
-  \brief   STR Exclusive (8 bit)
-  \details Executes a exclusive STR instruction for 8 bit values.
-  \param [in]  value  Value to store
-  \param [in]    ptr  Pointer to location
-  \return          0  Function succeeded
-  \return          1  Function failed
+  \brief   独占式 STR 存储（8 位）
+  \details 对 8 位数据执行一次独占式 STR 指令。
+  \param [in]  value  要写入的值
+  \param [in]    ptr  目标位置指针
+  \return          0  函数执行成功
+  \return          1  函数执行失败
  */
 __STATIC_FORCEINLINE uint32_t __STREXB(uint8_t value, volatile uint8_t *addr)
 {
@@ -1092,12 +1092,12 @@ __STATIC_FORCEINLINE uint32_t __STREXB(uint8_t value, volatile uint8_t *addr)
 
 
 /**
-  \brief   STR Exclusive (16 bit)
-  \details Executes a exclusive STR instruction for 16 bit values.
-  \param [in]  value  Value to store
-  \param [in]    ptr  Pointer to location
-  \return          0  Function succeeded
-  \return          1  Function failed
+  \brief   独占式 STR 存储（16 位）
+  \details 对 16 位数据执行一次独占式 STR 指令。
+  \param [in]  value  要写入的值
+  \param [in]    ptr  目标位置指针
+  \return          0  函数执行成功
+  \return          1  函数执行失败
  */
 __STATIC_FORCEINLINE uint32_t __STREXH(uint16_t value, volatile uint16_t *addr)
 {
@@ -1109,12 +1109,12 @@ __STATIC_FORCEINLINE uint32_t __STREXH(uint16_t value, volatile uint16_t *addr)
 
 
 /**
-  \brief   STR Exclusive (32 bit)
-  \details Executes a exclusive STR instruction for 32 bit values.
-  \param [in]  value  Value to store
-  \param [in]    ptr  Pointer to location
-  \return          0  Function succeeded
-  \return          1  Function failed
+  \brief   独占式 STR 存储（32 位）
+  \details 对 32 位数据执行一次独占式 STR 指令。
+  \param [in]  value  要写入的值
+  \param [in]    ptr  目标位置指针
+  \return          0  函数执行成功
+  \return          1  函数执行失败
  */
 __STATIC_FORCEINLINE uint32_t __STREXW(uint32_t value, volatile uint32_t *addr)
 {
@@ -1126,8 +1126,8 @@ __STATIC_FORCEINLINE uint32_t __STREXW(uint32_t value, volatile uint32_t *addr)
 
 
 /**
-  \brief   Remove the exclusive lock
-  \details Removes the exclusive lock which is created by LDREX.
+  \brief   解除独占锁
+  \details 解除由 LDREX 创建的独占锁。
  */
 __STATIC_FORCEINLINE void __CLREX(void)
 {
@@ -1144,11 +1144,11 @@ __STATIC_FORCEINLINE void __CLREX(void)
      (defined (__ARM_ARCH_7EM__     ) && (__ARM_ARCH_7EM__     == 1)) || \
      (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1))    )
 /**
-  \brief   Signed Saturate
-  \details Saturates a signed value.
-  \param [in]  ARG1  Value to be saturated
-  \param [in]  ARG2  Bit position to saturate to (1..32)
-  \return             Saturated value
+  \brief   有符号饱和
+  \details 对一个有符号值执行饱和运算。
+  \param [in]  ARG1  要饱和的值
+  \param [in]  ARG2  饱和到位的位置（1..32）
+  \return             饱和后的值
  */
 #define __SSAT(ARG1,ARG2) \
 __extension__ \
@@ -1160,11 +1160,11 @@ __extension__ \
 
 
 /**
-  \brief   Unsigned Saturate
-  \details Saturates an unsigned value.
-  \param [in]  ARG1  Value to be saturated
-  \param [in]  ARG2  Bit position to saturate to (0..31)
-  \return             Saturated value
+  \brief   无符号饱和
+  \details 对一个无符号值执行饱和运算。
+  \param [in]  ARG1  要饱和的值
+  \param [in]  ARG2  饱和到位的位置（0..31）
+  \return             饱和后的值
  */
 #define __USAT(ARG1,ARG2) \
  __extension__ \
@@ -1176,11 +1176,11 @@ __extension__ \
 
 
 /**
-  \brief   Rotate Right with Extend (32 bit)
-  \details Moves each bit of a bitstring right by one bit.
-           The carry input is shifted in at the left end of the bitstring.
-  \param [in]    value  Value to rotate
-  \return               Rotated value
+  \brief   带进位扩展的循环右移（32 位）
+  \details 把一个位串的每一位都向右移一位。
+           进位输入从位串的左端移入。
+  \param [in]    value  要循环移位的值
+  \return               循环移位后的值
  */
 __STATIC_FORCEINLINE uint32_t __RRX(uint32_t value)
 {
@@ -1192,10 +1192,10 @@ __STATIC_FORCEINLINE uint32_t __RRX(uint32_t value)
 
 
 /**
-  \brief   LDRT Unprivileged (8 bit)
-  \details Executes a Unprivileged LDRT instruction for 8 bit value.
-  \param [in]    ptr  Pointer to data
-  \return             value of type uint8_t at (*ptr)
+  \brief   无特权 LDRT 加载（8 位）
+  \details 对 8 位数据执行一次无特权（Unprivileged）LDRT 指令。
+  \param [in]    ptr  数据指针
+  \return             (*ptr) 处的 uint8_t 值
  */
 __STATIC_FORCEINLINE uint8_t __LDRBT(volatile uint8_t *ptr)
 {
@@ -1214,10 +1214,10 @@ __STATIC_FORCEINLINE uint8_t __LDRBT(volatile uint8_t *ptr)
 
 
 /**
-  \brief   LDRT Unprivileged (16 bit)
-  \details Executes a Unprivileged LDRT instruction for 16 bit values.
-  \param [in]    ptr  Pointer to data
-  \return        value of type uint16_t at (*ptr)
+  \brief   无特权 LDRT 加载（16 位）
+  \details 对 16 位数据执行一次无特权（Unprivileged）LDRT 指令。
+  \param [in]    ptr  数据指针
+  \return        (*ptr) 处的 uint16_t 值
  */
 __STATIC_FORCEINLINE uint16_t __LDRHT(volatile uint16_t *ptr)
 {
@@ -1236,10 +1236,10 @@ __STATIC_FORCEINLINE uint16_t __LDRHT(volatile uint16_t *ptr)
 
 
 /**
-  \brief   LDRT Unprivileged (32 bit)
-  \details Executes a Unprivileged LDRT instruction for 32 bit values.
-  \param [in]    ptr  Pointer to data
-  \return        value of type uint32_t at (*ptr)
+  \brief   无特权 LDRT 加载（32 位）
+  \details 对 32 位数据执行一次无特权（Unprivileged）LDRT 指令。
+  \param [in]    ptr  数据指针
+  \return        (*ptr) 处的 uint32_t 值
  */
 __STATIC_FORCEINLINE uint32_t __LDRT(volatile uint32_t *ptr)
 {
@@ -1251,10 +1251,10 @@ __STATIC_FORCEINLINE uint32_t __LDRT(volatile uint32_t *ptr)
 
 
 /**
-  \brief   STRT Unprivileged (8 bit)
-  \details Executes a Unprivileged STRT instruction for 8 bit values.
-  \param [in]  value  Value to store
-  \param [in]    ptr  Pointer to location
+  \brief   无特权 STRT 存储（8 位）
+  \details 对 8 位数据执行一次无特权（Unprivileged）STRT 指令。
+  \param [in]  value  要写入的值
+  \param [in]    ptr  目标位置指针
  */
 __STATIC_FORCEINLINE void __STRBT(uint8_t value, volatile uint8_t *ptr)
 {
@@ -1263,10 +1263,10 @@ __STATIC_FORCEINLINE void __STRBT(uint8_t value, volatile uint8_t *ptr)
 
 
 /**
-  \brief   STRT Unprivileged (16 bit)
-  \details Executes a Unprivileged STRT instruction for 16 bit values.
-  \param [in]  value  Value to store
-  \param [in]    ptr  Pointer to location
+  \brief   无特权 STRT 存储（16 位）
+  \details 对 16 位数据执行一次无特权（Unprivileged）STRT 指令。
+  \param [in]  value  要写入的值
+  \param [in]    ptr  目标位置指针
  */
 __STATIC_FORCEINLINE void __STRHT(uint16_t value, volatile uint16_t *ptr)
 {
@@ -1275,10 +1275,10 @@ __STATIC_FORCEINLINE void __STRHT(uint16_t value, volatile uint16_t *ptr)
 
 
 /**
-  \brief   STRT Unprivileged (32 bit)
-  \details Executes a Unprivileged STRT instruction for 32 bit values.
-  \param [in]  value  Value to store
-  \param [in]    ptr  Pointer to location
+  \brief   无特权 STRT 存储（32 位）
+  \details 对 32 位数据执行一次无特权（Unprivileged）STRT 指令。
+  \param [in]  value  要写入的值
+  \param [in]    ptr  目标位置指针
  */
 __STATIC_FORCEINLINE void __STRT(uint32_t value, volatile uint32_t *ptr)
 {
@@ -1290,11 +1290,11 @@ __STATIC_FORCEINLINE void __STRT(uint32_t value, volatile uint32_t *ptr)
            (defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1))    ) */
 
 /**
-  \brief   Signed Saturate
-  \details Saturates a signed value.
-  \param [in]  value  Value to be saturated
-  \param [in]    sat  Bit position to saturate to (1..32)
-  \return             Saturated value
+  \brief   有符号饱和
+  \details 对一个有符号值执行饱和运算。
+  \param [in]  value  要饱和的值
+  \param [in]    sat  饱和到位的位置（1..32）
+  \return             饱和后的值
  */
 __STATIC_FORCEINLINE int32_t __SSAT(int32_t val, uint32_t sat)
 {
@@ -1315,11 +1315,11 @@ __STATIC_FORCEINLINE int32_t __SSAT(int32_t val, uint32_t sat)
 }
 
 /**
-  \brief   Unsigned Saturate
-  \details Saturates an unsigned value.
-  \param [in]  value  Value to be saturated
-  \param [in]    sat  Bit position to saturate to (0..31)
-  \return             Saturated value
+  \brief   无符号饱和
+  \details 对一个无符号值执行饱和运算。
+  \param [in]  value  要饱和的值
+  \param [in]    sat  饱和到位的位置（0..31）
+  \return             饱和后的值
  */
 __STATIC_FORCEINLINE uint32_t __USAT(int32_t val, uint32_t sat)
 {
@@ -1346,10 +1346,10 @@ __STATIC_FORCEINLINE uint32_t __USAT(int32_t val, uint32_t sat)
 #if ((defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) || \
      (defined (__ARM_ARCH_8M_BASE__ ) && (__ARM_ARCH_8M_BASE__ == 1))    )
 /**
-  \brief   Load-Acquire (8 bit)
-  \details Executes a LDAB instruction for 8 bit value.
-  \param [in]    ptr  Pointer to data
-  \return             value of type uint8_t at (*ptr)
+  \brief   带获取语义的加载（8 位）
+  \details 对 8 位数据执行一次 LDAB 指令。
+  \param [in]    ptr  数据指针
+  \return             (*ptr) 处的 uint8_t 值
  */
 __STATIC_FORCEINLINE uint8_t __LDAB(volatile uint8_t *ptr)
 {
@@ -1361,10 +1361,10 @@ __STATIC_FORCEINLINE uint8_t __LDAB(volatile uint8_t *ptr)
 
 
 /**
-  \brief   Load-Acquire (16 bit)
-  \details Executes a LDAH instruction for 16 bit values.
-  \param [in]    ptr  Pointer to data
-  \return        value of type uint16_t at (*ptr)
+  \brief   带获取语义的加载（16 位）
+  \details 对 16 位数据执行一次 LDAH 指令。
+  \param [in]    ptr  数据指针
+  \return        (*ptr) 处的 uint16_t 值
  */
 __STATIC_FORCEINLINE uint16_t __LDAH(volatile uint16_t *ptr)
 {
@@ -1376,10 +1376,10 @@ __STATIC_FORCEINLINE uint16_t __LDAH(volatile uint16_t *ptr)
 
 
 /**
-  \brief   Load-Acquire (32 bit)
-  \details Executes a LDA instruction for 32 bit values.
-  \param [in]    ptr  Pointer to data
-  \return        value of type uint32_t at (*ptr)
+  \brief   带获取语义的加载（32 位）
+  \details 对 32 位数据执行一次 LDA 指令。
+  \param [in]    ptr  数据指针
+  \return        (*ptr) 处的 uint32_t 值
  */
 __STATIC_FORCEINLINE uint32_t __LDA(volatile uint32_t *ptr)
 {
@@ -1391,10 +1391,10 @@ __STATIC_FORCEINLINE uint32_t __LDA(volatile uint32_t *ptr)
 
 
 /**
-  \brief   Store-Release (8 bit)
-  \details Executes a STLB instruction for 8 bit values.
-  \param [in]  value  Value to store
-  \param [in]    ptr  Pointer to location
+  \brief   带释放语义的存储（8 位）
+  \details 对 8 位数据执行一次 STLB 指令。
+  \param [in]  value  要写入的值
+  \param [in]    ptr  目标位置指针
  */
 __STATIC_FORCEINLINE void __STLB(uint8_t value, volatile uint8_t *ptr)
 {
@@ -1403,10 +1403,10 @@ __STATIC_FORCEINLINE void __STLB(uint8_t value, volatile uint8_t *ptr)
 
 
 /**
-  \brief   Store-Release (16 bit)
-  \details Executes a STLH instruction for 16 bit values.
-  \param [in]  value  Value to store
-  \param [in]    ptr  Pointer to location
+  \brief   带释放语义的存储（16 位）
+  \details 对 16 位数据执行一次 STLH 指令。
+  \param [in]  value  要写入的值
+  \param [in]    ptr  目标位置指针
  */
 __STATIC_FORCEINLINE void __STLH(uint16_t value, volatile uint16_t *ptr)
 {
@@ -1415,10 +1415,10 @@ __STATIC_FORCEINLINE void __STLH(uint16_t value, volatile uint16_t *ptr)
 
 
 /**
-  \brief   Store-Release (32 bit)
-  \details Executes a STL instruction for 32 bit values.
-  \param [in]  value  Value to store
-  \param [in]    ptr  Pointer to location
+  \brief   带释放语义的存储（32 位）
+  \details 对 32 位数据执行一次 STL 指令。
+  \param [in]  value  要写入的值
+  \param [in]    ptr  目标位置指针
  */
 __STATIC_FORCEINLINE void __STL(uint32_t value, volatile uint32_t *ptr)
 {
@@ -1427,10 +1427,10 @@ __STATIC_FORCEINLINE void __STL(uint32_t value, volatile uint32_t *ptr)
 
 
 /**
-  \brief   Load-Acquire Exclusive (8 bit)
-  \details Executes a LDAB exclusive instruction for 8 bit value.
-  \param [in]    ptr  Pointer to data
-  \return             value of type uint8_t at (*ptr)
+  \brief   独占式带获取语义加载（8 位）
+  \details 对 8 位数据执行一次 LDAB 独占式指令。
+  \param [in]    ptr  数据指针
+  \return             (*ptr) 处的 uint8_t 值
  */
 __STATIC_FORCEINLINE uint8_t __LDAEXB(volatile uint8_t *ptr)
 {
@@ -1442,10 +1442,10 @@ __STATIC_FORCEINLINE uint8_t __LDAEXB(volatile uint8_t *ptr)
 
 
 /**
-  \brief   Load-Acquire Exclusive (16 bit)
-  \details Executes a LDAH exclusive instruction for 16 bit values.
-  \param [in]    ptr  Pointer to data
-  \return        value of type uint16_t at (*ptr)
+  \brief   独占式带获取语义加载（16 位）
+  \details 对 16 位数据执行一次 LDAH 独占式指令。
+  \param [in]    ptr  数据指针
+  \return        (*ptr) 处的 uint16_t 值
  */
 __STATIC_FORCEINLINE uint16_t __LDAEXH(volatile uint16_t *ptr)
 {
@@ -1457,10 +1457,10 @@ __STATIC_FORCEINLINE uint16_t __LDAEXH(volatile uint16_t *ptr)
 
 
 /**
-  \brief   Load-Acquire Exclusive (32 bit)
-  \details Executes a LDA exclusive instruction for 32 bit values.
-  \param [in]    ptr  Pointer to data
-  \return        value of type uint32_t at (*ptr)
+  \brief   独占式带获取语义加载（32 位）
+  \details 对 32 位数据执行一次 LDA 独占式指令。
+  \param [in]    ptr  数据指针
+  \return        (*ptr) 处的 uint32_t 值
  */
 __STATIC_FORCEINLINE uint32_t __LDAEX(volatile uint32_t *ptr)
 {
@@ -1472,12 +1472,12 @@ __STATIC_FORCEINLINE uint32_t __LDAEX(volatile uint32_t *ptr)
 
 
 /**
-  \brief   Store-Release Exclusive (8 bit)
-  \details Executes a STLB exclusive instruction for 8 bit values.
-  \param [in]  value  Value to store
-  \param [in]    ptr  Pointer to location
-  \return          0  Function succeeded
-  \return          1  Function failed
+  \brief   独占式带释放语义存储（8 位）
+  \details 对 8 位数据执行一次 STLB 独占式指令。
+  \param [in]  value  要写入的值
+  \param [in]    ptr  目标位置指针
+  \return          0  函数执行成功
+  \return          1  函数执行失败
  */
 __STATIC_FORCEINLINE uint32_t __STLEXB(uint8_t value, volatile uint8_t *ptr)
 {
@@ -1489,12 +1489,12 @@ __STATIC_FORCEINLINE uint32_t __STLEXB(uint8_t value, volatile uint8_t *ptr)
 
 
 /**
-  \brief   Store-Release Exclusive (16 bit)
-  \details Executes a STLH exclusive instruction for 16 bit values.
-  \param [in]  value  Value to store
-  \param [in]    ptr  Pointer to location
-  \return          0  Function succeeded
-  \return          1  Function failed
+  \brief   独占式带释放语义存储（16 位）
+  \details 对 16 位数据执行一次 STLH 独占式指令。
+  \param [in]  value  要写入的值
+  \param [in]    ptr  目标位置指针
+  \return          0  函数执行成功
+  \return          1  函数执行失败
  */
 __STATIC_FORCEINLINE uint32_t __STLEXH(uint16_t value, volatile uint16_t *ptr)
 {
@@ -1506,12 +1506,12 @@ __STATIC_FORCEINLINE uint32_t __STLEXH(uint16_t value, volatile uint16_t *ptr)
 
 
 /**
-  \brief   Store-Release Exclusive (32 bit)
-  \details Executes a STL exclusive instruction for 32 bit values.
-  \param [in]  value  Value to store
-  \param [in]    ptr  Pointer to location
-  \return          0  Function succeeded
-  \return          1  Function failed
+  \brief   独占式带释放语义存储（32 位）
+  \details 对 32 位数据执行一次 STL 独占式指令。
+  \param [in]  value  要写入的值
+  \param [in]    ptr  目标位置指针
+  \return          0  函数执行成功
+  \return          1  函数执行失败
  */
 __STATIC_FORCEINLINE uint32_t __STLEX(uint32_t value, volatile uint32_t *ptr)
 {
@@ -1527,9 +1527,9 @@ __STATIC_FORCEINLINE uint32_t __STLEX(uint32_t value, volatile uint32_t *ptr)
 /*@}*/ /* end of group CMSIS_Core_InstructionInterface */
 
 
-/* ###################  Compiler specific Intrinsics  ########################### */
-/** \defgroup CMSIS_SIMD_intrinsics CMSIS SIMD Intrinsics
-  Access to dedicated SIMD instructions
+/* ###################  编译器专用内建函数  ########################### */
+/** \defgroup CMSIS_SIMD_intrinsics CMSIS SIMD 内建函数
+  访问专用 SIMD 指令
   @{
 */
 
