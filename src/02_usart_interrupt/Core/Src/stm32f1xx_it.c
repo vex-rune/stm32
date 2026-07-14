@@ -214,9 +214,21 @@ void USART1_IRQHandler(void)
 
 /* USER CODE BEGIN 1 */
 
+extern volatile uint8_t isOver;
+
 void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef* huart)
 {
-  //
+  // 返回值
+  isOver = 1;
+}
+
+extern uint16_t size;
+
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef* huart, uint16_t Size)
+{
+  // 返回值
+  isOver = 1;
+  size = Size;
 }
 
 /* USER CODE END 1 */
