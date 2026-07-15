@@ -2,241 +2,254 @@
   ******************************************************************************
   * @file    stm32f1xx_hal_uart.c
   * @author  MCD Application Team
-  * @brief   UART HAL 模块驱动。
-  *          本文件提供固件函数来管理通用异步收发器 (UART) 外设的以下功能：
-  *           + 初始化和反初始化函数
-  *           + IO 操作函数
-  *           + 外设控制函数
-  *           + 外设状态和错误函数
+  * @brief   UART HAL module driver.
+  *          This file provides firmware functions to manage the following
+  *          functionalities of the Universal Asynchronous Receiver Transmitter Peripheral (UART).
+  *           + Initialization and de-initialization functions
+  *           + IO operation functions
+  *           + Peripheral Control functions
+  *           + Peripheral State and Errors functions
   *
   ******************************************************************************
   * @attention
   *
-  * 版权所有 (c) 2016 STMicroelectronics。
-  * 保留所有权利。
+  * Copyright (c) 2016 STMicroelectronics.
+  * All rights reserved.
   *
-  * 本软件根据可在软件组件根目录的 LICENSE 文件中找到的条款进行许可。
-  * 如果本软件未随附 LICENSE 文件，则按"原样"提供。
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   @verbatim
   ==============================================================================
-                        ##### 如何使用本驱动 #####
+                        ##### How to use this driver #####
   ==============================================================================
   [..]
-    UART HAL 驱动可按如下方式使用：
+    The UART HAL driver can be used as follows:
 
-    (#) 声明一个 UART_HandleTypeDef 句柄结构体（例如 UART_HandleTypeDef huart）。
-    (#) 通过实现 HAL_UART_MspInit() API 初始化 UART 低层资源：
-        (##) 使能 USARTx 接口时钟。
-        (##) UART 引脚配置：
-            (+++) 使能 UART GPIO 的时钟。
-            (+++) 将 UART TX/RX 引脚配置为复用功能上拉模式。
-        (##) 如果需要使用中断处理（HAL_UART_Transmit_IT()
-             和 HAL_UART_Receive_IT() API），则进行 NVIC 配置：
-            (+++) 配置 USARTx 中断优先级。
-            (+++) 使能 NVIC 中的 USART IRQ 处理。
-        (##) 如果需要使用 DMA 处理（HAL_UART_Transmit_DMA()
-             和 HAL_UART_Receive_DMA() API），则进行 DMA 配置：
-            (+++) 为 Tx/Rx 通道声明一个 DMA 句柄结构体。
-            (+++) 使能 DMAx 接口时钟。
-            (+++) 使用所需的 Tx/Rx 参数配置已声明的 DMA 句柄结构体。
-            (+++) 配置 DMA Tx/Rx 通道。
-            (+++) 将初始化好的 DMA 句柄关联到 UART 的 DMA Tx/Rx 句柄。
-            (+++) 配置 DMA Tx/Rx 通道传输完成中断的优先级并使能 NVIC。
-            (+++) 配置 USARTx 中断优先级并使能 NVIC 中的 USART IRQ 处理
-                  (用于 DMA 非循环模式下最后一个字节发送完成检测)
+    (#) Declare a UART_HandleTypeDef handle structure (eg. UART_HandleTypeDef huart).
+    (#) Initialize the UART low level resources by implementing the HAL_UART_MspInit() API:
+        (##) Enable the USARTx interface clock.
+        (##) UART pins configuration:
+            (+++) Enable the clock for the UART GPIOs.
+            (+++) Configure the UART TX/RX pins as alternate function pull-up.
+        (##) NVIC configuration if you need to use interrupt process (HAL_UART_Transmit_IT()
+             and HAL_UART_Receive_IT() APIs):
+            (+++) Configure the USARTx interrupt priority.
+            (+++) Enable the NVIC USART IRQ handle.
+        (##) DMA Configuration if you need to use DMA process (HAL_UART_Transmit_DMA()
+             and HAL_UART_Receive_DMA() APIs):
+            (+++) Declare a DMA handle structure for the Tx/Rx channel.
+            (+++) Enable the DMAx interface clock.
+            (+++) Configure the declared DMA handle structure with the required
+                  Tx/Rx parameters.
+            (+++) Configure the DMA Tx/Rx channel.
+            (+++) Associate the initialized DMA handle to the UART DMA Tx/Rx handle.
+            (+++) Configure the priority and enable the NVIC for the transfer complete
+                  interrupt on the DMA Tx/Rx channel.
+            (+++) Configure the USARTx interrupt priority and enable the NVIC USART IRQ handle
+                  (used for last byte sending completion detection in DMA non circular mode)
 
-    (#) 在 huart Init 结构体中编程设置波特率、数据位长度、停止位、校验位、
-        硬件流控制和模式（接收器/发送器）。
+    (#) Program the Baud Rate, Word Length, Stop Bit, Parity, Hardware
+        flow control and Mode(Receiver/Transmitter) in the huart Init structure.
 
-    (#) 对于 UART 异步模式，调用 HAL_UART_Init() API 初始化 UART 寄存器。
+    (#) For the UART asynchronous mode, initialize the UART registers by calling
+        the HAL_UART_Init() API.
 
-    (#) 对于 UART 半双工模式，调用 HAL_HalfDuplex_Init() API 初始化 UART 寄存器。
+    (#) For the UART Half duplex mode, initialize the UART registers by calling
+        the HAL_HalfDuplex_Init() API.
 
-    (#) 对于 LIN 模式，调用 HAL_LIN_Init() API 初始化 UART 寄存器。
+    (#) For the LIN mode, initialize the UART registers by calling the HAL_LIN_Init() API.
 
-    (#) 对于多处理器模式，调用 HAL_MultiProcessor_Init() API 初始化 UART 寄存器。
+    (#) For the Multi-Processor mode, initialize the UART registers by calling
+        the HAL_MultiProcessor_Init() API.
 
      [..]
-       (@) 特定的 UART 中断（发送完成中断、RXNE 中断和错误中断）将在发送
-            和接收过程中使用宏 __HAL_UART_ENABLE_IT() 和 __HAL_UART_DISABLE_IT()
-            进行管理。
+       (@) The specific UART interrupts (Transmission complete interrupt,
+            RXNE interrupt and Error Interrupts) will be managed using the macros
+            __HAL_UART_ENABLE_IT() and __HAL_UART_DISABLE_IT() inside the transmit
+            and receive process.
 
      [..]
-       (@) 这些 API（HAL_UART_Init() 和 HAL_HalfDuplex_Init()）还会通过调用
-            用户自定义的 HAL_UART_MspInit() API 来配置低层硬件（GPIO、CLOCK、
-            CORTEX 等）。
+       (@) These APIs (HAL_UART_Init() and HAL_HalfDuplex_Init()) configure also the
+            low level Hardware GPIO, CLOCK, CORTEX...etc) by calling the customized
+            HAL_UART_MspInit() API.
 
-    ##### 回调注册 #####
+    ##### Callback registration #####
     ==================================
 
     [..]
-    当编译选项 USE_HAL_UART_REGISTER_CALLBACKS 设置为 1 时，
-    允许用户动态配置驱动回调。
+    The compilation define USE_HAL_UART_REGISTER_CALLBACKS when set to 1
+    allows the user to configure dynamically the driver callbacks.
 
     [..]
-    使用函数 HAL_UART_RegisterCallback() 来注册用户回调。
-    函数 HAL_UART_RegisterCallback() 允许注册以下回调：
-    (+) TxHalfCpltCallback        : Tx 半传输完成回调。
-    (+) TxCpltCallback            : Tx 传输完成回调。
-    (+) RxHalfCpltCallback        : Rx 半传输完成回调。
-    (+) RxCpltCallback            : Rx 传输完成回调。
-    (+) ErrorCallback             : 错误回调。
-    (+) AbortCpltCallback         : 终止完成回调。
-    (+) AbortTransmitCpltCallback : 发送终止完成回调。
-    (+) AbortReceiveCpltCallback  : 接收终止完成回调。
-    (+) MspInitCallback           : UART MspInit。
-    (+) MspDeInitCallback         : UART MspDeInit。
-    此函数接受 HAL 外设句柄、回调 ID 和指向用户回调函数的指针作为参数。
+    Use Function HAL_UART_RegisterCallback() to register a user callback.
+    Function HAL_UART_RegisterCallback() allows to register following callbacks:
+    (+) TxHalfCpltCallback        : Tx Half Complete Callback.
+    (+) TxCpltCallback            : Tx Complete Callback.
+    (+) RxHalfCpltCallback        : Rx Half Complete Callback.
+    (+) RxCpltCallback            : Rx Complete Callback.
+    (+) ErrorCallback             : Error Callback.
+    (+) AbortCpltCallback         : Abort Complete Callback.
+    (+) AbortTransmitCpltCallback : Abort Transmit Complete Callback.
+    (+) AbortReceiveCpltCallback  : Abort Receive Complete Callback.
+    (+) MspInitCallback           : UART MspInit.
+    (+) MspDeInitCallback         : UART MspDeInit.
+    This function takes as parameters the HAL peripheral handle, the Callback ID
+    and a pointer to the user callback function.
 
     [..]
-    使用函数 HAL_UART_UnRegisterCallback() 将回调重置为默认的
-    weak（可重载）函数。
-    HAL_UART_UnRegisterCallback() 接受 HAL 外设句柄和回调 ID 作为参数。
-    此函数允许重置以下回调：
-    (+) TxHalfCpltCallback        : Tx 半传输完成回调。
-    (+) TxCpltCallback            : Tx 传输完成回调。
-    (+) RxHalfCpltCallback        : Rx 半传输完成回调。
-    (+) RxCpltCallback            : Rx 传输完成回调。
-    (+) ErrorCallback             : 错误回调。
-    (+) AbortCpltCallback         : 终止完成回调。
-    (+) AbortTransmitCpltCallback : 发送终止完成回调。
-    (+) AbortReceiveCpltCallback  : 接收终止完成回调。
-    (+) MspInitCallback           : UART MspInit。
-    (+) MspDeInitCallback         : UART MspDeInit。
+    Use function HAL_UART_UnRegisterCallback() to reset a callback to the default
+    weak (surcharged) function.
+    HAL_UART_UnRegisterCallback() takes as parameters the HAL peripheral handle,
+    and the Callback ID.
+    This function allows to reset following callbacks:
+    (+) TxHalfCpltCallback        : Tx Half Complete Callback.
+    (+) TxCpltCallback            : Tx Complete Callback.
+    (+) RxHalfCpltCallback        : Rx Half Complete Callback.
+    (+) RxCpltCallback            : Rx Complete Callback.
+    (+) ErrorCallback             : Error Callback.
+    (+) AbortCpltCallback         : Abort Complete Callback.
+    (+) AbortTransmitCpltCallback : Abort Transmit Complete Callback.
+    (+) AbortReceiveCpltCallback  : Abort Receive Complete Callback.
+    (+) MspInitCallback           : UART MspInit.
+    (+) MspDeInitCallback         : UART MspDeInit.
 
     [..]
-    对于特定的回调 RxEventCallback，请使用专用的注册/重置函数：
-    分别为 HAL_UART_RegisterRxEventCallback() 和 HAL_UART_UnRegisterRxEventCallback()。
+    For specific callback RxEventCallback, use dedicated registration/reset functions:
+    respectively HAL_UART_RegisterRxEventCallback() , HAL_UART_UnRegisterRxEventCallback().
 
     [..]
-    默认情况下，在 HAL_UART_Init() 之后且状态为 HAL_UART_STATE_RESET 时，
-    所有回调都设置为对应的 weak（可重载）函数：
-    例如 HAL_UART_TxCpltCallback()、HAL_UART_RxHalfCpltCallback()。
-    MspInit 和 MspDeInit 函数为例外情况，它们分别在 HAL_UART_Init()
-    和 HAL_UART_DeInit() 中仅在这些回调为空（之前未注册）时才被重置为
-    旧版 weak（可重载）函数。
-    如果 MspInit 或 MspDeInit 不为空，HAL_UART_Init() 和 HAL_UART_DeInit()
-    将保留并使用用户的 MspInit/MspDeInit 回调（之前已注册）。
+    By default, after the HAL_UART_Init() and when the state is HAL_UART_STATE_RESET
+    all callbacks are set to the corresponding weak (surcharged) functions:
+    examples HAL_UART_TxCpltCallback(), HAL_UART_RxHalfCpltCallback().
+    Exception done for MspInit and MspDeInit functions that are respectively
+    reset to the legacy weak (surcharged) functions in the HAL_UART_Init()
+    and HAL_UART_DeInit() only when these callbacks are null (not registered beforehand).
+    If not, MspInit or MspDeInit are not null, the HAL_UART_Init() and HAL_UART_DeInit()
+    keep and use the user MspInit/MspDeInit callbacks (registered beforehand).
 
     [..]
-    回调只能在 HAL_UART_STATE_READY 状态下注册/注销。
-    MspInit/MspDeInit 为例外，可以在 HAL_UART_STATE_READY
-    或 HAL_UART_STATE_RESET 状态下注册/注销，因此已注册（用户）的
-    MspInit/DeInit 回调可以在 Init/DeInit 期间使用。
-    在这种情况下，需要先在调用 HAL_UART_DeInit()
-    或 HAL_UART_Init() 函数之前，使用 HAL_UART_RegisterCallback()
-    注册 MspInit/MspDeInit 用户回调。
+    Callbacks can be registered/unregistered in HAL_UART_STATE_READY state only.
+    Exception done MspInit/MspDeInit that can be registered/unregistered
+    in HAL_UART_STATE_READY or HAL_UART_STATE_RESET state, thus registered (user)
+    MspInit/DeInit callbacks can be used during the Init/DeInit.
+    In that case first register the MspInit/MspDeInit user callbacks
+    using HAL_UART_RegisterCallback() before calling HAL_UART_DeInit()
+    or HAL_UART_Init() function.
 
     [..]
-    当编译选项 USE_HAL_UART_REGISTER_CALLBACKS 设置为 0 或
-    未定义时，回调注册功能不可用，
-    使用 weak（可重载）回调。
+    When The compilation define USE_HAL_UART_REGISTER_CALLBACKS is set to 0 or
+    not defined, the callback registration feature is not available
+    and weak (surcharged) callbacks are used.
 
      [..]
-        本驱动提供三种操作模式：
+        Three operation modes are available within this driver :
 
-     *** 轮询模式 IO 操作 ***
+     *** Polling mode IO operation ***
      =================================
      [..]
-       (+) 使用 HAL_UART_Transmit() 在阻塞模式下发送一定数量的数据
-       (+) 使用 HAL_UART_Receive() 在阻塞模式下接收一定数量的数据
+       (+) Send an amount of data in blocking mode using HAL_UART_Transmit()
+       (+) Receive an amount of data in blocking mode using HAL_UART_Receive()
 
-     *** 中断模式 IO 操作 ***
+     *** Interrupt mode IO operation ***
      ===================================
      [..]
-       (+) 使用 HAL_UART_Transmit_IT() 在非阻塞模式下发送一定数量的数据
-       (+) 发送结束时执行 HAL_UART_TxCpltCallback，用户可以通过
-            自定义函数指针 HAL_UART_TxCpltCallback 添加自己的代码
-       (+) 使用 HAL_UART_Receive_IT() 在非阻塞模式下接收一定数量的数据
-       (+) 接收结束时执行 HAL_UART_RxCpltCallback，用户可以通过
-            自定义函数指针 HAL_UART_RxCpltCallback 添加自己的代码
-       (+) 发生传输错误时，执行 HAL_UART_ErrorCallback() 函数，用户可以
-            通过自定义函数指针 HAL_UART_ErrorCallback 添加自己的代码
+       (+) Send an amount of data in non blocking mode using HAL_UART_Transmit_IT()
+       (+) At transmission end of transfer HAL_UART_TxCpltCallback is executed and user can
+            add his own code by customization of function pointer HAL_UART_TxCpltCallback
+       (+) Receive an amount of data in non blocking mode using HAL_UART_Receive_IT()
+       (+) At reception end of transfer HAL_UART_RxCpltCallback is executed and user can
+            add his own code by customization of function pointer HAL_UART_RxCpltCallback
+       (+) In case of transfer Error, HAL_UART_ErrorCallback() function is executed and user can
+            add his own code by customization of function pointer HAL_UART_ErrorCallback
 
-     *** DMA 模式 IO 操作 ***
+     *** DMA mode IO operation ***
      ==============================
      [..]
-       (+) 使用 HAL_UART_Transmit_DMA() 在非阻塞模式（DMA）下发送一定数量的数据
-       (+) 半传输结束时执行 HAL_UART_TxHalfCpltCallback，用户可以通过
-            自定义函数指针 HAL_UART_TxHalfCpltCallback 添加自己的代码
-       (+) 传输结束时执行 HAL_UART_TxCpltCallback，用户可以通过
-            自定义函数指针 HAL_UART_TxCpltCallback 添加自己的代码
-       (+) 使用 HAL_UART_Receive_DMA() 在非阻塞模式（DMA）下接收一定数量的数据
-       (+) 半传输结束时执行 HAL_UART_RxHalfCpltCallback，用户可以通过
-            自定义函数指针 HAL_UART_RxHalfCpltCallback 添加自己的代码
-       (+) 传输结束时执行 HAL_UART_RxCpltCallback，用户可以通过
-            自定义函数指针 HAL_UART_RxCpltCallback 添加自己的代码
-       (+) 发生传输错误时，执行 HAL_UART_ErrorCallback() 函数，用户可以
-            通过自定义函数指针 HAL_UART_ErrorCallback 添加自己的代码
-       (+) 使用 HAL_UART_DMAPause() 暂停 DMA 传输
-       (+) 使用 HAL_UART_DMAResume() 恢复 DMA 传输
-       (+) 使用 HAL_UART_DMAStop() 停止 DMA 传输
+       (+) Send an amount of data in non blocking mode (DMA) using HAL_UART_Transmit_DMA()
+       (+) At transmission end of half transfer HAL_UART_TxHalfCpltCallback is executed and user can
+            add his own code by customization of function pointer HAL_UART_TxHalfCpltCallback
+       (+) At transmission end of transfer HAL_UART_TxCpltCallback is executed and user can
+            add his own code by customization of function pointer HAL_UART_TxCpltCallback
+       (+) Receive an amount of data in non blocking mode (DMA) using HAL_UART_Receive_DMA()
+       (+) At reception end of half transfer HAL_UART_RxHalfCpltCallback is executed and user can
+            add his own code by customization of function pointer HAL_UART_RxHalfCpltCallback
+       (+) At reception end of transfer HAL_UART_RxCpltCallback is executed and user can
+            add his own code by customization of function pointer HAL_UART_RxCpltCallback
+       (+) In case of transfer Error, HAL_UART_ErrorCallback() function is executed and user can
+            add his own code by customization of function pointer HAL_UART_ErrorCallback
+       (+) Pause the DMA Transfer using HAL_UART_DMAPause()
+       (+) Resume the DMA Transfer using HAL_UART_DMAResume()
+       (+) Stop the DMA Transfer using HAL_UART_DMAStop()
 
 
-    [..] 本小节还提供了一组为用户提供增强型接收服务的附加函数。
-        (例如，这些函数允许应用程序处理要接收的数据数量未知的场景)。
+    [..] This subsection also provides a set of additional functions providing enhanced reception
+    services to user. (For example, these functions allow application to handle use cases
+    where number of data to be received is unknown).
 
-    (#) 与仅将已接收数据元素数量作为接收完成条件的标准接收服务相比，
-        这些函数还考虑将其他事件作为更新接收状态至调用方的触发器：
-       (+) 空闲时段检测（RX 线在给定时段内没有活动）。
-          (++) 通过 IDLE 事件检测 RX 空闲，即在最后一个接收字节之后，
-               RX 线在空闲状态（通常为高电平）保持 1 帧时间。
+    (#) Compared to standard reception services which only consider number of received
+        data elements as reception completion criteria, these functions also consider additional events
+        as triggers for updating reception status to caller :
+       (+) Detection of inactivity period (RX line has not been active for a given period).
+          (++) RX inactivity detected by IDLE event, i.e. RX line has been in idle state (normally high state)
+               for 1 frame time, after last received byte.
 
-    (#) 有两种传输模式：
-       (+) 阻塞模式：接收以轮询模式执行，直到接收到预期数量的数据，
-           或直到发生 IDLE 事件。接收仅在函数执行期间进行处理。
-           当函数退出时，不会进行数据接收。HAL 状态和实际接收的数据元素数量，
-           在传输结束后由函数返回。
-       (+) 非阻塞模式：接收使用中断或 DMA 执行。
-           这些 API 返回 HAL 状态。
-           数据处理结束将通过专用 UART IRQ（中断模式）或 DMA IRQ（DMA 模式）指示。
-           HAL_UARTEx_RxEventCallback() 用户回调将在接收过程中执行
-           当检测到接收错误时，将执行 HAL_UART_ErrorCallback() 用户回调。
+    (#) There are two mode of transfer:
+       (+) Blocking mode: The reception is performed in polling mode, until either expected number of data is received,
+           or till IDLE event occurs. Reception is handled only during function execution.
+           When function exits, no data reception could occur. HAL status and number of actually received data elements,
+           are returned by function after finishing transfer.
+       (+) Non-Blocking mode: The reception is performed using Interrupts or DMA.
+           These API's return the HAL status.
+           The end of the data processing will be indicated through the
+           dedicated UART IRQ when using Interrupt mode or the DMA IRQ when using DMA mode.
+           The HAL_UARTEx_RxEventCallback() user callback will be executed during Receive process
+           The HAL_UART_ErrorCallback()user callback will be executed when a reception error is detected.
 
-    (#) 阻塞模式 API：
+    (#) Blocking mode API:
         (+) HAL_UARTEx_ReceiveToIdle()
 
-    (#) 非阻塞模式 API（中断）：
+    (#) Non-Blocking mode API with Interrupt:
         (+) HAL_UARTEx_ReceiveToIdle_IT()
 
-    (#) 非阻塞模式 API（DMA）：
+    (#) Non-Blocking mode API with DMA:
         (+) HAL_UARTEx_ReceiveToIdle_DMA()
 
 
-     *** UART HAL 驱动宏列表 ***
+     *** UART HAL driver macros list ***
      =============================================
      [..]
-       以下是 UART HAL 驱动中最常用的宏列表。
+       Below the list of most used macros in UART HAL driver.
 
-      (+) __HAL_UART_ENABLE: 使能 UART 外设
-      (+) __HAL_UART_DISABLE: 禁用 UART 外设
-      (+) __HAL_UART_GET_FLAG : 检查指定 UART 标志是否置位
-      (+) __HAL_UART_CLEAR_FLAG : 清除指定的 UART 待处理标志
-      (+) __HAL_UART_ENABLE_IT: 使能指定的 UART 中断
-      (+) __HAL_UART_DISABLE_IT: 禁用指定的 UART 中断
-      (+) __HAL_UART_GET_IT_SOURCE: 检查指定的 UART 中断是否已发生
+      (+) __HAL_UART_ENABLE: Enable the UART peripheral
+      (+) __HAL_UART_DISABLE: Disable the UART peripheral
+      (+) __HAL_UART_GET_FLAG : Check whether the specified UART flag is set or not
+      (+) __HAL_UART_CLEAR_FLAG : Clear the specified UART pending flag
+      (+) __HAL_UART_ENABLE_IT: Enable the specified UART interrupt
+      (+) __HAL_UART_DISABLE_IT: Disable the specified UART interrupt
+      (+) __HAL_UART_GET_IT_SOURCE: Check whether the specified UART interrupt has occurred or not
 
      [..]
-       (@) 可以参考 UART HAL 驱动头文件获取更多有用的宏
+       (@) You can refer to the UART HAL driver header file for more useful macros
 
   @endverbatim
      [..]
-       (@) 附加说明：如果使能了校验位，那么写入数据寄存器的数据的最高位
-           （MSB）会被发送，但会被校验位所改变。
-           根据 M 位（8 位或 9 位）定义的帧长度，
-           可能的 UART 帧格式如下表所示：
+       (@) Additional remark: If the parity is enabled, then the MSB bit of the data written
+           in the data register is transmitted but is changed by the parity bit.
+           Depending on the frame length defined by the M bit (8-bits or 9-bits),
+           the possible UART frame formats are as listed in the following table:
     +-------------------------------------------------------------+
-    |   M 位  |  PCE 位  |            UART 帧                    |
+    |   M bit |  PCE bit  |            UART frame                 |
     |---------------------|---------------------------------------|
-    |    0    |    0      |    | SB | 8 位数据 | STB |            |
+    |    0    |    0      |    | SB | 8 bit data | STB |          |
     |---------|-----------|---------------------------------------|
-    |    0    |    1      |    | SB | 7 位数据 | PB | STB |       |
+    |    0    |    1      |    | SB | 7 bit data | PB | STB |     |
     |---------|-----------|---------------------------------------|
-    |    1    |    0      |    | SB | 9 位数据 | STB |            |
+    |    1    |    0      |    | SB | 9 bit data | STB |          |
     |---------|-----------|---------------------------------------|
-    |    1    |    1      |    | SB | 8 位数据 | PB | STB |       |
+    |    1    |    1      |    | SB | 8 bit data | PB | STB |     |
     +-------------------------------------------------------------+
   ******************************************************************************
   */
@@ -254,18 +267,18 @@
   */
 #ifdef HAL_UART_MODULE_ENABLED
 
-/* 私有类型定义 -------------------------------------------------------------*/
-/* 私有宏定义 ----------------------------------------------------------------*/
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
 /** @addtogroup UART_Private_Constants
   * @{
   */
 /**
   * @}
   */
-/* 私有宏 -------------------------------------------------------------------*/
-/* 私有变量 -----------------------------------------------------------------*/
-/* 私有函数原型 -------------------------------------------------------------*/
-/** @addtogroup UART_Private_Functions  UART 私有函数
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+/* Private function prototypes -----------------------------------------------*/
+/** @addtogroup UART_Private_Functions  UART Private Functions
   * @{
   */
 
@@ -295,58 +308,61 @@ static void UART_SetConfig(UART_HandleTypeDef *huart);
   * @}
   */
 
-/* 导出函数 -----------------------------------------------------------------*/
-/** @defgroup UART_Exported_Functions UART 导出函数
+/* Exported functions ---------------------------------------------------------*/
+/** @defgroup UART_Exported_Functions UART Exported Functions
   * @{
   */
 
-/** @defgroup UART_Exported_Functions_Group1 初始化和反初始化函数
-  *  @brief    初始化和配置函数
+/** @defgroup UART_Exported_Functions_Group1 Initialization and de-initialization functions
+  *  @brief    Initialization and Configuration functions
   *
 @verbatim
  ===============================================================================
-            ##### 初始化和配置函数 #####
+            ##### Initialization and Configuration functions #####
  ===============================================================================
     [..]
-    本小节提供了一组函数，允许在异步模式下初始化 USARTx 或 UARTy。
-      (+) 对于异步模式，只能配置以下参数：
-        (++) 波特率
-        (++) 数据位长度
-        (++) 停止位
-        (++) 校验位：如果使能了校验位，那么写入数据寄存器的数据的最高位
-             （MSB）会被发送，但会被校验位所改变。
-             根据 M 位（8 位或 9 位）定义的帧长度，
-             请参考参考手册获取可能的 UART 帧格式。
-        (++) 硬件流控制
-        (++) 接收器/发送器模式
-        (++) 过采样方法
+    This subsection provides a set of functions allowing to initialize the USARTx or the UARTy
+    in asynchronous mode.
+      (+) For the asynchronous mode only these parameters can be configured:
+        (++) Baud Rate
+        (++) Word Length
+        (++) Stop Bit
+        (++) Parity: If the parity is enabled, then the MSB bit of the data written
+             in the data register is transmitted but is changed by the parity bit.
+             Depending on the frame length defined by the M bit (8-bits or 9-bits),
+             please refer to Reference manual for possible UART frame formats.
+        (++) Hardware flow control
+        (++) Receiver/transmitter modes
+        (++) Over Sampling Method
     [..]
-    HAL_UART_Init()、HAL_HalfDuplex_Init()、HAL_LIN_Init() 和 HAL_MultiProcessor_Init()
-    API 分别遵循 UART 异步、UART 半双工、LIN 和多处理器配置流程
-    （流程详情可在参考手册中获得：STM32F10Xxx MCU 为 RM0008，
-     STM32F100xx MCU 为 RM0041）。
+    The HAL_UART_Init(), HAL_HalfDuplex_Init(), HAL_LIN_Init() and HAL_MultiProcessor_Init() APIs
+    follow respectively the UART asynchronous, UART Half duplex, LIN and Multi-Processor configuration
+    procedures (details for the procedures are available in reference manuals
+    (RM0008 for STM32F10Xxx MCUs and RM0041 for STM32F100xx MCUs)).
 
 @endverbatim
   * @{
   */
 
 /**
-  * @brief  根据 UART_InitTypeDef 中指定的参数初始化 UART 模式，并创建关联句柄。
-  * @param  huart  指向 UART_HandleTypeDef 结构体的指针，其中包含指定 UART 模块的配置信息。
-  * @retval HAL 状态
+  * @brief  Initializes the UART mode according to the specified parameters in
+  *         the UART_InitTypeDef and create the associated handle.
+  * @param  huart  Pointer to a UART_HandleTypeDef structure that contains
+  *                the configuration information for the specified UART module.
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UART_Init(UART_HandleTypeDef *huart)
 {
-  /* 检查 UART 句柄分配 */
+  /* Check the UART handle allocation */
   if (huart == NULL)
   {
     return HAL_ERROR;
   }
 
-  /* 检查参数 */
+  /* Check the parameters */
   if (huart->Init.HwFlowCtl != UART_HWCONTROL_NONE)
   {
-    /* 硬件流控制仅在 USART1、USART2 和 USART3 上可用 */
+    /* The hardware flow control is available only for USART1, USART2 and USART3 */
     assert_param(IS_UART_HWFLOW_INSTANCE(huart->Instance));
     assert_param(IS_UART_HARDWARE_FLOW_CONTROL(huart->Init.HwFlowCtl));
   }
@@ -361,7 +377,7 @@ HAL_StatusTypeDef HAL_UART_Init(UART_HandleTypeDef *huart)
 
   if (huart->gState == HAL_UART_STATE_RESET)
   {
-    /* 分配锁资源并初始化 */
+    /* Allocate lock resource and initialize it */
     huart->Lock = HAL_UNLOCKED;
 
 #if (USE_HAL_UART_REGISTER_CALLBACKS == 1)
@@ -372,32 +388,32 @@ HAL_StatusTypeDef HAL_UART_Init(UART_HandleTypeDef *huart)
       huart->MspInitCallback = HAL_UART_MspInit;
     }
 
-    /* 初始化低层硬件 */
+    /* Init the low level hardware */
     huart->MspInitCallback(huart);
 #else
-    /* 初始化低层硬件：GPIO、CLOCK */
+    /* Init the low level hardware : GPIO, CLOCK */
     HAL_UART_MspInit(huart);
 #endif /* (USE_HAL_UART_REGISTER_CALLBACKS) */
   }
 
   huart->gState = HAL_UART_STATE_BUSY;
 
-  /* 禁用外设 */
+  /* Disable the peripheral */
   __HAL_UART_DISABLE(huart);
 
-  /* 设置 UART 通信参数 */
+  /* Set the UART Communication parameters */
   UART_SetConfig(huart);
 
-  /* 在异步模式下，以下位必须保持清零：
-     - USART_CR2 寄存器中的 LINEN 和 CLKEN 位，
-     - USART_CR3 寄存器中的 SCEN、HDSEL 和 IREN 位。*/
+  /* In asynchronous mode, the following bits must be kept cleared:
+     - LINEN and CLKEN bits in the USART_CR2 register,
+     - SCEN, HDSEL and IREN  bits in the USART_CR3 register.*/
   CLEAR_BIT(huart->Instance->CR2, (USART_CR2_LINEN | USART_CR2_CLKEN));
   CLEAR_BIT(huart->Instance->CR3, (USART_CR3_SCEN | USART_CR3_HDSEL | USART_CR3_IREN));
 
-  /* 使能外设 */
+  /* Enable the peripheral */
   __HAL_UART_ENABLE(huart);
 
-  /* 初始化 UART 状态 */
+  /* Initialize the UART state */
   huart->ErrorCode = HAL_UART_ERROR_NONE;
   huart->gState = HAL_UART_STATE_READY;
   huart->RxState = HAL_UART_STATE_READY;
@@ -725,25 +741,25 @@ __weak void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
 
 #if (USE_HAL_UART_REGISTER_CALLBACKS == 1)
 /**
-  * @brief  注册用户 UART 回调
-  *         用于替代 weak 预定义回调
-  * @note   HAL_UART_RegisterCallback() 可在 HAL_UART_Init()、HAL_HalfDuplex_Init()、HAL_LIN_Init() 之前调用，
-  *         HAL_MultiProcessor_Init() 用于为 HAL_UART_MSPINIT_CB_ID 和 HAL_UART_MSPDEINIT_CB_ID 注册回调
-  * @param  huart uart 句柄
-  * @param  CallbackID 要注册的回调 ID
-  *         此参数可以是以下值之一：
-  *           @arg @ref HAL_UART_TX_HALFCOMPLETE_CB_ID Tx 半完成回调 ID
-  *           @arg @ref HAL_UART_TX_COMPLETE_CB_ID Tx 完成回调 ID
-  *           @arg @ref HAL_UART_RX_HALFCOMPLETE_CB_ID Rx 半完成回调 ID
-  *           @arg @ref HAL_UART_RX_COMPLETE_CB_ID Rx 完成回调 ID
-  *           @arg @ref HAL_UART_ERROR_CB_ID 错误回调 ID
-  *           @arg @ref HAL_UART_ABORT_COMPLETE_CB_ID 终止完成回调 ID
-  *           @arg @ref HAL_UART_ABORT_TRANSMIT_COMPLETE_CB_ID 发送终止完成回调 ID
-  *           @arg @ref HAL_UART_ABORT_RECEIVE_COMPLETE_CB_ID 接收终止完成回调 ID
-  *           @arg @ref HAL_UART_MSPINIT_CB_ID MspInit 回调 ID
-  *           @arg @ref HAL_UART_MSPDEINIT_CB_ID MspDeInit 回调 ID
-  * @param  pCallback 指向回调函数的指针
-  * @retval HAL 状态
+  * @brief  Register a User UART Callback
+  *         To be used instead of the weak predefined callback
+  * @note   The HAL_UART_RegisterCallback() may be called before HAL_UART_Init(), HAL_HalfDuplex_Init(), HAL_LIN_Init(),
+  *         HAL_MultiProcessor_Init() to register callbacks for HAL_UART_MSPINIT_CB_ID and HAL_UART_MSPDEINIT_CB_ID
+  * @param  huart uart handle
+  * @param  CallbackID ID of the callback to be registered
+  *         This parameter can be one of the following values:
+  *           @arg @ref HAL_UART_TX_HALFCOMPLETE_CB_ID Tx Half Complete Callback ID
+  *           @arg @ref HAL_UART_TX_COMPLETE_CB_ID Tx Complete Callback ID
+  *           @arg @ref HAL_UART_RX_HALFCOMPLETE_CB_ID Rx Half Complete Callback ID
+  *           @arg @ref HAL_UART_RX_COMPLETE_CB_ID Rx Complete Callback ID
+  *           @arg @ref HAL_UART_ERROR_CB_ID Error Callback ID
+  *           @arg @ref HAL_UART_ABORT_COMPLETE_CB_ID Abort Complete Callback ID
+  *           @arg @ref HAL_UART_ABORT_TRANSMIT_COMPLETE_CB_ID Abort Transmit Complete Callback ID
+  *           @arg @ref HAL_UART_ABORT_RECEIVE_COMPLETE_CB_ID Abort Receive Complete Callback ID
+  *           @arg @ref HAL_UART_MSPINIT_CB_ID MspInit Callback ID
+  *           @arg @ref HAL_UART_MSPDEINIT_CB_ID MspDeInit Callback ID
+  * @param  pCallback pointer to the Callback function
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UART_RegisterCallback(UART_HandleTypeDef *huart, HAL_UART_CallbackIDTypeDef CallbackID,
                                             pUART_CallbackTypeDef pCallback)
@@ -752,7 +768,7 @@ HAL_StatusTypeDef HAL_UART_RegisterCallback(UART_HandleTypeDef *huart, HAL_UART_
 
   if (pCallback == NULL)
   {
-    /* 更新错误代码 */
+    /* Update the error code */
     huart->ErrorCode |= HAL_UART_ERROR_INVALID_CALLBACK;
 
     return HAL_ERROR;
@@ -803,10 +819,10 @@ HAL_StatusTypeDef HAL_UART_RegisterCallback(UART_HandleTypeDef *huart, HAL_UART_
         break;
 
       default :
-        /* 更新错误代码 */
+        /* Update the error code */
         huart->ErrorCode |= HAL_UART_ERROR_INVALID_CALLBACK;
 
-        /* 返回错误状态 */
+        /* Return error status */
         status =  HAL_ERROR;
         break;
     }
@@ -824,20 +840,20 @@ HAL_StatusTypeDef HAL_UART_RegisterCallback(UART_HandleTypeDef *huart, HAL_UART_
         break;
 
       default :
-        /* 更新错误代码 */
+        /* Update the error code */
         huart->ErrorCode |= HAL_UART_ERROR_INVALID_CALLBACK;
 
-        /* 返回错误状态 */
+        /* Return error status */
         status =  HAL_ERROR;
         break;
     }
   }
   else
   {
-    /* 更新错误代码 */
+    /* Update the error code */
     huart->ErrorCode |= HAL_UART_ERROR_INVALID_CALLBACK;
 
-    /* 返回错误状态 */
+    /* Return error status */
     status =  HAL_ERROR;
   }
 
@@ -845,25 +861,25 @@ HAL_StatusTypeDef HAL_UART_RegisterCallback(UART_HandleTypeDef *huart, HAL_UART_
 }
 
 /**
-  * @brief  注销 UART 回调
-  *         UART 回调重定向到 weak 预定义回调
-  * @note   HAL_UART_UnRegisterCallback() 可在 HAL_UART_Init()、HAL_HalfDuplex_Init() 之前调用，
-  *         HAL_LIN_Init()、HAL_MultiProcessor_Init() 用于注销 HAL_UART_MSPINIT_CB_ID 的回调
-  *         和 HAL_UART_MSPDEINIT_CB_ID
-  * @param  huart uart 句柄
-  * @param  CallbackID 要注销的回调 ID
-  *         此参数可以是以下值之一：
-  *           @arg @ref HAL_UART_TX_HALFCOMPLETE_CB_ID Tx 半完成回调 ID
-  *           @arg @ref HAL_UART_TX_COMPLETE_CB_ID Tx 完成回调 ID
-  *           @arg @ref HAL_UART_RX_HALFCOMPLETE_CB_ID Rx 半完成回调 ID
-  *           @arg @ref HAL_UART_RX_COMPLETE_CB_ID Rx 完成回调 ID
-  *           @arg @ref HAL_UART_ERROR_CB_ID 错误回调 ID
-  *           @arg @ref HAL_UART_ABORT_COMPLETE_CB_ID 终止完成回调 ID
-  *           @arg @ref HAL_UART_ABORT_TRANSMIT_COMPLETE_CB_ID 发送终止完成回调 ID
-  *           @arg @ref HAL_UART_ABORT_RECEIVE_COMPLETE_CB_ID 接收终止完成回调 ID
-  *           @arg @ref HAL_UART_MSPINIT_CB_ID MspInit 回调 ID
-  *           @arg @ref HAL_UART_MSPDEINIT_CB_ID MspDeInit 回调 ID
-  * @retval HAL 状态
+  * @brief  Unregister an UART Callback
+  *         UART callaback is redirected to the weak predefined callback
+  * @note   The HAL_UART_UnRegisterCallback() may be called before HAL_UART_Init(), HAL_HalfDuplex_Init(),
+  *         HAL_LIN_Init(), HAL_MultiProcessor_Init() to un-register callbacks for HAL_UART_MSPINIT_CB_ID
+  *         and HAL_UART_MSPDEINIT_CB_ID
+  * @param  huart uart handle
+  * @param  CallbackID ID of the callback to be unregistered
+  *         This parameter can be one of the following values:
+  *           @arg @ref HAL_UART_TX_HALFCOMPLETE_CB_ID Tx Half Complete Callback ID
+  *           @arg @ref HAL_UART_TX_COMPLETE_CB_ID Tx Complete Callback ID
+  *           @arg @ref HAL_UART_RX_HALFCOMPLETE_CB_ID Rx Half Complete Callback ID
+  *           @arg @ref HAL_UART_RX_COMPLETE_CB_ID Rx Complete Callback ID
+  *           @arg @ref HAL_UART_ERROR_CB_ID Error Callback ID
+  *           @arg @ref HAL_UART_ABORT_COMPLETE_CB_ID Abort Complete Callback ID
+  *           @arg @ref HAL_UART_ABORT_TRANSMIT_COMPLETE_CB_ID Abort Transmit Complete Callback ID
+  *           @arg @ref HAL_UART_ABORT_RECEIVE_COMPLETE_CB_ID Abort Receive Complete Callback ID
+  *           @arg @ref HAL_UART_MSPINIT_CB_ID MspInit Callback ID
+  *           @arg @ref HAL_UART_MSPDEINIT_CB_ID MspDeInit Callback ID
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UART_UnRegisterCallback(UART_HandleTypeDef *huart, HAL_UART_CallbackIDTypeDef CallbackID)
 {
@@ -874,50 +890,50 @@ HAL_StatusTypeDef HAL_UART_UnRegisterCallback(UART_HandleTypeDef *huart, HAL_UAR
     switch (CallbackID)
     {
       case HAL_UART_TX_HALFCOMPLETE_CB_ID :
-        huart->TxHalfCpltCallback = HAL_UART_TxHalfCpltCallback;               /* 旧版 weak TxHalfCpltCallback       */
+        huart->TxHalfCpltCallback = HAL_UART_TxHalfCpltCallback;               /* Legacy weak  TxHalfCpltCallback       */
         break;
 
       case HAL_UART_TX_COMPLETE_CB_ID :
-        huart->TxCpltCallback = HAL_UART_TxCpltCallback;                       /* 旧版 weak TxCpltCallback            */
+        huart->TxCpltCallback = HAL_UART_TxCpltCallback;                       /* Legacy weak TxCpltCallback            */
         break;
 
       case HAL_UART_RX_HALFCOMPLETE_CB_ID :
-        huart->RxHalfCpltCallback = HAL_UART_RxHalfCpltCallback;               /* 旧版 weak RxHalfCpltCallback        */
+        huart->RxHalfCpltCallback = HAL_UART_RxHalfCpltCallback;               /* Legacy weak RxHalfCpltCallback        */
         break;
 
       case HAL_UART_RX_COMPLETE_CB_ID :
-        huart->RxCpltCallback = HAL_UART_RxCpltCallback;                       /* 旧版 weak RxCpltCallback            */
+        huart->RxCpltCallback = HAL_UART_RxCpltCallback;                       /* Legacy weak RxCpltCallback            */
         break;
 
       case HAL_UART_ERROR_CB_ID :
-        huart->ErrorCallback = HAL_UART_ErrorCallback;                         /* 旧版 weak ErrorCallback             */
+        huart->ErrorCallback = HAL_UART_ErrorCallback;                         /* Legacy weak ErrorCallback             */
         break;
 
       case HAL_UART_ABORT_COMPLETE_CB_ID :
-        huart->AbortCpltCallback = HAL_UART_AbortCpltCallback;                 /* 旧版 weak AbortCpltCallback         */
+        huart->AbortCpltCallback = HAL_UART_AbortCpltCallback;                 /* Legacy weak AbortCpltCallback         */
         break;
 
       case HAL_UART_ABORT_TRANSMIT_COMPLETE_CB_ID :
-        huart->AbortTransmitCpltCallback = HAL_UART_AbortTransmitCpltCallback; /* 旧版 weak AbortTransmitCpltCallback */
+        huart->AbortTransmitCpltCallback = HAL_UART_AbortTransmitCpltCallback; /* Legacy weak AbortTransmitCpltCallback */
         break;
 
       case HAL_UART_ABORT_RECEIVE_COMPLETE_CB_ID :
-        huart->AbortReceiveCpltCallback = HAL_UART_AbortReceiveCpltCallback;   /* 旧版 weak AbortReceiveCpltCallback  */
+        huart->AbortReceiveCpltCallback = HAL_UART_AbortReceiveCpltCallback;   /* Legacy weak AbortReceiveCpltCallback  */
         break;
 
       case HAL_UART_MSPINIT_CB_ID :
-        huart->MspInitCallback = HAL_UART_MspInit;                             /* 旧版 weak MspInitCallback           */
+        huart->MspInitCallback = HAL_UART_MspInit;                             /* Legacy weak MspInitCallback           */
         break;
 
       case HAL_UART_MSPDEINIT_CB_ID :
-        huart->MspDeInitCallback = HAL_UART_MspDeInit;                         /* 旧版 weak MspDeInitCallback         */
+        huart->MspDeInitCallback = HAL_UART_MspDeInit;                         /* Legacy weak MspDeInitCallback         */
         break;
 
       default :
-        /* 更新错误代码 */
+        /* Update the error code */
         huart->ErrorCode |= HAL_UART_ERROR_INVALID_CALLBACK;
 
-        /* 返回错误状态 */
+        /* Return error status */
         status =  HAL_ERROR;
         break;
     }
@@ -935,20 +951,20 @@ HAL_StatusTypeDef HAL_UART_UnRegisterCallback(UART_HandleTypeDef *huart, HAL_UAR
         break;
 
       default :
-        /* 更新错误代码 */
+        /* Update the error code */
         huart->ErrorCode |= HAL_UART_ERROR_INVALID_CALLBACK;
 
-        /* 返回错误状态 */
+        /* Return error status */
         status =  HAL_ERROR;
         break;
     }
   }
   else
   {
-    /* 更新错误代码 */
+    /* Update the error code */
     huart->ErrorCode |= HAL_UART_ERROR_INVALID_CALLBACK;
 
-    /* 返回错误状态 */
+    /* Return error status */
     status =  HAL_ERROR;
   }
 
@@ -956,11 +972,11 @@ HAL_StatusTypeDef HAL_UART_UnRegisterCallback(UART_HandleTypeDef *huart, HAL_UAR
 }
 
 /**
-  * @brief  注册用户 UART Rx 事件回调
-  *         用于替代 weak 预定义回调
-  * @param  huart     Uart 句柄
-  * @param  pCallback 指向 Rx 事件回调函数的指针
-  * @retval HAL 状态
+  * @brief  Register a User UART Rx Event Callback
+  *         To be used instead of the weak predefined callback
+  * @param  huart     Uart handle
+  * @param  pCallback Pointer to the Rx Event Callback function
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UART_RegisterRxEventCallback(UART_HandleTypeDef *huart, pUART_RxEventCallbackTypeDef pCallback)
 {
@@ -973,7 +989,7 @@ HAL_StatusTypeDef HAL_UART_RegisterRxEventCallback(UART_HandleTypeDef *huart, pU
     return HAL_ERROR;
   }
 
-  /* 进程锁定 */
+  /* Process locked */
   __HAL_LOCK(huart);
 
   if (huart->gState == HAL_UART_STATE_READY)
@@ -987,28 +1003,28 @@ HAL_StatusTypeDef HAL_UART_RegisterRxEventCallback(UART_HandleTypeDef *huart, pU
     status =  HAL_ERROR;
   }
 
-  /* 释放锁 */
+  /* Release Lock */
   __HAL_UNLOCK(huart);
 
   return status;
 }
 
 /**
-  * @brief  注销 UART Rx 事件回调
-  *         UART Rx 事件回调重定向到 weak HAL_UARTEx_RxEventCallback() 预定义回调
-  * @param  huart     Uart 句柄
-  * @retval HAL 状态
+  * @brief  UnRegister the UART Rx Event Callback
+  *         UART Rx Event Callback is redirected to the weak HAL_UARTEx_RxEventCallback() predefined callback
+  * @param  huart     Uart handle
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UART_UnRegisterRxEventCallback(UART_HandleTypeDef *huart)
 {
   HAL_StatusTypeDef status = HAL_OK;
 
-  /* 进程锁定 */
+  /* Process locked */
   __HAL_LOCK(huart);
 
   if (huart->gState == HAL_UART_STATE_READY)
   {
-    huart->RxEventCallback = HAL_UARTEx_RxEventCallback; /* 旧版 weak UART Rx 事件回调  */
+    huart->RxEventCallback = HAL_UARTEx_RxEventCallback; /* Legacy weak UART Rx Event Callback  */
   }
   else
   {
@@ -1017,7 +1033,7 @@ HAL_StatusTypeDef HAL_UART_UnRegisterRxEventCallback(UART_HandleTypeDef *huart)
     status =  HAL_ERROR;
   }
 
-  /* 释放锁 */
+  /* Release Lock */
   __HAL_UNLOCK(huart);
   return status;
 }
@@ -1027,49 +1043,53 @@ HAL_StatusTypeDef HAL_UART_UnRegisterRxEventCallback(UART_HandleTypeDef *huart)
   * @}
   */
 
-/** @defgroup UART_Exported_Functions_Group2 IO 操作函数
-  *  @brief UART 发送和接收函数
+/** @defgroup UART_Exported_Functions_Group2 IO operation functions
+  *  @brief UART Transmit and Receive functions
   *
 @verbatim
  ===============================================================================
-                      ##### IO 操作函数 #####
+                      ##### IO operation functions #####
  ===============================================================================
-    本小节提供了一组函数，允许管理 UART 异步
-    和半双工数据传输。
+    This subsection provides a set of functions allowing to manage the UART asynchronous
+    and Half duplex data transfers.
 
-    (#) 有两种传输模式：
-       (+) 阻塞模式：通信以轮询模式执行。
-           所有数据处理的 HAL 状态由同一函数在传输完成后返回。
-       (+) 非阻塞模式：通信使用中断或 DMA 执行，这些 API 返回 HAL 状态。
-           数据处理结束将通过专用 UART IRQ（中断模式）或 DMA IRQ（DMA 模式）指示。
-           HAL_UART_TxCpltCallback()、HAL_UART_RxCpltCallback() 用户回调
-           将分别在发送或接收过程结束时执行
-           当检测到通信错误时，将执行 HAL_UART_ErrorCallback() 用户回调。
+    (#) There are two modes of transfer:
+       (+) Blocking mode: The communication is performed in polling mode.
+           The HAL status of all data processing is returned by the same function
+           after finishing transfer.
+       (+) Non-Blocking mode: The communication is performed using Interrupts
+           or DMA, these API's return the HAL status.
+           The end of the data processing will be indicated through the
+           dedicated UART IRQ when using Interrupt mode or the DMA IRQ when
+           using DMA mode.
+           The HAL_UART_TxCpltCallback(), HAL_UART_RxCpltCallback() user callbacks
+           will be executed respectively at the end of the transmit or receive process
+           The HAL_UART_ErrorCallback()user callback will be executed when a communication error is detected.
 
-    (#) 阻塞模式 API 有：
+    (#) Blocking mode API's are :
         (+) HAL_UART_Transmit()
         (+) HAL_UART_Receive()
 
-    (#) 非阻塞模式（中断）API 有：
+    (#) Non-Blocking mode API's with Interrupt are :
         (+) HAL_UART_Transmit_IT()
         (+) HAL_UART_Receive_IT()
         (+) HAL_UART_IRQHandler()
 
-    (#) 非阻塞模式（DMA）API 有：
+    (#) Non-Blocking mode API's with DMA are :
         (+) HAL_UART_Transmit_DMA()
         (+) HAL_UART_Receive_DMA()
         (+) HAL_UART_DMAPause()
         (+) HAL_UART_DMAResume()
         (+) HAL_UART_DMAStop()
 
-    (#) 在非阻塞模式下提供了一组传输完成回调：
+    (#) A set of Transfer Complete Callbacks are provided in Non_Blocking mode:
         (+) HAL_UART_TxHalfCpltCallback()
         (+) HAL_UART_TxCpltCallback()
         (+) HAL_UART_RxHalfCpltCallback()
         (+) HAL_UART_RxCpltCallback()
         (+) HAL_UART_ErrorCallback()
 
-    (#) 可以使用终止 API 中止非阻塞模式传输：
+    (#) Non-Blocking mode transfers could be aborted using Abort API's :
         (+) HAL_UART_Abort()
         (+) HAL_UART_AbortTransmit()
         (+) HAL_UART_AbortReceive()
@@ -1077,43 +1097,43 @@ HAL_StatusTypeDef HAL_UART_UnRegisterRxEventCallback(UART_HandleTypeDef *huart)
         (+) HAL_UART_AbortTransmit_IT()
         (+) HAL_UART_AbortReceive_IT()
 
-    (#) 对于基于中断的终止服务（HAL_UART_Abortxxx_IT），提供了一组终止完成回调：
+    (#) For Abort services based on interrupts (HAL_UART_Abortxxx_IT), a set of Abort Complete Callbacks are provided:
         (+) HAL_UART_AbortCpltCallback()
         (+) HAL_UART_AbortTransmitCpltCallback()
         (+) HAL_UART_AbortReceiveCpltCallback()
 
-    (#) 对于增强接收服务的非阻塞模式，提供了 Rx 事件接收回调（Rx 事件通知）：
+    (#) A Rx Event Reception Callback (Rx event notification) is available for Non_Blocking modes of enhanced reception services:
         (+) HAL_UARTEx_RxEventCallback()
 
-    (#) 在非阻塞模式传输中，可能的错误分为两类。
-        错误处理如下：
-       (+) 错误被视为可恢复且非阻塞：传输可以继续到结束，但错误严重性
-           需要由用户评估：这涉及中断模式接收中的帧错误、校验错误或噪声错误。
-           接收到的字符然后被检索并存储在 Rx 缓冲区中，设置错误代码以允许用户识别错误类型，
-           并执行 HAL_UART_ErrorCallback() 用户回调。UART 端传输保持运行。
-           如果用户想要中止它，应调用中止服务。
-       (+) 错误被视为阻塞：传输无法正确完成并被中止。
-           这涉及中断模式接收中的溢出错误和 DMA 模式中的所有错误。
-           设置错误代码以允许用户识别错误类型，并执行 HAL_UART_ErrorCallback() 用户回调。
+    (#) In Non-Blocking mode transfers, possible errors are split into 2 categories.
+        Errors are handled as follows :
+       (+) Error is considered as Recoverable and non blocking : Transfer could go till end, but error severity is
+           to be evaluated by user : this concerns Frame Error, Parity Error or Noise Error in Interrupt mode reception .
+           Received character is then retrieved and stored in Rx buffer, Error code is set to allow user to identify error type,
+           and HAL_UART_ErrorCallback() user callback is executed. Transfer is kept ongoing on UART side.
+           If user wants to abort it, Abort services should be called by user.
+       (+) Error is considered as Blocking : Transfer could not be completed properly and is aborted.
+           This concerns Overrun Error In Interrupt mode reception and all errors in DMA mode.
+           Error code is set to allow user to identify error type, and HAL_UART_ErrorCallback() user callback is executed.
 
-    -@- 在半双工通信中，禁止并行运行发送和接收过程，
-        UART 状态 HAL_UART_STATE_BUSY_TX_RX 无法使用。
+    -@- In the Half duplex communication, it is forbidden to run the transmit
+        and receive process in parallel, the UART state HAL_UART_STATE_BUSY_TX_RX can't be useful.
 
 @endverbatim
   * @{
   */
 
 /**
-  * @brief  在阻塞模式下发送一定数量的数据。
-  * @note   当 UART 校验未启用（PCE = 0），且字长配置为 9 位（M1-M0 = 01）时，
-  *         发送的数据作为一组 u16 处理。在这种情况下，Size 必须指示
-  *         通过 pData 提供的 u16 数量。
-  * @param  huart 指向 UART_HandleTypeDef 结构体的指针，其中包含
-  *               指定 UART 模块的配置信息。
-  * @param  pData 指向数据缓冲区（u8 或 u16 数据元素）的指针。
-  * @param  Size  要发送的数据元素数量（u8 或 u16）
-  * @param  Timeout 超时持续时间
-  * @retval HAL 状态
+  * @brief  Sends an amount of data in blocking mode.
+  * @note   When UART parity is not enabled (PCE = 0), and Word Length is configured to 9 bits (M1-M0 = 01),
+  *         the sent data is handled as a set of u16. In this case, Size must indicate the number
+  *         of u16 provided through pData.
+  * @param  huart Pointer to a UART_HandleTypeDef structure that contains
+  *               the configuration information for the specified UART module.
+  * @param  pData Pointer to data buffer (u8 or u16 data elements).
+  * @param  Size  Amount of data elements (u8 or u16) to be sent
+  * @param  Timeout Timeout duration
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size, uint32_t Timeout)
 {
@@ -1121,7 +1141,7 @@ HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pD
   const uint16_t *pdata16bits;
   uint32_t tickstart = 0U;
 
-  /* 检查 Tx 过程是否尚未进行 */
+  /* Check that a Tx process is not already ongoing */
   if (huart->gState == HAL_UART_STATE_READY)
   {
     if ((pData == NULL) || (Size == 0U))
@@ -1132,13 +1152,13 @@ HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pD
     huart->ErrorCode = HAL_UART_ERROR_NONE;
     huart->gState = HAL_UART_STATE_BUSY_TX;
 
-    /* 初始化 tickstart 用于超时管理 */
+    /* Init tickstart for timeout management */
     tickstart = HAL_GetTick();
 
     huart->TxXferSize = Size;
     huart->TxXferCount = Size;
 
-    /* 对于 9 位/无校验传输，pData 需要作为 uint16_t 指针处理 */
+    /* In case of 9bits/No Parity transfer, pData needs to be handled as a uint16_t pointer */
     if ((huart->Init.WordLength == UART_WORDLENGTH_9B) && (huart->Init.Parity == UART_PARITY_NONE))
     {
       pdata8bits  = NULL;
@@ -1178,7 +1198,7 @@ HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pD
       return HAL_TIMEOUT;
     }
 
-    /* 在 Tx 过程结束时，将 huart->gState 恢复为 Ready */
+    /* At end of Tx process, restore huart->gState to Ready */
     huart->gState = HAL_UART_STATE_READY;
 
     return HAL_OK;
@@ -1190,16 +1210,16 @@ HAL_StatusTypeDef HAL_UART_Transmit(UART_HandleTypeDef *huart, const uint8_t *pD
 }
 
 /**
-  * @brief  在阻塞模式下接收一定数量的数据。
-  * @note   当 UART 校验未启用（PCE = 0），且字长配置为 9 位（M1-M0 = 01）时，
-  *         接收的数据作为一组 u16 处理。在这种情况下，Size 必须指示
-  *         通过 pData 可用的 u16 数量。
-  * @param  huart 指向 UART_HandleTypeDef 结构体的指针，其中包含
-  *               指定 UART 模块的配置信息。
-  * @param  pData 指向数据缓冲区（u8 或 u16 数据元素）的指针。
-  * @param  Size  要接收的数据元素数量（u8 或 u16）。
-  * @param  Timeout 超时持续时间
-  * @retval HAL 状态
+  * @brief  Receives an amount of data in blocking mode.
+  * @note   When UART parity is not enabled (PCE = 0), and Word Length is configured to 9 bits (M1-M0 = 01),
+  *         the received data is handled as a set of u16. In this case, Size must indicate the number
+  *         of u16 available through pData.
+  * @param  huart Pointer to a UART_HandleTypeDef structure that contains
+  *               the configuration information for the specified UART module.
+  * @param  pData Pointer to data buffer (u8 or u16 data elements).
+  * @param  Size  Amount of data elements (u8 or u16) to be received.
+  * @param  Timeout Timeout duration
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UART_Receive(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size, uint32_t Timeout)
 {
@@ -1207,7 +1227,7 @@ HAL_StatusTypeDef HAL_UART_Receive(UART_HandleTypeDef *huart, uint8_t *pData, ui
   uint16_t *pdata16bits;
   uint32_t tickstart = 0U;
 
-  /* 检查 Rx 过程是否尚未进行 */
+  /* Check that a Rx process is not already ongoing */
   if (huart->RxState == HAL_UART_STATE_READY)
   {
     if ((pData == NULL) || (Size == 0U))
@@ -1219,13 +1239,13 @@ HAL_StatusTypeDef HAL_UART_Receive(UART_HandleTypeDef *huart, uint8_t *pData, ui
     huart->RxState = HAL_UART_STATE_BUSY_RX;
     huart->ReceptionType = HAL_UART_RECEPTION_STANDARD;
 
-    /* 初始化 tickstart 用于超时管理 */
+    /* Init tickstart for timeout management */
     tickstart = HAL_GetTick();
 
     huart->RxXferSize = Size;
     huart->RxXferCount = Size;
 
-    /* 对于 9 位/无校验传输，pRxData 需要作为 uint16_t 指针处理 */
+    /* In case of 9bits/No Parity transfer, pRxData needs to be handled as a uint16_t pointer */
     if ((huart->Init.WordLength == UART_WORDLENGTH_9B) && (huart->Init.Parity == UART_PARITY_NONE))
     {
       pdata8bits  = NULL;
@@ -1237,7 +1257,7 @@ HAL_StatusTypeDef HAL_UART_Receive(UART_HandleTypeDef *huart, uint8_t *pData, ui
       pdata16bits = NULL;
     }
 
-    /* 检查剩余要接收的数据 */
+    /* Check the remain data to be received */
     while (huart->RxXferCount > 0U)
     {
       if (UART_WaitOnFlagUntilTimeout(huart, UART_FLAG_RXNE, RESET, tickstart, Timeout) != HAL_OK)
@@ -1266,7 +1286,7 @@ HAL_StatusTypeDef HAL_UART_Receive(UART_HandleTypeDef *huart, uint8_t *pData, ui
       huart->RxXferCount--;
     }
 
-    /* 在 Rx 过程结束时，将 huart->RxState 恢复为 Ready */
+    /* At end of Rx process, restore huart->RxState to Ready */
     huart->RxState = HAL_UART_STATE_READY;
 
     return HAL_OK;
@@ -1278,19 +1298,19 @@ HAL_StatusTypeDef HAL_UART_Receive(UART_HandleTypeDef *huart, uint8_t *pData, ui
 }
 
 /**
-  * @brief  在非阻塞模式下发送一定数量的数据。
-  * @note   当 UART 校验未启用（PCE = 0），且字长配置为 9 位（M1-M0 = 01）时，
-  *         发送的数据作为一组 u16 处理。在这种情况下，Size 必须指示
-  *         通过 pData 提供的 u16 数量。
-  * @param  huart 指向 UART_HandleTypeDef 结构体的指针，其中包含
-  *               指定 UART 模块的配置信息。
-  * @param  pData 指向数据缓冲区（u8 或 u16 数据元素）的指针。
-  * @param  Size  要发送的数据元素数量（u8 或 u16）
-  * @retval HAL 状态
+  * @brief  Sends an amount of data in non blocking mode.
+  * @note   When UART parity is not enabled (PCE = 0), and Word Length is configured to 9 bits (M1-M0 = 01),
+  *         the sent data is handled as a set of u16. In this case, Size must indicate the number
+  *         of u16 provided through pData.
+  * @param  huart Pointer to a UART_HandleTypeDef structure that contains
+  *               the configuration information for the specified UART module.
+  * @param  pData Pointer to data buffer (u8 or u16 data elements).
+  * @param  Size  Amount of data elements (u8 or u16) to be sent
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UART_Transmit_IT(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size)
 {
-  /* 检查 Tx 过程是否尚未进行 */
+  /* Check that a Tx process is not already ongoing */
   if (huart->gState == HAL_UART_STATE_READY)
   {
     if ((pData == NULL) || (Size == 0U))
@@ -1305,7 +1325,7 @@ HAL_StatusTypeDef HAL_UART_Transmit_IT(UART_HandleTypeDef *huart, const uint8_t 
     huart->ErrorCode = HAL_UART_ERROR_NONE;
     huart->gState = HAL_UART_STATE_BUSY_TX;
 
-    /* 使能 UART 发送数据寄存器空中断 */
+    /* Enable the UART Transmit data register empty Interrupt */
     __HAL_UART_ENABLE_IT(huart, UART_IT_TXE);
 
     return HAL_OK;
@@ -1317,19 +1337,19 @@ HAL_StatusTypeDef HAL_UART_Transmit_IT(UART_HandleTypeDef *huart, const uint8_t 
 }
 
 /**
-  * @brief  在非阻塞模式下接收一定数量的数据。
-  * @note   当 UART 校验未启用（PCE = 0），且字长配置为 9 位（M1-M0 = 01）时，
-  *         接收的数据作为一组 u16 处理。在这种情况下，Size 必须指示
-  *         通过 pData 可用的 u16 数量。
-  * @param  huart 指向 UART_HandleTypeDef 结构体的指针，其中包含
-  *               指定 UART 模块的配置信息。
-  * @param  pData 指向数据缓冲区（u8 或 u16 数据元素）的指针。
-  * @param  Size  要接收的数据元素数量（u8 或 u16）。
-  * @retval HAL 状态
+  * @brief  Receives an amount of data in non blocking mode.
+  * @note   When UART parity is not enabled (PCE = 0), and Word Length is configured to 9 bits (M1-M0 = 01),
+  *         the received data is handled as a set of u16. In this case, Size must indicate the number
+  *         of u16 available through pData.
+  * @param  huart Pointer to a UART_HandleTypeDef structure that contains
+  *               the configuration information for the specified UART module.
+  * @param  pData Pointer to data buffer (u8 or u16 data elements).
+  * @param  Size  Amount of data elements (u8 or u16) to be received.
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size)
 {
-  /* 检查 Rx 过程是否尚未进行 */
+  /* Check that a Rx process is not already ongoing */
   if (huart->RxState == HAL_UART_STATE_READY)
   {
     if ((pData == NULL) || (Size == 0U))
@@ -1337,7 +1357,7 @@ HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData,
       return HAL_ERROR;
     }
 
-    /* 将接收类型设置为标准接收 */
+    /* Set Reception type to Standard reception */
     huart->ReceptionType = HAL_UART_RECEPTION_STANDARD;
 
     return (UART_Start_Receive_IT(huart, pData, Size));
@@ -1349,21 +1369,21 @@ HAL_StatusTypeDef HAL_UART_Receive_IT(UART_HandleTypeDef *huart, uint8_t *pData,
 }
 
 /**
-  * @brief  在 DMA 模式下发送一定数量的数据。
-  * @note   当 UART 校验未启用（PCE = 0），且字长配置为 9 位（M1-M0 = 01）时，
-  *         发送的数据作为一组 u16 处理。在这种情况下，Size 必须指示
-  *         通过 pData 提供的 u16 数量。
-  * @param  huart  指向 UART_HandleTypeDef 结构体的指针，其中包含
-  *                指定 UART 模块的配置信息。
-  * @param  pData 指向数据缓冲区（u8 或 u16 数据元素）的指针。
-  * @param  Size  要发送的数据元素数量（u8 或 u16）
-  * @retval HAL 状态
+  * @brief  Sends an amount of data in DMA mode.
+  * @note   When UART parity is not enabled (PCE = 0), and Word Length is configured to 9 bits (M1-M0 = 01),
+  *         the sent data is handled as a set of u16. In this case, Size must indicate the number
+  *         of u16 provided through pData.
+  * @param  huart  Pointer to a UART_HandleTypeDef structure that contains
+  *                the configuration information for the specified UART module.
+  * @param  pData Pointer to data buffer (u8 or u16 data elements).
+  * @param  Size  Amount of data elements (u8 or u16) to be sent
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UART_Transmit_DMA(UART_HandleTypeDef *huart, const uint8_t *pData, uint16_t Size)
 {
   const uint32_t *tmp;
 
-  /* 检查 Tx 过程是否尚未进行 */
+  /* Check that a Tx process is not already ongoing */
   if (huart->gState == HAL_UART_STATE_READY)
   {
     if ((pData == NULL) || (Size == 0U))
@@ -1378,27 +1398,27 @@ HAL_StatusTypeDef HAL_UART_Transmit_DMA(UART_HandleTypeDef *huart, const uint8_t
     huart->ErrorCode = HAL_UART_ERROR_NONE;
     huart->gState = HAL_UART_STATE_BUSY_TX;
 
-    /* 设置 UART DMA 传输完成回调 */
+    /* Set the UART DMA transfer complete callback */
     huart->hdmatx->XferCpltCallback = UART_DMATransmitCplt;
 
-    /* 设置 UART DMA 半传输完成回调 */
+    /* Set the UART DMA Half transfer complete callback */
     huart->hdmatx->XferHalfCpltCallback = UART_DMATxHalfCplt;
 
-    /* 设置 DMA 错误回调 */
+    /* Set the DMA error callback */
     huart->hdmatx->XferErrorCallback = UART_DMAError;
 
-    /* 设置 DMA 终止回调 */
+    /* Set the DMA abort callback */
     huart->hdmatx->XferAbortCallback = NULL;
 
-    /* 使能 UART 发送 DMA 通道 */
+    /* Enable the UART transmit DMA channel */
     tmp = (const uint32_t *)&pData;
     HAL_DMA_Start_IT(huart->hdmatx, *(const uint32_t *)tmp, (uint32_t)&huart->Instance->DR, Size);
 
-    /* 通过写入 0 清除 SR 寄存器中的 TC 标志 */
+    /* Clear the TC flag in the SR register by writing 0 to it */
     __HAL_UART_CLEAR_FLAG(huart, UART_FLAG_TC);
 
-    /* 通过在 UART CR3 寄存器中设置 DMAT 位
-       使能发送请求的 DMA 传输 */
+    /* Enable the DMA transfer for transmit request by setting the DMAT bit
+       in the UART CR3 register */
     ATOMIC_SET_BIT(huart->Instance->CR3, USART_CR3_DMAT);
 
     return HAL_OK;
@@ -1410,20 +1430,20 @@ HAL_StatusTypeDef HAL_UART_Transmit_DMA(UART_HandleTypeDef *huart, const uint8_t
 }
 
 /**
-  * @brief  在 DMA 模式下接收一定数量的数据。
-  * @note   当 UART 校验未启用（PCE = 0），且字长配置为 9 位（M1-M0 = 01）时，
-  *         接收的数据作为一组 u16 处理。在这种情况下，Size 必须指示
-  *         通过 pData 可用的 u16 数量。
-  * @param  huart 指向 UART_HandleTypeDef 结构体的指针，其中包含
-  *               指定 UART 模块的配置信息。
-  * @param  pData 指向数据缓冲区（u8 或 u16 数据元素）的指针。
-  * @param  Size  要接收的数据元素数量（u8 或 u16）。
-  * @note   当 UART 校验启用（PCE = 1）时，接收的数据包含校验位。
-  * @retval HAL 状态
+  * @brief  Receives an amount of data in DMA mode.
+  * @note   When UART parity is not enabled (PCE = 0), and Word Length is configured to 9 bits (M1-M0 = 01),
+  *         the received data is handled as a set of u16. In this case, Size must indicate the number
+  *         of u16 available through pData.
+  * @param  huart Pointer to a UART_HandleTypeDef structure that contains
+  *               the configuration information for the specified UART module.
+  * @param  pData Pointer to data buffer (u8 or u16 data elements).
+  * @param  Size  Amount of data elements (u8 or u16) to be received.
+  * @note   When the UART parity is enabled (PCE = 1) the received data contains the parity bit.
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UART_Receive_DMA(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size)
 {
-  /* 检查 Rx 过程是否尚未进行 */
+  /* Check that a Rx process is not already ongoing */
   if (huart->RxState == HAL_UART_STATE_READY)
   {
     if ((pData == NULL) || (Size == 0U))
@@ -1431,7 +1451,7 @@ HAL_StatusTypeDef HAL_UART_Receive_DMA(UART_HandleTypeDef *huart, uint8_t *pData
       return HAL_ERROR;
     }
 
-    /* 将接收类型设置为标准接收 */
+    /* Set Reception type to Standard reception */
     huart->ReceptionType = HAL_UART_RECEPTION_STANDARD;
 
     return (UART_Start_Receive_DMA(huart, pData, Size));
@@ -1443,10 +1463,10 @@ HAL_StatusTypeDef HAL_UART_Receive_DMA(UART_HandleTypeDef *huart, uint8_t *pData
 }
 
 /**
-  * @brief 暂停 DMA 传输。
-  * @param  huart  指向 UART_HandleTypeDef 结构体的指针，其中包含
-  *                指定 UART 模块的配置信息。
-  * @retval HAL 状态
+  * @brief Pauses the DMA Transfer.
+  * @param  huart  Pointer to a UART_HandleTypeDef structure that contains
+  *                the configuration information for the specified UART module.
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UART_DMAPause(UART_HandleTypeDef *huart)
 {
@@ -1455,18 +1475,18 @@ HAL_StatusTypeDef HAL_UART_DMAPause(UART_HandleTypeDef *huart)
   dmarequest = HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAT);
   if ((huart->gState == HAL_UART_STATE_BUSY_TX) && dmarequest)
   {
-    /* 禁用 UART DMA Tx 请求 */
+    /* Disable the UART DMA Tx request */
     ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_DMAT);
   }
 
   dmarequest = HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAR);
   if ((huart->RxState == HAL_UART_STATE_BUSY_RX) && dmarequest)
   {
-    /* 禁用 RXNE、PE 和 ERR（帧错误、噪声错误、溢出错误）中断 */
+    /* Disable RXNE, PE and ERR (Frame error, noise error, overrun error) interrupts */
     ATOMIC_CLEAR_BIT(huart->Instance->CR1, USART_CR1_PEIE);
     ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_EIE);
 
-    /* 禁用 UART DMA Rx 请求 */
+    /* Disable the UART DMA Rx request */
     ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_DMAR);
   }
 
@@ -1474,33 +1494,33 @@ HAL_StatusTypeDef HAL_UART_DMAPause(UART_HandleTypeDef *huart)
 }
 
 /**
-  * @brief 恢复 DMA 传输。
-  * @param  huart  指向 UART_HandleTypeDef 结构体的指针，其中包含
-  *                指定 UART 模块的配置信息。
-  * @retval HAL 状态
+  * @brief Resumes the DMA Transfer.
+  * @param  huart  Pointer to a UART_HandleTypeDef structure that contains
+  *                the configuration information for the specified UART module.
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UART_DMAResume(UART_HandleTypeDef *huart)
 {
 
   if (huart->gState == HAL_UART_STATE_BUSY_TX)
   {
-    /* 使能 UART DMA Tx 请求 */
+    /* Enable the UART DMA Tx request */
     ATOMIC_SET_BIT(huart->Instance->CR3, USART_CR3_DMAT);
   }
 
   if (huart->RxState == HAL_UART_STATE_BUSY_RX)
   {
-    /* 在恢复 Rx 传输之前清除溢出标志 */
+    /* Clear the Overrun flag before resuming the Rx transfer*/
     __HAL_UART_CLEAR_OREFLAG(huart);
 
-    /* 重新使能 PE 和 ERR（帧错误、噪声错误、溢出错误）中断 */
+    /* Re-enable PE and ERR (Frame error, noise error, overrun error) interrupts */
     if (huart->Init.Parity != UART_PARITY_NONE)
     {
       ATOMIC_SET_BIT(huart->Instance->CR1, USART_CR1_PEIE);
     }
     ATOMIC_SET_BIT(huart->Instance->CR3, USART_CR3_EIE);
 
-    /* 使能 UART DMA Rx 请求 */
+    /* Enable the UART DMA Rx request */
     ATOMIC_SET_BIT(huart->Instance->CR3, USART_CR3_DMAR);
   }
 
@@ -1508,27 +1528,27 @@ HAL_StatusTypeDef HAL_UART_DMAResume(UART_HandleTypeDef *huart)
 }
 
 /**
-  * @brief 停止 DMA 传输。
-  * @param  huart  指向 UART_HandleTypeDef 结构体的指针，其中包含
-  *                指定 UART 模块的配置信息。
-  * @retval HAL 状态
+  * @brief Stops the DMA Transfer.
+  * @param  huart  Pointer to a UART_HandleTypeDef structure that contains
+  *                the configuration information for the specified UART module.
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UART_DMAStop(UART_HandleTypeDef *huart)
 {
   uint32_t dmarequest = 0x00U;
-  /* 此 API 未实现锁，以允许用户应用程序
-     在回调 HAL_UART_TxCpltCallback() / HAL_UART_RxCpltCallback() 下调用 HAL UART API：
-     调用 HAL_DMA_Abort() API 时会生成 DMA TX/RX 传输完成中断
-     并执行相应的回调 HAL_UART_TxCpltCallback() / HAL_UART_RxCpltCallback()
+  /* The Lock is not implemented on this API to allow the user application
+     to call the HAL UART API under callbacks HAL_UART_TxCpltCallback() / HAL_UART_RxCpltCallback():
+     when calling HAL_DMA_Abort() API the DMA TX/RX Transfer complete interrupt is generated
+     and the correspond call back is executed HAL_UART_TxCpltCallback() / HAL_UART_RxCpltCallback()
      */
 
-  /* 如果 UART DMA Tx 请求正在进行，则停止 */
+  /* Stop UART DMA Tx request if ongoing */
   dmarequest = HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAT);
   if ((huart->gState == HAL_UART_STATE_BUSY_TX) && dmarequest)
   {
     ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_DMAT);
 
-    /* 中止 UART DMA Tx 通道 */
+    /* Abort the UART DMA Tx channel */
     if (huart->hdmatx != NULL)
     {
       HAL_DMA_Abort(huart->hdmatx);
@@ -1536,13 +1556,13 @@ HAL_StatusTypeDef HAL_UART_DMAStop(UART_HandleTypeDef *huart)
     UART_EndTxTransfer(huart);
   }
 
-  /* 如果 UART DMA Rx 请求正在进行，则停止 */
+  /* Stop UART DMA Rx request if ongoing */
   dmarequest = HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAR);
   if ((huart->RxState == HAL_UART_STATE_BUSY_RX) && dmarequest)
   {
     ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_DMAR);
 
-    /* 中止 UART DMA Rx 通道 */
+    /* Abort the UART DMA Rx channel */
     if (huart->hdmarx != NULL)
     {
       HAL_DMA_Abort(huart->hdmarx);
@@ -1554,19 +1574,19 @@ HAL_StatusTypeDef HAL_UART_DMAStop(UART_HandleTypeDef *huart)
 }
 
 /**
-  * @brief 在阻塞模式下接收一定数量的数据，直到接收到预期数量的数据或发生 IDLE 事件。
-  * @note   如果接收完成（已接收到预期数量的数据），
-  *         或者在 IDLE 事件后停止接收（接收到的数据少于预期数量），
-  *         则返回 HAL_OK。在这种情况下，RxLen 输出参数指示接收缓冲区中可用的数据数量。
-  * @note   当 UART 校验未启用（PCE = 0），且字长配置为 9 位（M = 01）时，
-  *         接收的数据作为一组 uint16_t 处理。在这种情况下，Size 必须指示
-  *         通过 pData 可用的 uint16_t 数量。
-  * @param huart   UART 句柄。
-  * @param pData   指向数据缓冲区（uint8_t 或 uint16_t 数据元素）的指针。
-  * @param Size    要接收的数据元素数量（uint8_t 或 uint16_t）。
-  * @param RxLen   最终接收到的数据元素数量（在 IDLE 事件结束接收的情况下可能小于 Size）
-  * @param Timeout 以 ms 表示的超时持续时间（涵盖整个接收序列）。
-  * @retval HAL 状态
+  * @brief Receive an amount of data in blocking mode till either the expected number of data is received or an IDLE event occurs.
+  * @note   HAL_OK is returned if reception is completed (expected number of data has been received)
+  *         or if reception is stopped after IDLE event (less than the expected number of data has been received)
+  *         In this case, RxLen output parameter indicates number of data available in reception buffer.
+  * @note   When UART parity is not enabled (PCE = 0), and Word Length is configured to 9 bits (M = 01),
+  *         the received data is handled as a set of uint16_t. In this case, Size must indicate the number
+  *         of uint16_t available through pData.
+  * @param huart   UART handle.
+  * @param pData   Pointer to data buffer (uint8_t or uint16_t data elements).
+  * @param Size    Amount of data elements (uint8_t or uint16_t) to be received.
+  * @param RxLen   Number of data elements finally received (could be lower than Size, in case reception ends on IDLE event)
+  * @param Timeout Timeout duration expressed in ms (covers the whole reception sequence).
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size, uint16_t *RxLen,
                                            uint32_t Timeout)
@@ -1575,7 +1595,7 @@ HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle(UART_HandleTypeDef *huart, uint8_t *p
   uint16_t *pdata16bits;
   uint32_t tickstart;
 
-  /* 检查 Rx 过程是否尚未进行 */
+  /* Check that a Rx process is not already ongoing */
   if (huart->RxState == HAL_UART_STATE_READY)
   {
     if ((pData == NULL) || (Size == 0U))
@@ -1588,13 +1608,13 @@ HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle(UART_HandleTypeDef *huart, uint8_t *p
     huart->ReceptionType = HAL_UART_RECEPTION_TOIDLE;
     huart->RxEventType = HAL_UART_RXEVENT_TC;
 
-    /* 初始化 tickstart 用于超时管理 */
+    /* Init tickstart for timeout management */
     tickstart = HAL_GetTick();
 
     huart->RxXferSize  = Size;
     huart->RxXferCount = Size;
 
-    /* 对于 9 位/无校验传输，pRxData 需要作为 uint16_t 指针处理 */
+    /* In case of 9bits/No Parity transfer, pRxData needs to be handled as a uint16_t pointer */
     if ((huart->Init.WordLength == UART_WORDLENGTH_9B) && (huart->Init.Parity == UART_PARITY_NONE))
     {
       pdata8bits  = NULL;
@@ -1606,20 +1626,20 @@ HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle(UART_HandleTypeDef *huart, uint8_t *p
       pdata16bits = NULL;
     }
 
-    /* 初始化已接收元素的输出数量 */
+    /* Initialize output number of received elements */
     *RxLen = 0U;
 
-    /* 当还有数据要接收时 */
+    /* as long as data have to be received */
     while (huart->RxXferCount > 0U)
     {
-      /* 检查 IDLE 标志是否置位 */
+      /* Check if IDLE flag is set */
       if (__HAL_UART_GET_FLAG(huart, UART_FLAG_IDLE))
       {
-        /* 在 ISR 中清除 IDLE 标志 */
+        /* Clear IDLE flag in ISR */
         __HAL_UART_CLEAR_IDLEFLAG(huart);
 
-        /* 如果置位，但从未接收到数据，则清除标志而不退出循环 */
-        /* 如果置位，且已经接收到数据，这意味着空闲事件有效：结束接收 */
+        /* If Set, but no data ever received, clear flag without exiting loop */
+        /* If Set, and data has already been received, this means Idle Event is valid : End reception */
         if (*RxLen > 0U)
         {
           huart->RxEventType = HAL_UART_RXEVENT_IDLE;
@@ -1629,7 +1649,7 @@ HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle(UART_HandleTypeDef *huart, uint8_t *p
         }
       }
 
-      /* 检查 RXNE 标志是否置位 */
+      /* Check if RXNE flag is set */
       if (__HAL_UART_GET_FLAG(huart, UART_FLAG_RXNE))
       {
         if (pdata8bits == NULL)
@@ -1650,12 +1670,12 @@ HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle(UART_HandleTypeDef *huart, uint8_t *p
 
           pdata8bits++;
         }
-        /* 增加已接收元素的数量 */
+        /* Increment number of received elements */
         *RxLen += 1U;
         huart->RxXferCount--;
       }
 
-      /* 检查超时 */
+      /* Check for the Timeout */
       if (Timeout != HAL_MAX_DELAY)
       {
         if (((HAL_GetTick() - tickstart) > Timeout) || (Timeout == 0U))
@@ -1667,9 +1687,9 @@ HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle(UART_HandleTypeDef *huart, uint8_t *p
       }
     }
 
-    /* 在输出参数中设置已接收元素的数量：RxLen */
+    /* Set number of received elements in output parameter : RxLen */
     *RxLen = huart->RxXferSize - huart->RxXferCount;
-    /* 在 Rx 过程结束时，将 huart->RxState 恢复为 Ready */
+    /* At end of Rx process, restore huart->RxState to Ready */
     huart->RxState = HAL_UART_STATE_READY;
 
     return HAL_OK;
@@ -1681,23 +1701,23 @@ HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle(UART_HandleTypeDef *huart, uint8_t *p
 }
 
 /**
-  * @brief 在中断模式下接收一定数量的数据，直到接收到预期数量的数据或发生 IDLE 事件。
-  * @note   接收由此次函数调用启动。接收的进一步进展通过
-  *         RXNE 和 IDLE 事件引发的 UART 中断实现。回调在接收结束时被调用，指示
-  *         接收到的数据元素数量。
-  * @note   当 UART 校验未启用（PCE = 0），且字长配置为 9 位（M = 01）时，
-  *         接收的数据作为一组 uint16_t 处理。在这种情况下，Size 必须指示
-  *         通过 pData 可用的 uint16_t 数量。
-  * @param huart UART 句柄。
-  * @param pData 指向数据缓冲区（uint8_t 或 uint16_t 数据元素）的指针。
-  * @param Size  要接收的数据元素数量（uint8_t 或 uint16_t）。
-  * @retval HAL 状态
+  * @brief Receive an amount of data in interrupt mode till either the expected number of data is received or an IDLE event occurs.
+  * @note   Reception is initiated by this function call. Further progress of reception is achieved thanks
+  *         to UART interrupts raised by RXNE and IDLE events. Callback is called at end of reception indicating
+  *         number of received data elements.
+  * @note   When UART parity is not enabled (PCE = 0), and Word Length is configured to 9 bits (M = 01),
+  *         the received data is handled as a set of uint16_t. In this case, Size must indicate the number
+  *         of uint16_t available through pData.
+  * @param huart UART handle.
+  * @param pData Pointer to data buffer (uint8_t or uint16_t data elements).
+  * @param Size  Amount of data elements (uint8_t or uint16_t) to be received.
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle_IT(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size)
 {
   HAL_StatusTypeDef status;
 
-  /* 检查 Rx 过程是否尚未进行 */
+  /* Check that a Rx process is not already ongoing */
   if (huart->RxState == HAL_UART_STATE_READY)
   {
     if ((pData == NULL) || (Size == 0U))
@@ -1705,13 +1725,13 @@ HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle_IT(UART_HandleTypeDef *huart, uint8_t
       return HAL_ERROR;
     }
 
-    /* 将接收类型设置为直到 IDLE 事件的接收 */
+    /* Set Reception type to reception till IDLE Event*/
     huart->ReceptionType = HAL_UART_RECEPTION_TOIDLE;
     huart->RxEventType = HAL_UART_RXEVENT_TC;
 
     status =  UART_Start_Receive_IT(huart, pData, Size);
 
-    /* 检查 Rx 进程是否已成功启动 */
+    /* Check Rx process has been successfully started */
     if (status == HAL_OK)
     {
       if (huart->ReceptionType == HAL_UART_RECEPTION_TOIDLE)
@@ -1721,10 +1741,10 @@ HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle_IT(UART_HandleTypeDef *huart, uint8_t
       }
       else
       {
-        /* 如果在启动接收时已有错误挂起，
-           中断可能已经触发并导致接收中止。
-           （例如溢出错误）。
-           在这种情况下，接收类型已重置为 HAL_UART_RECEPTION_STANDARD。 */
+        /* In case of errors already pending when reception is started,
+           Interrupts may have already been raised and lead to reception abortion.
+           (Overrun error for instance).
+           In such case Reception Type has been reset to HAL_UART_RECEPTION_STANDARD. */
         status = HAL_ERROR;
       }
     }
@@ -1738,26 +1758,26 @@ HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle_IT(UART_HandleTypeDef *huart, uint8_t
 }
 
 /**
-  * @brief 在 DMA 模式下接收一定数量的数据，直到接收到预期数量的数据或发生 IDLE 事件。
-  * @note   接收由此次函数调用启动。接收的进一步进展通过
-  *         DMA 服务实现，自动将接收到的数据元素传输到用户接收缓冲区，
-  *         并在接收半/结束时调用已注册的回调。UART IDLE 事件也用于将
-  *         接收阶段视为结束。在所有情况下，回调执行将指示接收到的数据元素数量。
-  * @note   当 UART 校验启用（PCE = 1）时，接收的数据包含
-  *         校验位（MSB 位置）。
-  * @note   当 UART 校验未启用（PCE = 0），且字长配置为 9 位（M = 01）时，
-  *         接收的数据作为一组 uint16_t 处理。在这种情况下，Size 必须指示
-  *         通过 pData 可用的 uint16_t 数量。
-  * @param huart UART 句柄。
-  * @param pData 指向数据缓冲区（uint8_t 或 uint16_t 数据元素）的指针。
-  * @param Size  要接收的数据元素数量（uint8_t 或 uint16_t）。
-  * @retval HAL 状态
+  * @brief Receive an amount of data in DMA mode till either the expected number of data is received or an IDLE event occurs.
+  * @note   Reception is initiated by this function call. Further progress of reception is achieved thanks
+  *         to DMA services, transferring automatically received data elements in user reception buffer and
+  *         calling registered callbacks at half/end of reception. UART IDLE events are also used to consider
+  *         reception phase as ended. In all cases, callback execution will indicate number of received data elements.
+  * @note   When the UART parity is enabled (PCE = 1), the received data contain
+  *         the parity bit (MSB position).
+  * @note   When UART parity is not enabled (PCE = 0), and Word Length is configured to 9 bits (M = 01),
+  *         the received data is handled as a set of uint16_t. In this case, Size must indicate the number
+  *         of uint16_t available through pData.
+  * @param huart UART handle.
+  * @param pData Pointer to data buffer (uint8_t or uint16_t data elements).
+  * @param Size  Amount of data elements (uint8_t or uint16_t) to be received.
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle_DMA(UART_HandleTypeDef *huart, uint8_t *pData, uint16_t Size)
 {
   HAL_StatusTypeDef status;
 
-  /* 检查 Rx 过程是否尚未进行 */
+  /* Check that a Rx process is not already ongoing */
   if (huart->RxState == HAL_UART_STATE_READY)
   {
     if ((pData == NULL) || (Size == 0U))
@@ -1765,13 +1785,13 @@ HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle_DMA(UART_HandleTypeDef *huart, uint8_
       return HAL_ERROR;
     }
 
-    /* 将接收类型设置为直到 IDLE 事件的接收 */
+    /* Set Reception type to reception till IDLE Event*/
     huart->ReceptionType = HAL_UART_RECEPTION_TOIDLE;
     huart->RxEventType = HAL_UART_RXEVENT_TC;
 
     status =  UART_Start_Receive_DMA(huart, pData, Size);
 
-    /* 检查 Rx 进程是否已成功启动 */
+    /* Check Rx process has been successfully started */
     if (huart->ReceptionType == HAL_UART_RECEPTION_TOIDLE)
     {
       __HAL_UART_CLEAR_IDLEFLAG(huart);
@@ -1779,10 +1799,10 @@ HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle_DMA(UART_HandleTypeDef *huart, uint8_
     }
     else
     {
-      /* 如果在启动接收时已有错误挂起，
-         中断可能已经触发并导致接收中止。
-         （例如溢出错误）。
-         在这种情况下，接收类型已重置为 HAL_UART_RECEPTION_STANDARD。 */
+      /* In case of errors already pending when reception is started,
+         Interrupts may have already been raised and lead to reception abortion.
+         (Overrun error for instance).
+         In such case Reception Type has been reset to HAL_UART_RECEPTION_STANDARD. */
       status = HAL_ERROR;
     }
 
@@ -1795,75 +1815,76 @@ HAL_StatusTypeDef HAL_UARTEx_ReceiveToIdle_DMA(UART_HandleTypeDef *huart, uint8_
 }
 
 /**
-  * @brief 提供导致 RxEvent 回调执行的 Rx 事件类型。
-  * @note  当调用 HAL_UARTEx_ReceiveToIdle_IT() 或 HAL_UARTEx_ReceiveToIdle_DMA() API 时，
-  *        接收过程的进度通过 Rx 事件回调的调用提供给应用程序（默认的
-  *        HAL_UARTEx_RxEventCallback() 或用户注册的）。由于可能发生多种类型的事件（IDLE 事件、
-  *        半传输或传输完成），此函数允许检索导致 Rx 事件回调执行的 Rx 事件类型。
-  * @note  此函数应在用户的 Rx 事件回调实现中调用，
-  *        以提供准确的值：
-  *        在中断模式下：
-  *           - HAL_UART_RXEVENT_TC : 接收已完成（已接收到预期数量的数据）
-  *           - HAL_UART_RXEVENT_IDLE : 在接收完成前发生空闲事件（接收到的
-  *             数据数量少于预期）
-  *        在 DMA 模式下：
-  *           - HAL_UART_RXEVENT_TC : 接收已完成（已接收到预期数量的数据）
-  *           - HAL_UART_RXEVENT_HT : 已接收到预期数据数量的一半
-  *           - HAL_UART_RXEVENT_IDLE : 在接收完成前发生空闲事件（接收到的
-  *             数据数量少于预期）。
-  *        在 DMA 模式下，RxEvent 回调可能被调用多次；
-  *        当 DMA 配置为正常模式时，HT 事件不会停止接收过程；
-  *        当 DMA 配置为循环模式时，HT、TC 或 IDLE 事件不会停止接收过程；
-  * @param  huart UART 句柄。
-  * @retval Rx 事件类型（返回值将是 @ref UART_RxEvent_Type_Values 的值）
+  * @brief Provide Rx Event type that has lead to RxEvent callback execution.
+  * @note  When HAL_UARTEx_ReceiveToIdle_IT() or HAL_UARTEx_ReceiveToIdle_DMA() API are called, progress
+  *        of reception process is provided to application through calls of Rx Event callback (either default one
+  *        HAL_UARTEx_RxEventCallback() or user registered one). As several types of events could occur (IDLE event,
+  *        Half Transfer, or Transfer Complete), this function allows to retrieve the Rx Event type that has lead
+  *        to Rx Event callback execution.
+  * @note  This function is expected to be called within the user implementation of Rx Event Callback,
+  *        in order to provide the accurate value :
+  *        In Interrupt Mode :
+  *           - HAL_UART_RXEVENT_TC : when Reception has been completed (expected nb of data has been received)
+  *           - HAL_UART_RXEVENT_IDLE : when Idle event occurred prior reception has been completed (nb of
+  *             received data is lower than expected one)
+  *        In DMA Mode :
+  *           - HAL_UART_RXEVENT_TC : when Reception has been completed (expected nb of data has been received)
+  *           - HAL_UART_RXEVENT_HT : when half of expected nb of data has been received
+  *           - HAL_UART_RXEVENT_IDLE : when Idle event occurred prior reception has been completed (nb of
+  *             received data is lower than expected one).
+  *        In DMA mode, RxEvent callback could be called several times;
+  *        When DMA is configured in Normal Mode, HT event does not stop Reception process;
+  *        When DMA is configured in Circular Mode, HT, TC or IDLE events don't stop Reception process;
+  * @param  huart UART handle.
+  * @retval Rx Event Type (returned value will be a value of @ref UART_RxEvent_Type_Values)
   */
 HAL_UART_RxEventTypeTypeDef HAL_UARTEx_GetRxEventType(UART_HandleTypeDef *huart)
 {
-  /* 返回 Rx 事件类型值，如 UART 句柄中所存储 */
+  /* Return Rx Event type value, as stored in UART handle */
   return(huart->RxEventType);
 }
 
 /**
-  * @brief  中止正在进行的传输（阻塞模式）。
-  * @param  huart UART 句柄。
-  * @note   此过程可用于中止以中断或 DMA 模式启动的任何正在进行的传输。
-  *         此过程执行以下操作：
-  *           - 禁用 UART 中断（Tx 和 Rx）
-  *           - 禁用外设寄存器中的 DMA 传输（如果启用）
-  *           - 通过调用 HAL_DMA_Abort 中止 DMA 传输（DMA 模式下的传输）
-  *           - 将句柄状态设置为 READY
-  * @note   此过程在阻塞模式下执行：退出函数时，中止被视为已完成。
-  * @retval HAL 状态
+  * @brief  Abort ongoing transfers (blocking mode).
+  * @param  huart UART handle.
+  * @note   This procedure could be used for aborting any ongoing transfer started in Interrupt or DMA mode.
+  *         This procedure performs following operations :
+  *           - Disable UART Interrupts (Tx and Rx)
+  *           - Disable the DMA transfer in the peripheral register (if enabled)
+  *           - Abort DMA transfer by calling HAL_DMA_Abort (in case of transfer in DMA mode)
+  *           - Set handle State to READY
+  * @note   This procedure is executed in blocking mode : when exiting function, Abort is considered as completed.
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UART_Abort(UART_HandleTypeDef *huart)
 {
-  /* 禁用 TXEIE、TCIE、RXNE、PE 和 ERR（帧错误、噪声错误、溢出错误）中断 */
+  /* Disable TXEIE, TCIE, RXNE, PE and ERR (Frame error, noise error, overrun error) interrupts */
   ATOMIC_CLEAR_BIT(huart->Instance->CR1, (USART_CR1_RXNEIE | USART_CR1_PEIE | USART_CR1_TXEIE | USART_CR1_TCIE));
   ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_EIE);
 
-  /* 如果正在进行直到 IDLE 事件的接收，则禁用 IDLEIE 中断 */
+  /* If Reception till IDLE event was ongoing, disable IDLEIE interrupt */
   if (huart->ReceptionType == HAL_UART_RECEPTION_TOIDLE)
   {
     ATOMIC_CLEAR_BIT(huart->Instance->CR1, (USART_CR1_IDLEIE));
   }
 
-  /* 如果启用，则禁用 UART DMA Tx 请求 */
+  /* Disable the UART DMA Tx request if enabled */
   if (HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAT))
   {
     ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_DMAT);
 
-    /* 中止 UART DMA Tx 通道：使用阻塞 DMA Abort API（无回调） */
+    /* Abort the UART DMA Tx channel: use blocking DMA Abort API (no callback) */
     if (huart->hdmatx != NULL)
     {
-      /* 将 UART DMA Abort 回调设置为 Null。
-         DMA 中止过程结束时无回调执行 */
+      /* Set the UART DMA Abort callback to Null.
+         No call back execution at end of DMA abort procedure */
       huart->hdmatx->XferAbortCallback = NULL;
 
       if (HAL_DMA_Abort(huart->hdmatx) != HAL_OK)
       {
         if (HAL_DMA_GetError(huart->hdmatx) == HAL_DMA_ERROR_TIMEOUT)
         {
-          /* 将错误代码设置为 DMA */
+          /* Set error code to DMA */
           huart->ErrorCode = HAL_UART_ERROR_DMA;
 
           return HAL_TIMEOUT;
@@ -1872,23 +1893,23 @@ HAL_StatusTypeDef HAL_UART_Abort(UART_HandleTypeDef *huart)
     }
   }
 
-  /* 如果启用，则禁用 UART DMA Rx 请求 */
+  /* Disable the UART DMA Rx request if enabled */
   if (HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAR))
   {
     ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_DMAR);
 
-    /* 中止 UART DMA Rx 通道：使用阻塞 DMA Abort API（无回调） */
+    /* Abort the UART DMA Rx channel: use blocking DMA Abort API (no callback) */
     if (huart->hdmarx != NULL)
     {
-      /* 将 UART DMA Abort 回调设置为 Null。
-         DMA 中止过程结束时无回调执行 */
+      /* Set the UART DMA Abort callback to Null.
+         No call back execution at end of DMA abort procedure */
       huart->hdmarx->XferAbortCallback = NULL;
 
       if (HAL_DMA_Abort(huart->hdmarx) != HAL_OK)
       {
         if (HAL_DMA_GetError(huart->hdmarx) == HAL_DMA_ERROR_TIMEOUT)
         {
-          /* 将错误代码设置为 DMA */
+          /* Set error code to DMA */
           huart->ErrorCode = HAL_UART_ERROR_DMA;
 
           return HAL_TIMEOUT;
@@ -1897,14 +1918,14 @@ HAL_StatusTypeDef HAL_UART_Abort(UART_HandleTypeDef *huart)
     }
   }
 
-  /* 重置 Tx 和 Rx 传输计数器 */
+  /* Reset Tx and Rx transfer counters */
   huart->TxXferCount = 0x00U;
   huart->RxXferCount = 0x00U;
 
-  /* 重置 ErrorCode */
+  /* Reset ErrorCode */
   huart->ErrorCode = HAL_UART_ERROR_NONE;
 
-  /* 将 huart->RxState 和 huart->gState 恢复为 Ready */
+  /* Restore huart->RxState and huart->gState to Ready */
   huart->RxState = HAL_UART_STATE_READY;
   huart->gState = HAL_UART_STATE_READY;
   huart->ReceptionType = HAL_UART_RECEPTION_STANDARD;
@@ -1913,39 +1934,39 @@ HAL_StatusTypeDef HAL_UART_Abort(UART_HandleTypeDef *huart)
 }
 
 /**
-  * @brief  中止正在进行的发送传输（阻塞模式）。
-  * @param  huart UART 句柄。
-  * @note   此过程可用于中止以中断或 DMA 模式启动的任何正在进行的 Tx 传输。
-  *         此过程执行以下操作：
-  *           - 禁用 UART 中断（Tx）
-  *           - 禁用外设寄存器中的 DMA 传输（如果启用）
-  *           - 通过调用 HAL_DMA_Abort 中止 DMA 传输（DMA 模式下的传输）
-  *           - 将句柄状态设置为 READY
-  * @note   此过程在阻塞模式下执行：退出函数时，中止被视为已完成。
-  * @retval HAL 状态
+  * @brief  Abort ongoing Transmit transfer (blocking mode).
+  * @param  huart UART handle.
+  * @note   This procedure could be used for aborting any ongoing Tx transfer started in Interrupt or DMA mode.
+  *         This procedure performs following operations :
+  *           - Disable UART Interrupts (Tx)
+  *           - Disable the DMA transfer in the peripheral register (if enabled)
+  *           - Abort DMA transfer by calling HAL_DMA_Abort (in case of transfer in DMA mode)
+  *           - Set handle State to READY
+  * @note   This procedure is executed in blocking mode : when exiting function, Abort is considered as completed.
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UART_AbortTransmit(UART_HandleTypeDef *huart)
 {
-  /* 禁用 TXEIE 和 TCIE 中断 */
+  /* Disable TXEIE and TCIE interrupts */
   ATOMIC_CLEAR_BIT(huart->Instance->CR1, (USART_CR1_TXEIE | USART_CR1_TCIE));
 
-  /* 如果启用，则禁用 UART DMA Tx 请求 */
+  /* Disable the UART DMA Tx request if enabled */
   if (HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAT))
   {
     ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_DMAT);
 
-    /* 中止 UART DMA Tx 通道：使用阻塞 DMA Abort API（无回调） */
+    /* Abort the UART DMA Tx channel : use blocking DMA Abort API (no callback) */
     if (huart->hdmatx != NULL)
     {
-      /* 将 UART DMA Abort 回调设置为 Null。
-         DMA 中止过程结束时无回调执行 */
+      /* Set the UART DMA Abort callback to Null.
+         No call back execution at end of DMA abort procedure */
       huart->hdmatx->XferAbortCallback = NULL;
 
       if (HAL_DMA_Abort(huart->hdmatx) != HAL_OK)
       {
         if (HAL_DMA_GetError(huart->hdmatx) == HAL_DMA_ERROR_TIMEOUT)
         {
-          /* 将错误代码设置为 DMA */
+          /* Set error code to DMA */
           huart->ErrorCode = HAL_UART_ERROR_DMA;
 
           return HAL_TIMEOUT;
@@ -1954,56 +1975,56 @@ HAL_StatusTypeDef HAL_UART_AbortTransmit(UART_HandleTypeDef *huart)
     }
   }
 
-  /* 重置 Tx 传输计数器 */
+  /* Reset Tx transfer counter */
   huart->TxXferCount = 0x00U;
 
-  /* 将 huart->gState 恢复为 Ready */
+  /* Restore huart->gState to Ready */
   huart->gState = HAL_UART_STATE_READY;
 
   return HAL_OK;
 }
 
 /**
-  * @brief  中止正在进行的接收传输（阻塞模式）。
-  * @param  huart UART 句柄。
-  * @note   此过程可用于中止以中断或 DMA 模式启动的任何正在进行的 Rx 传输。
-  *         此过程执行以下操作：
-  *           - 禁用 UART 中断（Rx）
-  *           - 禁用外设寄存器中的 DMA 传输（如果启用）
-  *           - 通过调用 HAL_DMA_Abort 中止 DMA 传输（DMA 模式下的传输）
-  *           - 将句柄状态设置为 READY
-  * @note   此过程在阻塞模式下执行：退出函数时，中止被视为已完成。
-  * @retval HAL 状态
+  * @brief  Abort ongoing Receive transfer (blocking mode).
+  * @param  huart UART handle.
+  * @note   This procedure could be used for aborting any ongoing Rx transfer started in Interrupt or DMA mode.
+  *         This procedure performs following operations :
+  *           - Disable UART Interrupts (Rx)
+  *           - Disable the DMA transfer in the peripheral register (if enabled)
+  *           - Abort DMA transfer by calling HAL_DMA_Abort (in case of transfer in DMA mode)
+  *           - Set handle State to READY
+  * @note   This procedure is executed in blocking mode : when exiting function, Abort is considered as completed.
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UART_AbortReceive(UART_HandleTypeDef *huart)
 {
-  /* 禁用 RXNE、PE 和 ERR（帧错误、噪声错误、溢出错误）中断 */
+  /* Disable RXNE, PE and ERR (Frame error, noise error, overrun error) interrupts */
   ATOMIC_CLEAR_BIT(huart->Instance->CR1, (USART_CR1_RXNEIE | USART_CR1_PEIE));
   ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_EIE);
 
-  /* 如果正在进行直到 IDLE 事件的接收，则禁用 IDLEIE 中断 */
+  /* If Reception till IDLE event was ongoing, disable IDLEIE interrupt */
   if (huart->ReceptionType == HAL_UART_RECEPTION_TOIDLE)
   {
     ATOMIC_CLEAR_BIT(huart->Instance->CR1, (USART_CR1_IDLEIE));
   }
 
-  /* 如果启用，则禁用 UART DMA Rx 请求 */
+  /* Disable the UART DMA Rx request if enabled */
   if (HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAR))
   {
     ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_DMAR);
 
-    /* 中止 UART DMA Rx 通道：使用阻塞 DMA Abort API（无回调） */
+    /* Abort the UART DMA Rx channel : use blocking DMA Abort API (no callback) */
     if (huart->hdmarx != NULL)
     {
-      /* 将 UART DMA Abort 回调设置为 Null。
-         DMA 中止过程结束时无回调执行 */
+      /* Set the UART DMA Abort callback to Null.
+         No call back execution at end of DMA abort procedure */
       huart->hdmarx->XferAbortCallback = NULL;
 
       if (HAL_DMA_Abort(huart->hdmarx) != HAL_OK)
       {
         if (HAL_DMA_GetError(huart->hdmarx) == HAL_DMA_ERROR_TIMEOUT)
         {
-          /* 将错误代码设置为 DMA */
+          /* Set error code to DMA */
           huart->ErrorCode = HAL_UART_ERROR_DMA;
 
           return HAL_TIMEOUT;
@@ -2012,10 +2033,10 @@ HAL_StatusTypeDef HAL_UART_AbortReceive(UART_HandleTypeDef *huart)
     }
   }
 
-  /* 重置 Rx 传输计数器 */
+  /* Reset Rx transfer counter */
   huart->RxXferCount = 0x00U;
 
-  /* 将 huart->RxState 恢复为 Ready */
+  /* Restore huart->RxState to Ready */
   huart->RxState = HAL_UART_STATE_READY;
   huart->ReceptionType = HAL_UART_RECEPTION_STANDARD;
 
@@ -2023,40 +2044,40 @@ HAL_StatusTypeDef HAL_UART_AbortReceive(UART_HandleTypeDef *huart)
 }
 
 /**
-  * @brief  中止正在进行的传输（中断模式）。
-  * @param  huart UART 句柄。
-  * @note   此过程可用于中止以中断或 DMA 模式启动的任何正在进行的传输。
-  *         此过程执行以下操作：
-  *           - 禁用 UART 中断（Tx 和 Rx）
-  *           - 禁用外设寄存器中的 DMA 传输（如果启用）
-  *           - 通过调用 HAL_DMA_Abort_IT 中止 DMA 传输（DMA 模式下的传输）
-  *           - 将句柄状态设置为 READY
-  *           - 在中止完成时，调用用户中止完成回调
-  * @note   此过程在中断模式下执行，意味着中止过程只能
-  *         在执行用户中止完成回调时被视为完成（而不是在退出函数时）。
-  * @retval HAL 状态
+  * @brief  Abort ongoing transfers (Interrupt mode).
+  * @param  huart UART handle.
+  * @note   This procedure could be used for aborting any ongoing transfer started in Interrupt or DMA mode.
+  *         This procedure performs following operations :
+  *           - Disable UART Interrupts (Tx and Rx)
+  *           - Disable the DMA transfer in the peripheral register (if enabled)
+  *           - Abort DMA transfer by calling HAL_DMA_Abort_IT (in case of transfer in DMA mode)
+  *           - Set handle State to READY
+  *           - At abort completion, call user abort complete callback
+  * @note   This procedure is executed in Interrupt mode, meaning that abort procedure could be
+  *         considered as completed only when user abort complete callback is executed (not when exiting function).
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_UART_Abort_IT(UART_HandleTypeDef *huart)
 {
   uint32_t AbortCplt = 0x01U;
 
-  /* 禁用 TXEIE、TCIE、RXNE、PE 和 ERR（帧错误、噪声错误、溢出错误）中断 */
+  /* Disable TXEIE, TCIE, RXNE, PE and ERR (Frame error, noise error, overrun error) interrupts */
   ATOMIC_CLEAR_BIT(huart->Instance->CR1, (USART_CR1_RXNEIE | USART_CR1_PEIE | USART_CR1_TXEIE | USART_CR1_TCIE));
   ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_EIE);
 
-  /* 如果正在进行直到 IDLE 事件的接收，则禁用 IDLEIE 中断 */
+  /* If Reception till IDLE event was ongoing, disable IDLEIE interrupt */
   if (huart->ReceptionType == HAL_UART_RECEPTION_TOIDLE)
   {
     ATOMIC_CLEAR_BIT(huart->Instance->CR1, (USART_CR1_IDLEIE));
   }
 
-  /* 如果 DMA Tx 和/或 DMA Rx 句柄与 UART 句柄关联，则在任何调用 DMA Abort 函数之前
-     应初始化 DMA Abort 完成回调 */
-  /* DMA Tx 句柄有效 */
+  /* If DMA Tx and/or DMA Rx Handles are associated to UART Handle, DMA Abort complete callbacks should be initialised
+     before any call to DMA Abort functions */
+  /* DMA Tx Handle is valid */
   if (huart->hdmatx != NULL)
   {
-    /* 如果启用了 UART DMA Tx 请求，则设置 DMA Abort 完成回调。
-       否则，将其设置为 NULL */
+    /* Set DMA Abort Complete callback if UART DMA Tx request if enabled.
+       Otherwise, set it to NULL */
     if (HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAT))
     {
       huart->hdmatx->XferAbortCallback = UART_DMATxAbortCallback;
@@ -2066,11 +2087,11 @@ HAL_StatusTypeDef HAL_UART_Abort_IT(UART_HandleTypeDef *huart)
       huart->hdmatx->XferAbortCallback = NULL;
     }
   }
-  /* DMA Rx 句柄有效 */
+  /* DMA Rx Handle is valid */
   if (huart->hdmarx != NULL)
   {
-    /* 如果启用了 UART DMA Rx 请求，则设置 DMA Abort 完成回调。
-       否则，将其设置为 NULL */
+    /* Set DMA Abort Complete callback if UART DMA Rx request if enabled.
+       Otherwise, set it to NULL */
     if (HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAR))
     {
       huart->hdmarx->XferAbortCallback = UART_DMARxAbortCallback;
@@ -2081,19 +2102,19 @@ HAL_StatusTypeDef HAL_UART_Abort_IT(UART_HandleTypeDef *huart)
     }
   }
 
-  /* 如果启用，则禁用 UART DMA Tx 请求 */
+  /* Disable the UART DMA Tx request if enabled */
   if (HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAT))
   {
-    /* 在 UART 级别禁用 DMA Tx */
+    /* Disable DMA Tx at UART level */
     ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_DMAT);
 
-    /* 中止 UART DMA Tx 通道：使用非阻塞 DMA Abort API（回调） */
+    /* Abort the UART DMA Tx channel : use non blocking DMA Abort API (callback) */
     if (huart->hdmatx != NULL)
     {
-      /* UART Tx DMA Abort 回调已被初始化：
-         将导致在 DMA 中止过程结束时调用 HAL_UART_AbortCpltCallback() */
+      /* UART Tx DMA Abort callback has already been initialised :
+         will lead to call HAL_UART_AbortCpltCallback() at end of DMA abort procedure */
 
-      /* 中止 DMA TX */
+      /* Abort DMA TX */
       if (HAL_DMA_Abort_IT(huart->hdmatx) != HAL_OK)
       {
         huart->hdmatx->XferAbortCallback = NULL;
@@ -2105,18 +2126,18 @@ HAL_StatusTypeDef HAL_UART_Abort_IT(UART_HandleTypeDef *huart)
     }
   }
 
-  /* 如果启用，则禁用 UART DMA Rx 请求 */
+  /* Disable the UART DMA Rx request if enabled */
   if (HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAR))
   {
     ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_DMAR);
 
-    /* 中止 UART DMA Rx 通道：使用非阻塞 DMA Abort API（回调） */
+    /* Abort the UART DMA Rx channel : use non blocking DMA Abort API (callback) */
     if (huart->hdmarx != NULL)
     {
-      /* UART Rx DMA Abort 回调已被初始化：
-         将导致在 DMA 中止过程结束时调用 HAL_UART_AbortCpltCallback() */
+      /* UART Rx DMA Abort callback has already been initialised :
+         will lead to call HAL_UART_AbortCpltCallback() at end of DMA abort procedure */
 
-      /* 中止 DMA RX */
+      /* Abort DMA RX */
       if (HAL_DMA_Abort_IT(huart->hdmarx) != HAL_OK)
       {
         huart->hdmarx->XferAbortCallback = NULL;
@@ -2129,438 +2150,27 @@ HAL_StatusTypeDef HAL_UART_Abort_IT(UART_HandleTypeDef *huart)
     }
   }
 
-  /* 如果不需要执行 DMA 中止完成回调 => 调用用户 Abort Complete 回调 */
+  /* if no DMA abort complete callback execution is required => call user Abort Complete callback */
   if (AbortCplt == 0x01U)
   {
-    /* 重置 Tx 和 Rx 传输计数器 */
+    /* Reset Tx and Rx transfer counters */
     huart->TxXferCount = 0x00U;
     huart->RxXferCount = 0x00U;
 
-    /* 重置 ErrorCode */
+    /* Reset ErrorCode */
     huart->ErrorCode = HAL_UART_ERROR_NONE;
 
-    /* 将 huart->gState 和 huart->RxState 恢复为 Ready */
+    /* Restore huart->gState and huart->RxState to Ready */
     huart->gState  = HAL_UART_STATE_READY;
     huart->RxState = HAL_UART_STATE_READY;
     huart->ReceptionType = HAL_UART_RECEPTION_STANDARD;
 
-    /* 由于没有 DMA 被中止，直接调用用户 Abort complete 回调 */
+    /* As no DMA to be aborted, call directly user Abort complete callback */
 #if (USE_HAL_UART_REGISTER_CALLBACKS == 1)
-    /* 调用已注册的 Abort complete 回调 */
+    /* Call registered Abort complete callback */
     huart->AbortCpltCallback(huart);
 #else
-    /* 调用旧版 weak Abort complete 回调 */
-    HAL_UART_AbortCpltCallback(huart);
-#endif /* USE_HAL_UART_REGISTER_CALLBACKS */
-  }
-
-  return HAL_OK;
-}
-
-/**
-  * @brief  中止正在进行的发送传输（中断模式）。
-  * @param  huart UART 句柄。
-  * @note   此过程可用于中止以中断或 DMA 模式启动的任何正在进行的 Tx 传输。
-  *         此过程执行以下操作：
-  *           - 禁用 UART 中断（Tx）
-  *           - 禁用外设寄存器中的 DMA 传输（如果启用）
-  *           - 通过调用 HAL_DMA_Abort_IT 中止 DMA 传输（DMA 模式下的传输）
-  *           - 将句柄状态设置为 READY
-  *           - 在中止完成时，调用用户中止完成回调
-  * @note   此过程在中断模式下执行，意味着中止过程只能
-  *         在执行用户中止完成回调时被视为完成（而不是在退出函数时）。
-  * @retval HAL 状态
-  */
-HAL_StatusTypeDef HAL_UART_AbortTransmit_IT(UART_HandleTypeDef *huart)
-{
-  /* 禁用 TXEIE 和 TCIE 中断 */
-  ATOMIC_CLEAR_BIT(huart->Instance->CR1, (USART_CR1_TXEIE | USART_CR1_TCIE));
-
-  /* 如果启用，则禁用 UART DMA Tx 请求 */
-  if (HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAT))
-  {
-    ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_DMAT);
-
-    /* 中止 UART DMA Tx 通道：使用阻塞 DMA Abort API（无回调） */
-    if (huart->hdmatx != NULL)
-    {
-      /* 设置 UART DMA Abort 回调：
-         将导致在 DMA 中止过程结束时调用 HAL_UART_AbortCpltCallback() */
-      huart->hdmatx->XferAbortCallback = UART_DMATxOnlyAbortCallback;
-
-      /* 中止 DMA TX */
-      if (HAL_DMA_Abort_IT(huart->hdmatx) != HAL_OK)
-      {
-        /* 在错误情况下直接调用 huart->hdmatx->XferAbortCallback 函数 */
-        huart->hdmatx->XferAbortCallback(huart->hdmatx);
-      }
-    }
-    else
-    {
-      /* 重置 Tx 传输计数器 */
-      huart->TxXferCount = 0x00U;
-
-      /* 将 huart->gState 恢复为 Ready */
-      huart->gState = HAL_UART_STATE_READY;
-
-      /* 由于没有 DMA 被中止，直接调用用户 Abort complete 回调 */
-#if (USE_HAL_UART_REGISTER_CALLBACKS == 1)
-      /* 调用已注册的 Abort Transmit Complete 回调 */
-      huart->AbortTransmitCpltCallback(huart);
-#else
-      /* 调用旧版 weak Abort Transmit Complete 回调 */
-      HAL_UART_AbortTransmitCpltCallback(huart);
-#endif /* USE_HAL_UART_REGISTER_CALLBACKS */
-    }
-  }
-  else
-  {
-    /* 重置 Tx 传输计数器 */
-    huart->TxXferCount = 0x00U;
-
-    /* 将 huart->gState 恢复为 Ready */
-    huart->gState = HAL_UART_STATE_READY;
-
-    /* 由于没有 DMA 被中止，直接调用用户 Abort complete 回调 */
-#if (USE_HAL_UART_REGISTER_CALLBACKS == 1)
-    /* 调用已注册的 Abort Transmit Complete 回调 */
-    huart->AbortTransmitCpltCallback(huart);
-#else
-    /* 调用旧版 weak Abort Transmit Complete 回调 */
-    HAL_UART_AbortTransmitCpltCallback(huart);
-#endif /* USE_HAL_UART_REGISTER_CALLBACKS */
-  }
-
-  return HAL_OK;
-}
-
-/**
-  * @brief  中止正在进行的接收传输（中断模式）。
-  * @param  huart UART 句柄。
-  * @note   此过程可用于中止以中断或 DMA 模式启动的任何正在进行的 Rx 传输。
-  *         此过程执行以下操作：
-  *           - 禁用 UART 中断（Rx）
-  *           - 禁用外设寄存器中的 DMA 传输（如果启用）
-  *           - 通过调用 HAL_DMA_Abort_IT 中止 DMA 传输（DMA 模式下的传输）
-  *           - 将句柄状态设置为 READY
-  *           - 在中止完成时，调用用户中止完成回调
-  * @note   此过程在中断模式下执行，意味着中止过程只能
-  *         在执行用户中止完成回调时被视为完成（而不是在退出函数时）。
-  * @retval HAL 状态
-  */
-HAL_StatusTypeDef HAL_UART_AbortReceive_IT(UART_HandleTypeDef *huart)
-{
-  /* 禁用 RXNE、PE 和 ERR（帧错误、噪声错误、溢出错误）中断 */
-  ATOMIC_CLEAR_BIT(huart->Instance->CR1, (USART_CR1_RXNEIE | USART_CR1_PEIE));
-  ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_EIE);
-
-  /* 如果正在进行直到 IDLE 事件的接收，则禁用 IDLEIE 中断 */
-  if (huart->ReceptionType == HAL_UART_RECEPTION_TOIDLE)
-  {
-    ATOMIC_CLEAR_BIT(huart->Instance->CR1, (USART_CR1_IDLEIE));
-  }
-
-  /* 如果启用，则禁用 UART DMA Rx 请求 */
-  if (HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAR))
-  {
-    ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_DMAR);
-
-    /* 中止 UART DMA Rx 通道：使用阻塞 DMA Abort API（无回调） */
-    if (huart->hdmarx != NULL)
-    {
-      /* 设置 UART DMA Abort 回调：
-         将导致在 DMA 中止过程结束时调用 HAL_UART_AbortCpltCallback() */
-      huart->hdmarx->XferAbortCallback = UART_DMARxOnlyAbortCallback;
-
-      /* 中止 DMA RX */
-      if (HAL_DMA_Abort_IT(huart->hdmarx) != HAL_OK)
-      {
-        /* 在错误情况下直接调用 huart->hdmarx->XferAbortCallback 函数 */
-        huart->hdmarx->XferAbortCallback(huart->hdmarx);
-      }
-    }
-    else
-    {
-      /* 重置 Rx 传输计数器 */
-      huart->RxXferCount = 0x00U;
-
-      /* 将 huart->RxState 恢复为 Ready */
-      huart->RxState = HAL_UART_STATE_READY;
-      huart->ReceptionType = HAL_UART_RECEPTION_STANDARD;
-
-      /* 由于没有 DMA 被中止，直接调用用户 Abort complete 回调 */
-#if (USE_HAL_UART_REGISTER_CALLBACKS == 1)
-      /* 调用已注册的 Abort Receive Complete 回调 */
-      huart->AbortReceiveCpltCallback(huart);
-#else
-      /* 调用旧版 weak Abort Receive Complete 回调 */
-      HAL_UART_AbortReceiveCpltCallback(huart);
-#endif /* USE_HAL_UART_REGISTER_CALLBACKS */
-    }
-  }
-  else
-  {
-    /* 重置 Rx 传输计数器 */
-    huart->RxXferCount = 0x00U;
-
-    /* 将 huart->RxState 恢复为 Ready */
-    huart->RxState = HAL_UART_STATE_READY;
-    huart->ReceptionType = HAL_UART_RECEPTION_STANDARD;
-
-    /* 由于没有 DMA 被中止，直接调用用户 Abort complete 回调 */
-#if (USE_HAL_UART_REGISTER_CALLBACKS == 1)
-    /* 调用已注册的 Abort Receive Complete 回调 */
-    huart->AbortReceiveCpltCallback(huart);
-#else
-    /* 调用旧版 weak Abort Receive Complete 回调 */
-    HAL_UART_AbortReceiveCpltCallback(huart);
-#endif /* USE_HAL_UART_REGISTER_CALLBACKS */
-  }
-
-  return HAL_OK;
-}
-
-/**
-  * @brief  此函数处理 UART 中断请求。
-  * @param  huart  指向 UART_HandleTypeDef 结构体的指针，其中包含
-  *                指定 UART 模块的配置信息。
-  * @retval None
-  */
-void HAL_UART_IRQHandler(UART_HandleTypeDef *huart)
-{
-  uint32_t isrflags   = READ_REG(huart->Instance->SR);
-  uint32_t cr1its     = READ_REG(huart->Instance->CR1);
-  uint32_t cr3its     = READ_REG(huart->Instance->CR3);
-  uint32_t errorflags = 0x00U;
-  uint32_t dmarequest = 0x00U;
-
-  /* 如果没有错误发生 */
-  errorflags = (isrflags & (uint32_t)(USART_SR_PE | USART_SR_FE | USART_SR_ORE | USART_SR_NE));
-  if (errorflags == RESET)
-  {
-    /* UART 处于接收器模式 -------------------------------------------------*/
-    if (((isrflags & USART_SR_RXNE) != RESET) && ((cr1its & USART_CR1_RXNEIE) != RESET))
-    {
-      UART_Receive_IT(huart);
-      return;
-    }
-  }
-
-  /* 如果发生某些错误 */
-  if ((errorflags != RESET) && (((cr3its & USART_CR3_EIE) != RESET)
-                                || ((cr1its & (USART_CR1_RXNEIE | USART_CR1_PEIE)) != RESET)))
-  {
-    /* UART 校验错误中断发生 ----------------------------------------*/
-    if (((isrflags & USART_SR_PE) != RESET) && ((cr1its & USART_CR1_PEIE) != RESET))
-    {
-      huart->ErrorCode |= HAL_UART_ERROR_PE;
-    }
-
-    /* UART 噪声错误中断发生 -----------------------------------------*/
-    if (((isrflags & USART_SR_NE) != RESET) && ((cr3its & USART_CR3_EIE) != RESET))
-    {
-      huart->ErrorCode |= HAL_UART_ERROR_NE;
-    }
-
-    /* UART 帧错误中断发生 -----------------------------------------*/
-    if (((isrflags & USART_SR_FE) != RESET) && ((cr3its & USART_CR3_EIE) != RESET))
-    {
-      huart->ErrorCode |= HAL_UART_ERROR_FE;
-    }
-
-    /* UART 溢出中断发生 --------------------------------------------*/
-    if (((isrflags & USART_SR_ORE) != RESET) && (((cr1its & USART_CR1_RXNEIE) != RESET)
-                                                 || ((cr3its & USART_CR3_EIE) != RESET)))
-    {
-      huart->ErrorCode |= HAL_UART_ERROR_ORE;
-    }
-
-    /* 如有必要，调用 UART 错误回调函数 --------------------------*/
-    if (huart->ErrorCode != HAL_UART_ERROR_NONE)
-    {
-      /* UART 处于接收器模式 -----------------------------------------------*/
-      if (((isrflags & USART_SR_RXNE) != RESET) && ((cr1its & USART_CR1_RXNEIE) != RESET))
-      {
-        UART_Receive_IT(huart);
-      }
-
-      /* 如果发生溢出错误，或 DMA 模式接收中发生任何错误，
-         则将错误视为阻塞 */
-      dmarequest = HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAR);
-      if (((huart->ErrorCode & HAL_UART_ERROR_ORE) != RESET) || dmarequest)
-      {
-        /* 阻塞错误：传输被中止
-           将 UART 状态设置为就绪以能够重新启动过程，
-           禁用 Rx 中断，并禁用 Rx DMA 请求（如果正在进行） */
-        UART_EndRxTransfer(huart);
-
-        /* 如果启用，则禁用 UART DMA Rx 请求 */
-        if (HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAR))
-        {
-          ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_DMAR);
-
-          /* 中止 UART DMA Rx 通道 */
-          if (huart->hdmarx != NULL)
-          {
-            /* 设置 UART DMA Abort 回调：
-               将导致在 DMA 中止过程结束时调用 HAL_UART_ErrorCallback() */
-            huart->hdmarx->XferAbortCallback = UART_DMAAbortOnError;
-            if (HAL_DMA_Abort_IT(huart->hdmarx) != HAL_OK)
-            {
-              /* 在错误情况下直接调用 XferAbortCallback 函数 */
-              huart->hdmarx->XferAbortCallback(huart->hdmarx);
-            }
-          }
-          else
-          {
-            /* 调用用户错误回调 */
-#if (USE_HAL_UART_REGISTER_CALLBACKS == 1)
-            /* 调用已注册的错误回调 */
-            huart->ErrorCallback(huart);
-#else
-            /* 调用旧版 weak 错误回调 */
-            HAL_UART_ErrorCallback(huart);
-#endif /* USE_HAL_UART_REGISTER_CALLBACKS */
-          }
-        }
-        else
-        {
-          /* 调用用户错误回调 */
-#if (USE_HAL_UART_REGISTER_CALLBACKS == 1)
-          /* 调用已注册的错误回调 */
-          huart->ErrorCallback(huart);
-#else
-          /* 调用旧版 weak 错误回调 */
-          HAL_UART_ErrorCallback(huart);
-#endif /* USE_HAL_UART_REGISTER_CALLBACKS */
-        }
-      }
-      else
-      {
-        /* 非阻塞错误：传输可以继续。
-           错误通过用户错误回调通知用户 */
-#if (USE_HAL_UART_REGISTER_CALLBACKS == 1)
-        /* 调用已注册的错误回调 */
-        huart->ErrorCallback(huart);
-#else
-        /* 调用旧版 weak 错误回调 */
-        HAL_UART_ErrorCallback(huart);
-#endif /* USE_HAL_UART_REGISTER_CALLBACKS */
-
-        huart->ErrorCode = HAL_UART_ERROR_NONE;
-      }
-    }
-    return;
-  } /* End if some error occurs */
-
-  /* 检查当前接收模式：
-     如果选择了直到 IDLE 事件的接收：*/
-  if ((huart->ReceptionType == HAL_UART_RECEPTION_TOIDLE)
-      && ((isrflags & USART_SR_IDLE) != 0U)
-      && ((cr1its & USART_SR_IDLE) != 0U))
-  {
-    __HAL_UART_CLEAR_IDLEFLAG(huart);
-
-    /* 检查 UART 中是否启用了 DMA 模式 */
-    if (HAL_IS_BIT_SET(huart->Instance->CR3, USART_CR3_DMAR))
-    {
-      /* DMA 模式已启用 */
-      /* 检查接收长度：如果已接收到所有预期数据，则不执行任何操作，
-         （DMA cplt 回调将被调用）。
-         否则，如果已接收到至少一个数据，则 IDLE 事件要通知用户 */
-      uint16_t nb_remaining_rx_data = (uint16_t) __HAL_DMA_GET_COUNTER(huart->hdmarx);
-      if ((nb_remaining_rx_data > 0U)
-          && (nb_remaining_rx_data < huart->RxXferSize))
-      {
-        /* 接收未完成 */
-        huart->RxXferCount = nb_remaining_rx_data;
-
-        /* 在正常模式下，结束 DMA xfer 和 HAL UART Rx 过程 */
-        if (huart->hdmarx->Init.Mode != DMA_CIRCULAR)
-        {
-          /* 禁用 PE 和 ERR（帧错误、噪声错误、溢出错误）中断 */
-          ATOMIC_CLEAR_BIT(huart->Instance->CR1, USART_CR1_PEIE);
-          ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_EIE);
-
-          /* 通过重置 UART CR3 寄存器中的 DMAR 位
-             禁用接收器请求的 DMA 传输 */
-          ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_DMAR);
-
-          /* 在 Rx 过程结束时，将 huart->RxState 恢复为 Ready */
-          huart->RxState = HAL_UART_STATE_READY;
-          huart->ReceptionType = HAL_UART_RECEPTION_STANDARD;
-
-          ATOMIC_CLEAR_BIT(huart->Instance->CR1, USART_CR1_IDLEIE);
-
-          /* 接收到的最后几个字节，因此中止是即时的，无需等待 */
-          (void)HAL_DMA_Abort(huart->hdmarx);
-        }
-
-        /* 初始化与 RxEvent 回调执行对应的 RxEvent 类型；
-        在这种情况下，Rx 事件类型是空闲事件 */
-        huart->RxEventType = HAL_UART_RXEVENT_IDLE;
-
-#if (USE_HAL_UART_REGISTER_CALLBACKS == 1)
-        /* 调用已注册的 Rx 事件回调 */
-        huart->RxEventCallback(huart, (huart->RxXferSize - huart->RxXferCount));
-#else
-        /* 调用旧版 weak Rx 事件回调 */
-        HAL_UARTEx_RxEventCallback(huart, (huart->RxXferSize - huart->RxXferCount));
-#endif /* USE_HAL_UART_REGISTER_CALLBACKS */
-      }
-      return;
-    }
-    else
-    {
-      /* DMA 模式未启用 */
-      /* 检查接收长度：如果已接收到所有预期数据，则不执行任何操作。
-         否则，如果已接收到至少一个数据，则 IDLE 事件要通知用户 */
-      uint16_t nb_rx_data = huart->RxXferSize - huart->RxXferCount;
-      if ((huart->RxXferCount > 0U)
-          && (nb_rx_data > 0U))
-      {
-        /* 禁用 UART 校验错误中断和 RXNE 中断 */
-        ATOMIC_CLEAR_BIT(huart->Instance->CR1, (USART_CR1_RXNEIE | USART_CR1_PEIE));
-
-        /* 禁用 UART 错误中断：（帧错误、噪声错误、溢出错误） */
-        ATOMIC_CLEAR_BIT(huart->Instance->CR3, USART_CR3_EIE);
-
-        /* Rx 过程已完成，将 huart->RxState 恢复为 Ready */
-        huart->RxState = HAL_UART_STATE_READY;
-        huart->ReceptionType = HAL_UART_RECEPTION_STANDARD;
-
-        ATOMIC_CLEAR_BIT(huart->Instance->CR1, USART_CR1_IDLEIE);
-
-        /* 初始化与 RxEvent 回调执行对应的 RxEvent 类型；
-           在这种情况下，Rx 事件类型是空闲事件 */
-        huart->RxEventType = HAL_UART_RXEVENT_IDLE;
-
-#if (USE_HAL_UART_REGISTER_CALLBACKS == 1)
-        /* 调用已注册的 Rx 完成回调 */
-        huart->RxEventCallback(huart, nb_rx_data);
-#else
-        /* 调用旧版 weak Rx 事件回调 */
-        HAL_UARTEx_RxEventCallback(huart, nb_rx_data);
-#endif /* USE_HAL_UART_REGISTER_CALLBACKS */
-      }
-      return;
-    }
-  }
-
-  /* UART 处于发送器模式 ------------------------------------------------*/
-  if (((isrflags & USART_SR_TXE) != RESET) && ((cr1its & USART_CR1_TXEIE) != RESET))
-  {
-    UART_Transmit_IT(huart);
-    return;
-  }
-
-  /* UART 处于发送器结束模式 --------------------------------------------*/
-  if (((isrflags & USART_SR_TC) != RESET) && ((cr1its & USART_CR1_TCIE) != RESET))
-  {
-    UART_EndTransmit_IT(huart);
-    return;
-  }
-} weak Abort complete callback */
+    /* Call legacy weak Abort complete callback */
     HAL_UART_AbortCpltCallback(huart);
 #endif /* USE_HAL_UART_REGISTER_CALLBACKS */
   }
