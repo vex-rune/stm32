@@ -33,8 +33,9 @@ enable_language(C ASM)
 
 # Create an executable object type
 add_executable(${CMAKE_PROJECT_NAME}
-        Core/Src/key.h
-        Core/Src/key.c)
+        Core/Inc/led_swich.h
+        Core/Src/led_swich.c
+        Core/Src/led_swich.c)
 
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)

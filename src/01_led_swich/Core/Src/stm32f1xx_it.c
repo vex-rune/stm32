@@ -22,6 +22,7 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "led_swich.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -231,13 +232,38 @@ void EXTI15_10_IRQHandler(void)
 /* USER CODE BEGIN 1 */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-  if (GPIO_Pin == key3_Pin)
-  {
-    // 防抖延迟
-    HAL_Delay(10);
+  /* 软件防抖 */
+  HAL_Delay(10);
 
-    // 翻转
-    HAL_GPIO_TogglePin(led3_GPIO_Port, led3_Pin);
+  if (GPIO_Pin == key1_Pin)
+  {
+    /* key1/key2：按下接 GND，低电平有效 */
+    if (HAL_GPIO_ReadPin(key1_GPIO_Port, key1_Pin) == GPIO_PIN_RESET)
+    {
+      LedSwich_OnKey1Pressed();
+    }
+  }
+  else if (GPIO_Pin == key2_Pin)
+  {
+    if (HAL_GPIO_ReadPin(key2_GPIO_Port, key2_Pin) == GPIO_PIN_RESET)
+    {
+      LedSwich_OnKey2Pressed();
+    }
+  }
+  else if (GPIO_Pin == key3_Pin)
+  {
+    /* key3/key4：按下接 3V3，高电平有效 */
+    if (HAL_GPIO_ReadPin(key3_GPIO_Port, key3_Pin) == GPIO_PIN_SET)
+    {
+      LedSwich_OnKey3Pressed();
+    }
+  }
+  else if (GPIO_Pin == key4_Pin)
+  {
+    if (HAL_GPIO_ReadPin(key4_GPIO_Port, key4_Pin) == GPIO_PIN_SET)
+    {
+      LedSwich_OnKey4Pressed();
+    }
   }
 }
 
