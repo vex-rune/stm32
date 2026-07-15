@@ -19,7 +19,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "gpio.h"
-#include "led.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -64,7 +63,6 @@ void SystemClock_Config(void);
   */
 int main(void)
 {
-
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -89,8 +87,9 @@ int main(void)
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
 
-  // led 初始化
-  led_init();
+  HAL_GPIO_WritePin( led1_GPIO_Port, led1_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin( led2_GPIO_Port, led2_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin( led3_GPIO_Port, led3_Pin, GPIO_PIN_SET);
 
   /* USER CODE END 2 */
 
@@ -100,7 +99,13 @@ int main(void)
   {
     /* USER CODE END WHILE */
 
-    led_start();
+    HAL_GPIO_TogglePin(led1_GPIO_Port, led1_Pin);
+    HAL_Delay(500);
+    HAL_GPIO_TogglePin(led2_GPIO_Port, led2_Pin);
+    HAL_Delay(500);
+    HAL_GPIO_TogglePin(led3_GPIO_Port, led3_Pin);
+    HAL_Delay(500);
+
 
     /* USER CODE BEGIN 3 */
   }
@@ -133,8 +138,8 @@ void SystemClock_Config(void)
 
   /** Initializes the CPU, AHB and APB buses clocks
   */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+    | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
@@ -172,7 +177,7 @@ void Error_Handler(void)
   * @param  line: assert_param error line source number
   * @retval None
   */
-void assert_failed(uint8_t *file, uint32_t line)
+void assert_failed(uint8_t* file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
