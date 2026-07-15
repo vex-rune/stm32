@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "gpio.h"
+#include "led.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -87,9 +88,7 @@ int main(void)
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
 
-  HAL_GPIO_WritePin( led1_GPIO_Port, led1_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin( led2_GPIO_Port, led2_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin( led3_GPIO_Port, led3_Pin, GPIO_PIN_SET);
+  led_init();
 
   /* USER CODE END 2 */
 
@@ -99,13 +98,7 @@ int main(void)
   {
     /* USER CODE END WHILE */
 
-    HAL_GPIO_TogglePin(led1_GPIO_Port, led1_Pin);
-    HAL_Delay(500);
-    HAL_GPIO_TogglePin(led2_GPIO_Port, led2_Pin);
-    HAL_Delay(500);
-    HAL_GPIO_TogglePin(led3_GPIO_Port, led3_Pin);
-    HAL_Delay(500);
-
+    led_running();
 
     /* USER CODE BEGIN 3 */
   }
