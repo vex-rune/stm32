@@ -21,12 +21,12 @@ typedef struct
 
 /* 命令表：加新命令只要在这里加一行 */
 static const led_cmd_t s_led_cmds[] = {
-  {"led1-on", 1, 1},
-  {"led1-off", 1, 0},
-  {"led2-on", 2, 1},
-  {"led2-off", 2, 0},
-  {"led-all-on", 0xFF, 1},
-  {"led-all-off", 0xFF, 0},
+  {"led1-on", 1, 0},
+  {"led1-off", 1, 1},
+  {"led2-on", 2, 0},
+  {"led2-off", 2, 1},
+  {"led-all-on", 0xFF, 0},
+  {"led-all-off", 0xFF, 1},
 };
 #define LED_CMD_COUNT  (sizeof(s_led_cmds) / sizeof(s_led_cmds[0]))
 
@@ -47,7 +47,7 @@ static void led_set_one(uint8_t id, uint8_t on)
     break;
   default: return;
   }
-  HAL_GPIO_WritePin(port, pin, on ? GPIO_PIN_RESET : GPIO_PIN_SET);
+  HAL_GPIO_WritePin(port, pin, on ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 
 /* ---------- 公开入口 ---------- */
