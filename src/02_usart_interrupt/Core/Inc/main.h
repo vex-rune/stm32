@@ -41,6 +41,7 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
+#define RX_BUF_SIZE  128u   /* USART 接收缓冲大小（HAL_UARTEx_ReceiveToIdle_IT 用） */
 
 /* USER CODE END EC */
 
@@ -53,6 +54,11 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+
+/* 串口协议层共享状态（在 main.c 中定义，被 stm32f1xx_it.c 和 main.c 共用） */
+extern uint8_t           g_rx_buf[RX_BUF_SIZE];
+extern volatile uint8_t  g_frame_ready;
+extern volatile uint16_t g_frame_size;
 
 /* USER CODE END EFP */
 

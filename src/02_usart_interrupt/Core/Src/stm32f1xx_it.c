@@ -213,50 +213,28 @@ void USART1_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
-extern UART_HandleTypeDef huart1;
-extern volatile uint8_t  rx_done;
-extern volatile uint8_t  tx_busy;
-extern volatile uint16_t rx_size;
-extern volatile uint16_t rx_count;
-extern volatile uint32_t last_rx_tick;
-extern uint8_t           rx_buf[];
 
-#define RX_BUF_SIZE 128u
-
-/* 每收到 1 字节就进一次，缓存并刷新时间戳；主循环检测空闲后回显 */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+/* 一帧接收完成（USART 硬件 IDLE 中断触发）：
+ * HAL_UARTEx_RxEventCallback 由 HAL 在 IDLE 出现或缓冲区满时调用，
+ * Size 是本次实际接收的字节数。HAL 不会自动重启 ReceiveToIdle_IT，
+ * 必须在这里手动重开下一帧接收。
+ *
+ * 注意：HAL 在 IDLE 中断路径上只关中断，不会把 huart->RxState 设回
+ * HAL_UART_STATE_READY。不手动重置的话，第二次 ReceiveToIdle_IT 会
+ * 因 RxState==BUSY_RX 而返回 HAL_BUSY，后续所有接收都失败。
+ */
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
   if (huart->Instance != USART1) return;
 
-  if (rx_count < RX_BUF_SIZE)
-  {
-    rx_count++;
-  }
-  last_rx_tick = HAL_GetTick();
+  /* 手动重置 RxState：让下一次 ReceiveToIdle_IT 能被接受 */
+  huart->RxState = HAL_UART_STATE_READY;
 
-  /* 立刻再开下一次单字节接收 */
-  HAL_UART_Receive_IT(&huart1, rx_buf + rx_count, 1);
+  /* 先把帧交给主循环，再重启下一帧接收 */
+  g_frame_size  = Size;
+  g_frame_ready = 1;
+
+  HAL_UARTEx_ReceiveToIdle_IT(&huart1, g_rx_buf, RX_BUF_SIZE);
 }
 
-/* 发送完成：复位缓冲与忙标志 */
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-{
-  if (huart->Instance != USART1) return;
-
-  tx_busy  = 0;
-  rx_count = 0;       /* 一帧回显完，清缓冲准备下一帧 */
-}
-
-/* 串口错误：清错误码 + 重启单字节接收 */
-void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
-{
-  if (huart->Instance != USART1) return;
-
-  __HAL_UART_CLEAR_OREFLAG(huart);
-  __HAL_UART_CLEAR_FEFLAG(huart);
-  __HAL_UART_CLEAR_NEFLAG(huart);
-
-  /* 重启单字节接收：从 rx_count 当前偏移继续 */
-  HAL_UART_Receive_IT(&huart1, rx_buf + rx_count, 1);
-}
 /* USER CODE END 1 */

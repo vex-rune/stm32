@@ -26,7 +26,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <string.h>
+#include "led.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,7 +48,10 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+/* 串口协议层共享状态：由 USART 硬件 IDLE 中断回调写入，主循环读取处理 */
+uint8_t g_rx_buf[RX_BUF_SIZE]; /* 接收缓冲 */
+volatile uint8_t g_frame_ready = 0; /* 一帧就绪标志 */
+volatile uint16_t g_frame_size = 0; /* 本帧字节数 */
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -58,17 +62,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-#define RX_BUF_SIZE    128u
-#define RX_IDLE_MS     15u     /* 一帧空闲时间：超过则视为接收结束 */
 
-volatile uint8_t rx_done = 0; /* 接收完成标志 */
-volatile uint8_t tx_busy = 0; /* 发送进行中标志 */
-volatile uint16_t rx_size = 0; /* 本次实际接收字节数 */
-volatile uint16_t rx_count = 0; /* 接收缓冲当前位置 */
-
-volatile uint32_t last_rx_tick = 0; /* 上一字节到达时间戳 */
-
-uint8_t rx_buf[RX_BUF_SIZE];
 /* USER CODE END 0 */
 
 /**
@@ -116,10 +110,21 @@ int main(void)
   HAL_GPIO_WritePin(led3_GPIO_Port, led3_Pin, GPIO_PIN_SET);
 
   /* 阻塞发送 hello\r\n；不要用 Transmit_IT 和 printf 混用，会打架 */
-  HAL_UART_Transmit(&huart1, (uint8_t *)"hello\r\n", 7, 100);
+  // HAL_UART_Transmit(&huart1, (uint8_t*)"init", strlen("init"), 1000);
 
   /* printf 通过 fputc 走串口，fputc 必须阻塞发送 */
-  printf("world\r\n");
+  printf("please! send cmd\r\n");
+  printf("\t - led1-on\r\n");
+  printf("\t - led1-off\r\n");
+  printf("\t - led2-on\r\n");
+  printf("\t - led2-off\r\n");
+  printf("\t - led-all-on\r\n");
+  printf("\t - led-all-off\r\n");
+
+  /* 启动第一次空闲中断接收。
+   * 没有这一行，USART 永远不会开始监听，HAL_UARTEx_RxEventCallback 永远不会被调用。
+   * 后续每一帧接收完成后，由 stm32f1xx_it.c 的回调里再调一次 ReceiveToIdle_IT 重启。 */
+  HAL_UARTEx_ReceiveToIdle_IT(&huart1, g_rx_buf, RX_BUF_SIZE);
 
   /* USER CODE END 2 */
 
@@ -127,7 +132,39 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
     /* USER CODE END WHILE */
+
+    // 检查接受到判断位
+    if (g_frame_ready)
+    {
+      // 加字符串结束符（g_rx_buf 是接收缓冲，最后一字节原是旧数据）
+      g_rx_buf[g_frame_size] = '\0';
+
+      /* 去掉帧尾的 \r / \n，否则 strcmp 匹配不到命令表里的字符串。
+       * PC 串口助手默认发 \r\n、某些工具只发 \n，这里两种都兼容。 */
+      while (g_frame_size > 0 &&
+             (g_rx_buf[g_frame_size - 1] == '\r' ||
+              g_rx_buf[g_frame_size - 1] == '\n'))
+      {
+        g_rx_buf[--g_frame_size] = '\0';
+      }
+
+      // 回显收到的原始数据（调试用，生产可以删）
+      printf("ack:%s\r\n", (char*)g_rx_buf);
+
+      /* 业务逻辑全部交给 ledCtrl。
+       * 返回 0 = 识别并执行成功；-1 = 未知命令。 */
+      int rc = ledCtrl((const char *)g_rx_buf);
+      printf(rc == 0 ? "OK\r\n" : "ERR: unknown cmd\r\n");
+
+      // 处理完成, 复位
+      g_frame_ready = 0;
+    }
+
+    /* 节奏控制：没消息时短暂 sleep 释放 CPU；
+     * 有消息时上面的 if 会马上处理，不会被 sleep 阻塞。 */
+    HAL_Delay(10);
 
     /* USER CODE BEGIN 3 */
   }
@@ -182,7 +219,7 @@ void SystemClock_Config(void)
  */
 int __io_putchar(int ch)
 {
-  HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 100);
+  HAL_UART_Transmit(&huart1, (uint8_t*)&ch, 1, 100);
   return ch;
 }
 
