@@ -213,22 +213,50 @@ void USART1_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
+extern UART_HandleTypeDef huart1;
+extern volatile uint8_t  rx_done;
+extern volatile uint8_t  tx_busy;
+extern volatile uint16_t rx_size;
+extern volatile uint16_t rx_count;
+extern volatile uint32_t last_rx_tick;
+extern uint8_t           rx_buf[];
 
-extern volatile uint8_t isOver;
+#define RX_BUF_SIZE 128u
 
-void HAL_UART_RxHalfCpltCallback(UART_HandleTypeDef* huart)
+/* 每收到 1 字节就进一次，缓存并刷新时间戳；主循环检测空闲后回显 */
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-  // 返回值
-  isOver = 1;
+  if (huart->Instance != USART1) return;
+
+  if (rx_count < RX_BUF_SIZE)
+  {
+    rx_count++;
+  }
+  last_rx_tick = HAL_GetTick();
+
+  /* 立刻再开下一次单字节接收 */
+  HAL_UART_Receive_IT(&huart1, rx_buf + rx_count, 1);
 }
 
-extern uint16_t size;
-
-void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef* huart, uint16_t Size)
+/* 发送完成：复位缓冲与忙标志 */
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
-  // 返回值
-  isOver = 1;
-  size = Size;
+  if (huart->Instance != USART1) return;
+
+  tx_busy  = 0;
+  rx_count = 0;       /* 一帧回显完，清缓冲准备下一帧 */
 }
 
+/* 串口错误：清错误码 + 重启单字节接收 */
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
+{
+  if (huart->Instance != USART1) return;
+
+  __HAL_UART_CLEAR_OREFLAG(huart);
+  __HAL_UART_CLEAR_FEFLAG(huart);
+  __HAL_UART_CLEAR_NEFLAG(huart);
+
+  /* 重启单字节接收：从 rx_count 当前偏移继续 */
+  HAL_UART_Receive_IT(&huart1, rx_buf + rx_count, 1);
+}
 /* USER CODE END 1 */
