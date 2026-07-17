@@ -190,7 +190,7 @@ void SysTick_Handler(void)
 
   if (uwTick % 1000 == 0)
   {
-    HAL_GPIO_TogglePin(led1_GPIO_Port, led1_Pin);
+    //HAL_GPIO_TogglePin(led1_GPIO_Port, led1_Pin);
   }
 
   /* USER CODE END SysTick_IRQn 1 */
@@ -235,7 +235,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
   if (htim->Instance == TIM6)
   {
     // 翻转 led2
-    HAL_GPIO_TogglePin(led2_GPIO_Port, led2_Pin);
+    //HAL_GPIO_TogglePin(led2_GPIO_Port, led2_Pin);
   }
 }
 

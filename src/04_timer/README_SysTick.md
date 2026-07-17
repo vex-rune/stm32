@@ -149,7 +149,7 @@ cmake --build build
 ## 9. 文件结构
 
 ```
-04_sys_tick_timer/
+04_timer/
 ├── Core/
 │   ├── Inc/                # main.h、gpio.h、stm32f1xx_it.h 等
 │   └── Src/
