@@ -49,8 +49,10 @@
 
 /* USER CODE BEGIN PV */
 
+// const 关键字的数据就存在rom 中。
 const uint8_t data[] = {11, 12, 13, 14};
 
+// 目标 没有const 关键字的数据，可以被修改。 所以它存在 ram 中。
 uint8_t dest[] = {0};
 
 // 传输结束标记
