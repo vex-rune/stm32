@@ -217,7 +217,29 @@ graph TB
 
 ---
 
-## 八、参考
+## 八、CubeMX 截图说明（TIM1 PWM 配置）
+
+工程根目录下的三张截图记录了 `08_pwm_super.ioc` 在 STM32CubeMX 里的关键配置页，配合文字便于快速复用与排错。
+
+| 文件 | 对应 Tab | 关键参数 / 重点 | 状态 |
+|------|---------|----------------|------|
+| `cubemx_pwm参数配置_失败态.png` | TIM1 → Parameter Settings | PSC=7199 / ARR=4999 / RCR=4 / **Pulse=50** / PWM mode 1 / CH Polarity = High | ⚠️ 失败样例：参数配置正确，但本项目 HAL 库版本下 LED 仍不闪烁（原因见第六节） |
+| `cubemx_pwm参数配置_错误态.png` | TIM1 → Parameter Settings | 同上，**Pulse = 0** | ⛔ 错误样例：比较值为 0，PA8 持续输出低电平，PWM 等效关闭 |
+| `cubemx_TIM1_update中断开启.png` | TIM1 → NVIC Settings | ✅ TIM1 update interrupt 选中（Preemption = 0） | 用于 main.c 中 `__HAL_TIM_ENABLE_IT(&htim1, TIM_IT_UPDATE)` 与 `TIM1_UP_IRQHandler` 触发 |
+
+> 推荐命名说明：
+> - 「失败态」= 配置看似正确，运行仍不达预期（与 HAL 库版本有关）
+> - 「错误态」= 配置本身存在隐患（Pulse=0 导致无输出）
+> - 「中断开启」= 名称直接对应 Tab 名，便于检索
+
+参考引用：
+- `cubemx_pwm参数配置_失败态.png` 对应正文 §1.3 方案 ①
+- `cubemx_pwm参数配置_错误态.png` 对应正文 §1.2 原因 A（MOE 未使能时即使 Pulse 非 0 输出仍可能为 0）
+- `cubemx_TIM1_update中断开启.png` 对应正文 §2.1 `__HAL_TIM_ENABLE_IT`
+
+---
+
+## 九、参考
 
 - STM32F103 参考手册 RM0008 — 第 13 章 高级定时器（TIM1/TIM8）
 - STM32CubeF1 HAL 库说明 — `Drivers/STM32F1xx_HAL_Driver/`
