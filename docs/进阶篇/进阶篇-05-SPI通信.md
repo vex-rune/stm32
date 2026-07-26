@@ -1,10 +1,8 @@
 # SPI通信
 
-
 ## SPI通信介绍
 
 ![image77.emf](images/image77.emf)
-
 
 ## W25Q32介绍
 
@@ -20,56 +18,39 @@ FLASH 芯片中还有WP和HOLD引脚。WP引脚可控制写保护功能，当该
 
 注意：
 
-
 ###### 这个flash芯片只支持，模式0和模式3。
-
 
 ###### 写的时候必须是先擦除，擦除后再写入。
 
-
 ###### 移位是高位优先。
 
- 
-
 ![image80.png](images/image80.png)
-
 
 ### W25Q32框图
 
 ![image81.png](images/image81.png)
 
-
 ### 写入操作注意事项
-
 
 ###### 写入操作前，必须先进行写使能。
 
-
 ###### 每个数据位只能由1改写为0，不能由0改写为1。
-
 
 ###### 写入数据前必须先檫除，檫除后，所有数据位变为1。擦除必须按最小擦除单元进行。
 
-
 ###### 连续写入多字节时，最多写入一页的数据，超过页尾位置的数据，会回到页首覆盖写入。
-
 
 ###### 写入操作结束后，芯片进入忙状态，不响应新的读写操作。
 
-
 ### 读取操作注意事项
-
 
 ###### 直接调用读取时序，无需读使能，无需额外操作，没有页的限制。
 
-
 ###### 读取操作结束后不会进入忙状态，但不能在忙状态时读取。
-
 
 ### 读写指令
 
 ![image82.png](images/image82.png)
-
 
 ### 交换数据时序
 
@@ -77,14 +58,11 @@ FLASH 芯片中还有WP和HOLD引脚。WP引脚可控制写保护功能，当该
 
 ![image83.png](images/image83.png)
 
-
 ## SPI案例1：软件模拟SPI读写FLASH
-
 
 ### 需求描述
 
 基于寄存器操作，使用软件模拟SPI协议，完成读写FLASH。
-
 
 ### 硬件电路设计
 
@@ -92,9 +70,7 @@ FLASH 芯片中还有WP和HOLD引脚。WP引脚可控制写保护功能，当该
 
 ![image85.png](images/image85.png)
 
-
 ### 软件设计（寄存器）
-
 
 #### main.c
 
@@ -131,8 +107,7 @@ int main()
 }
 ```
 
-
-#### Driver_SPI.h
+#### Driver\_SPI.h
 
 ```c
 #ifndef __DRIVER_SPI_H
@@ -165,8 +140,7 @@ uint8_t Driver_SPI_SwapByte(uint8_t byte);
 #endif
 ```
 
-
-#### Driver_SPI.c
+#### Driver\_SPI.c
 
 ```c
 #include "Driver_SPI.h"
@@ -243,8 +217,7 @@ uint8_t Driver_SPI_SwapByte(uint8_t byte)
 }
 ```
 
-
-#### Inf_W25Q32.h
+#### Inf\_W25Q32.h
 
 ```c
 #ifndef __INF_W25Q32_
@@ -271,8 +244,7 @@ void Inf_W25Q32_Read(uint8_t block, uint8_t sector, uint8_t page, uint8_t *data,
 #endif
 ```
 
-
-#### Inf_W25Q32.h
+#### Inf\_W25Q32.h
 
 ```c
 #include "Inf_W25Q32.h"
@@ -430,11 +402,9 @@ void Inf_W25Q32_Read(uint8_t block,
 }
 ```
 
-
 ## SPI外设
 
 与I2C外设一样，STM32芯片也集成了专门用于SPI协议通讯的外设。
-
 
 ##### SPI外设简介
 
@@ -444,19 +414,15 @@ STM32F103系列提供了3个SPI，SPI1挂在APB2总线，SPI2/3挂在APB1总线�
 
 用的比较多还是双线全双工模式。
 
-
 ##### SPI外设框图
 
 ![image86.emf](images/image86.emf)
 
-
 ## SPI案例2：SPI外设读写Flash
-
 
 ### 需求描述
 
 基于寄存器操作，使用SPI功能，完成Flash的读写。
-
 
 ### 硬件电路设计
 
@@ -464,11 +430,9 @@ STM32F103系列提供了3个SPI，SPI1挂在APB2总线，SPI2/3挂在APB1总线�
 
 ![image87.png](images/image87.png)
 
-
 ### 软件设计（寄存器）
 
 ![image88.emf](images/image88.emf)
-
 
 #### main.c
 
@@ -508,8 +472,7 @@ int main()
 }
 ```
 
-
-#### Driver_SPI.h
+#### Driver\_SPI.h
 
 ```c
 #ifndef __DRIVER_SPI_H
@@ -534,8 +497,7 @@ uint8_t Driver_SPI_SwapByte(uint8_t byte);
 #endif
 ```
 
-
-#### Driver_SPI.c
+#### Driver\_SPI.c
 
 ```c
 #include "Driver_SPI.h"
@@ -603,8 +565,7 @@ uint8_t Driver_SPI_SwapByte(uint8_t byte)
 }
 ```
 
-
-#### Inf_W25Q32.h
+#### Inf\_W25Q32.h
 
 ```c
 #ifndef __INF_W25Q32_
@@ -631,8 +592,7 @@ void Inf_W25Q32_Read(uint8_t block, uint8_t sector, uint8_t page, uint8_t *data,
 #endif
 ```
 
-
-#### Inf_W25Q32.c
+#### Inf\_W25Q32.c
 
 ```c
 #include "Inf_W25Q32.h"
@@ -790,19 +750,15 @@ void Inf_W25Q32_Read(uint8_t block,
 }
 ```
 
-
 ### 软件设计（HAL库）
-
 
 #### STM32CubeMx设置
 
 ![image89.png](images/image89.png)
 
-![image90.png](images/image90.png)
-
+![image90.png](images/image90.png)   
 
 #### 添加其他代码
-
 
 #### main.c
 
@@ -838,7 +794,6 @@ int main(void)
 }
 ```
 
-
 #### spi.h
 
 在spi.h中添加如下代码
@@ -850,7 +805,6 @@ void Driver_SPI_Stop(void);
 uint8_t Driver_SPI_SwapByte(uint8_t byte);
 /* USER CODE END Prototypes */
 ```
-
 
 #### spi.c
 
@@ -876,8 +830,7 @@ uint8_t Driver_SPI_SwapByte(uint8_t byte)
 /* USER CODE END 1 */
 ```
 
-
-#### nf_W25Q32.h
+#### nf\_W25Q32.h
 
 ```c
 #ifndef __INF_W25Q32_
@@ -902,8 +855,7 @@ void Inf_W25Q32_Read(uint8_t block, uint8_t sector, uint8_t page, uint8_t *data,
 #endif
 ```
 
-
-#### Inf_W25Q32.c
+#### Inf\_W25Q32.c
 
 ```c
 #include "Inf_W25Q32.h"
