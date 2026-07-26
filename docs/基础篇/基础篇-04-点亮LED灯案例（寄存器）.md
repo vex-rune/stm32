@@ -4,11 +4,25 @@
 
 在代码期间会涉及到一些寄存器知识，先不要深究，后面再详细介绍。现在要做的就是点亮第一个LED灯。
 
+## 目录
+
+- [需求描述](#需求描述)
+- [硬件电路设计](#硬件电路设计)
+- [创建项目工程](#创建项目工程)
+  - [创建工程准备](#创建工程准备)
+  - [工程配置](#工程配置)
+  - [编译配置](#编译配置)
+- [软件设计](#软件设计)
+  - [main.c](#mainshc)
+  - [编译工程](#编译工程)
+  - [安装ST-LINK驱动](#安装st-link驱动)
+  - [Keil中配置ST-LINK](#keil中配置st-link)
+  - [下载程序](#下载程序)
+  - [操作寄存器方式的"进化"](#操作寄存器方式的进化)
 
 ## 需求描述
 
 快速体验STM32开发：点亮LED1。
-
 
 ## 硬件电路设计
 
@@ -20,27 +34,21 @@ LED1-LED3是普通LED灯，LED4为电源指示灯。
 
 说明：
 
+#### LED1连接的是端口PA0
 
-###### LED1连接的是端口PA0
-
-
-###### 只要让PA0引脚输出低电平就可以点亮LED1。
-
+#### 只要让PA0引脚输出低电平就可以点亮LED1。
 
 ## 创建项目工程
 
-
 ### 创建工程准备
 
-
-##### 创建需要的目录
+#### 创建需要的目录
 
 在磁盘上创建一个目录 atguigu，然后再在atguigu目录下创建我们的第一个工程目录 led_register。
 
 ![image36.png](images/image36.png)
 
-
-##### 准备启动文件
+#### 准备启动文件
 
 STM32程序需要启动文件，我们需要提前准备好。先去ST官网下载官方提供的外设标准库，里面有提供标准的启动文件，我们从里面copy一份出来。
 
@@ -52,8 +60,7 @@ STM32程序需要启动文件，我们需要提前准备好。先去ST官网下�
 
 下载完成之后解压，后面我们需要从里面copy文件出来。
 
-
-##### 创建目录放入启动文件和其他核心文件
+#### 创建目录放入启动文件和其他核心文件
 
 为了方便管理，我们把启动文件放入专门目录中。在刚才创建的工程目录中创建一个目录：Start（名字没有强制要求，随意，但是最好不要有中文）。
 
@@ -75,8 +82,7 @@ Copy完之后：
 
 ![image44.png](images/image44.png)
 
-
-##### 创建工程
+#### 创建工程
 
 打开Keil MDK创建工程。
 
@@ -88,11 +94,9 @@ Copy完之后：
 
 ![image48.png](images/image48.png)
 
-
 ### 工程配置
 
-
-##### 添加两个Project Group方便管理代码文件
+#### 添加两个Project Group方便管理代码文件
 
 ![image49.png](images/image49.png)
 
@@ -106,8 +110,7 @@ Copy完之后：
 
 ![image53.png](images/image53.png)
 
-
-##### 创建main.c 文件
+#### 创建main.c 文件
 
 ![image54.png](images/image54.png)
 
@@ -117,11 +120,9 @@ User路径不存在，让它帮我们创建。
 
 ![image56.png](images/image56.png)
 
-
 ### 编译配置
 
-
-##### 编译器版本改为5
+#### 编译器版本改为5
 
 目前最新的Keil ARM用的是 Compiler version 6，与前面的core_cm3.c不兼容，所以需要提前准备好Compiler version 5。
 
@@ -147,8 +148,7 @@ User路径不存在，让它帮我们创建。
 
 ![image65.png](images/image65.png)
 
-
-##### 一些其他配置
+#### 一些其他配置
 
 ![image66.png](images/image66.png)
 
@@ -158,18 +158,15 @@ User路径不存在，让它帮我们创建。
 
 ![image69.png](images/image69.png)
 
-
 ## 软件设计
 
-
-### main.c
+### main.c {#mainshc}
 
 今天的体验代码大家只需要知道最终能点亮LED1就行，具体的每行代码的为什么这么写到GPIO这章学完自会明白。
 
 根据前面硬件电路设计，我们只要让GPIOA的0口输出低电平就行了。代码需要按照下面的步骤来实现。对于其中一些概念，大家先有个了解，后面的课程会细讲。
 
-
-##### 开启时钟
+#### 开启时钟
 
 在STM32中，让IO口工作，必须先开启对应的时钟。所以需要先查找到开启时钟的寄存器，然后通过该寄存器操作时钟的开启或关闭。我们要打开的是GPIOA的时钟。
 
@@ -193,8 +190,7 @@ User路径不存在，让它帮我们创建。
 *(uint32_t *)(0x40021000 + 0x18) = 4;
 ```
 
-
-##### 给IO口设置输出模式
+#### 给IO口设置输出模式
 
 在STM32中，如果要让IO口输出低电平或高电平，必须给要使用的IO设置为输出模式。
 
@@ -210,8 +206,7 @@ User路径不存在，让它帮我们创建。
 *(uint32_t *)(0x40010800 + 0x00) = 3;
 ```
 
-
-##### 给PA0口输出0
+#### 给PA0口输出0
 
 给指定PA0口输出0就可以点亮LED1了。用到的寄存器是ODR数据输出寄存器。
 
@@ -230,40 +225,35 @@ main.c具体代码清单。
 
 int main(void)
 {
-    /* 开启GPIOA的时钟 */
-    *(uint32_t *)(0x40021000 + 0x18) = 4;
+    /* 开启GPIOA的时钟 */
+    *(uint32_t *)(0x40021000 + 0x18) = 4;
 
-    /* 给PA0设置为通用推挽输出 */
-    *(uint32_t *)(0x40010800 + 0x00) = 3;
+    /* 给PA0设置为通用推挽输出 */
+    *(uint32_t *)(0x40010800 + 0x00) = 3;
 
-    /* 给输出寄存器赋值 */
-    *(uint32_t *)(0x40010800 + 0x0c) = 0xfffe;
-    while (1)
-    {
-    }
+    /* 给输出寄存器赋值 */
+    *(uint32_t *)(0x40010800 + 0x0c) = 0xfffe;
+    while (1)
+    {
+    }
 }
 ```
-
 
 ### 编译工程
 
 ![image76.png](images/image76.png)
 
-
 ### 安装ST-LINK驱动
 
-
-###### 我们使用ST-LINK仿真器下载程序。
+#### 我们使用ST-LINK仿真器下载程序。
 
 ![image77.png](images/image77.png)
 
-
-###### Keil的安装目录下自带了ST-LINK的USB驱动，双击安装即可。
+#### Keil的安装目录下自带了ST-LINK的USB驱动，双击安装即可。
 
 ![image78.png](images/image78.png)
 
-
-###### 升级STLink固件
+#### 升级STLink固件
 
 ![image79.png](images/image79.png)
 
@@ -275,8 +265,7 @@ int main(void)
 
 ![image83.png](images/image83.png)
 
-
-### Keil中配置ST-LINK 
+### Keil中配置ST-LINK
 
 还需要在Keil软件中，对仿真器做一些必要的配置。
 
@@ -288,38 +277,33 @@ int main(void)
 
 ![image87.png](images/image87.png)
 
-
 ### 下载程序
-
- 
 
 ![image88.png](images/image88.png)
 
+### 操作寄存器方式的"进化"
 
-### 操作寄存器方式的“进化”
-
-
-#### “进化”1
+#### "进化"1
 
 在操作寄存器的时候，如果每次都查手册计算地址，是相当麻烦且无聊。ST公司早就考虑到了这个问题，已经提前把每个外设寄存器的地址提前给我们用宏定义的方式给算好了，我们只需要直接使用即可。比如下面是定义的RCC各个寄存器地址。（stm32f10x.h中定义）
 
 ```c
-#define PERIPH_BASE           ((uint32_t)0x40000000) 
-#define AHBPERIPH_BASE        (PERIPH_BASE + 0x20000)
-#define RCC_BASE              (AHBPERIPH_BASE + 0x1000)
-#define RCC                 ((RCC_TypeDef *) RCC_BASE)
+#define PERIPH_BASE           ((uint32_t)0x40000000) 
+#define AHBPERIPH_BASE        (PERIPH_BASE + 0x20000)
+#define RCC_BASE              (AHBPERIPH_BASE + 0x1000)
+#define RCC                   ((RCC_TypeDef *) RCC_BASE)
 typedef struct
 {
-  __IO uint32_t CR;
-  __IO uint32_t CFGR;
-  __IO uint32_t CIR;
-  __IO uint32_t APB2RSTR;
-  __IO uint32_t APB1RSTR;
-  __IO uint32_t AHBENR;
-  __IO uint32_t APB2ENR;
-  __IO uint32_t APB1ENR;
-  __IO uint32_t BDCR;
-  __IO uint32_t CSR;
+  __IO uint32_t CR;
+  __IO uint32_t CFGR;
+  __IO uint32_t CIR;
+  __IO uint32_t APB2RSTR;
+  __IO uint32_t APB1RSTR;
+  __IO uint32_t AHBENR;
+  __IO uint32_t APB2ENR;
+  __IO uint32_t APB1ENR;
+  __IO uint32_t BDCR;
+  __IO uint32_t CSR;
 } RCC_TypeDef;
 ```
 
@@ -332,24 +316,22 @@ APB2ENR的相对于基地址的偏移是6*4=24=0x18，和我们前面查找手�
 
 int main(void)
 {
-    RCC->APB2ENR = 4;
-    GPIOA->CRL = 3;
-    GPIOA->ODR = 0xfffe;
-    while (1)
-    {
-    }
+    RCC->APB2ENR = 4;
+    GPIOA->CRL = 3;
+    GPIOA->ODR = 0xfffe;
+    while (1)
+    {
+    }
 }
 ```
 
 这样写起来是不是可读性就好很多了，而且也简单了很多。
 
-
-#### “进化”2
+#### "进化"2
 
 其实在上面的代码中还有一些问题。在STM32中一个寄存器是32位的，我们在编写代码的时候只是需要给某位或某几位赋值。由于STM32不支持位寻址，所以在前面的操作中，我们其实是修改了所有位。这是非常不合理的，也许其他位在其他地方有赋值，我们重新赋值势必会覆盖了其他值，带来的后果也是很严重的。
 
 如何只修改特定的位的值，而不影响其他位呢？我们需要先回顾下一些常见的位操作，再来继续进化上面的代码。
-
 
 ##### 常用的一些位操作回顾
 
@@ -361,77 +343,76 @@ int main(void)
 void printfBinary(char * str, uint32_t num)
 {
 char buffer[33];
-    itoa(num, buffer, 2); // 把result转成2进制字符串
-    printf("%s = (%s)2 \n", str, buffer);
+    itoa(num, buffer, 2); // 把result转成2进制字符串
+    printf("%s = (%s)2 \n", str, buffer);
 }
 
 int main()
 {
-    /* 左移 8<<1 = 1000<<1 = 10000*/
-    printfBinary("8 << 1", 8 << 1);
+    /* 左移 8<<1 = 1000<<1 = 10000*/
+    printfBinary("8 << 1", 8 << 1);
 
-    /* 右移 8>>1 = 1000>>1 = 100*/
-    printfBinary("8 >> 1", 8 >> 1);
+    /* 右移 8>>1 = 1000>>1 = 100*/
+    printfBinary("8 >> 1", 8 >> 1);
 
-    /* 按位或 8|7 = 1000|0111 = 1111 */
-    printfBinary("8 | 7", 8 | 7);
+    /* 按位或 8|7 = 1000|0111 = 1111 */
+    printfBinary("8 | 7", 8 | 7);
 
-    /* 按位或 8&7 = 1000&0111 = 0000 */
-    printfBinary("8 & 7", 8 & 7);
+    /* 按位或 8&7 = 1000&0111 = 0000 */
+    printfBinary("8 & 7", 8 & 7);
 
-    /* 按位取反 ~8 = ~1000 = 0111 */
-    printfBinary("~8", ~8);
+    /* 按位取反 ~8 = ~1000 = 0111 */
+    printfBinary("~8", ~8);
 
-    /*
-        把某位置 1  (0 位 1位 ...)
-            比如把 num 的第 2 位置 1
-                1. 得到一个数第 2 位是 1 其他都为 0
-                   a =  0000 0100  是由 1<<2 得到
-                2. 让 num | a
-     */
-    printfBinary("8置第 2 位为 1 ", 8 | (1 << 2));
+    /*
+        把某位置 1  (0 位 1位 ...)
+            比如把 num 的第 2 位置 1
+                1. 得到一个数第 2 位是 1 其他都为 0
+                  a =  0000 0100  是由 1<<2 得到
+                2. 让 num | a
+     */
+    printfBinary("8置第 2 位为 1 ", 8 | (1 << 2));
 
-    /*
-        把连续的多位同时置 1  (0 位 1位 ...)
-            比如把 num 的第 1和2 位置 1
-                1  a =  3 << 1
-                2. num | a
-     */
-    printfBinary("8置第 1和2 位为 1 ", 8 | (3 << 1));
+    /*
+        把连续的多位同时置 1  (0 位 1位 ...)
+            比如把 num 的第 1和2 位置 1
+                1  a =  3 << 1
+                2. num | a
+     */
+    printfBinary("8置第 1和2 位为 1 ", 8 | (3 << 1));
 
-    /*
-        把某位置 0  (0位 1位 ...)
-            比如把 num 的第 2 位置 0
-                1. 得到一个数第 2 位是 0 其他都为 1
-                   a =  1111 1011  是由 ~(1<<2) 得到
-                2. 让 num & a
-     */
-    printfBinary("7置第 2 位为 0 ", 7 & ~(1 << 2));
+    /*
+        把某位置 0  (0位 1位 ...)
+            比如把 num 的第 2 位置 0
+                1. 得到一个数第 2 位是 0 其他都为 1
+                  a =  1111 1011  是由 ~(1<<2) 得到
+                2. 让 num & a
+     */
+    printfBinary("7置第 2 位为 0 ", 7 & ~(1 << 2));
 
-    /*
-        把连续多位同时置 0  (0位 1位 ...)
-            比如把 num 的第 1和2 位置 0
-                1. a = ~(3<<1)
-                2. 让 num & a
-     */
-    printfBinary("7置第 1和2 位为 0 ", 7 & ~(3 << 1));
+    /*
+        把连续多位同时置 0  (0位 1位 ...)
+            比如把 num 的第 1和2 位置 0
+                1. a = ~(3<<1)
+                2. 让 num & a
+     */
+    printfBinary("7置第 1和2 位为 0 ", 7 & ~(3 << 1));
 
-    /*
-        把连续的多位同时置位  101 (二进制)
-            比如把 num 的第 1,2,3 位置为 101
-            1. num的 1,2,3位置为0
-                num &= ~(7<<1)
-            2. num |= (5 << 1);    (5 = 101)
-     */
+    /*
+        把连续的多位同时置位  101 (二进制)
+            比如把 num 的第 1,2,3 位置为 101
+            1. num的 1,2,3位置为0
+                num &= ~(7<<1)
+            2. num |= (5 << 1);    (5 = 101)
+     */
 
-    unsigned char num = 13;
-    num &= ~(7 << 1);
-    num |= 5 << 1;
-    printfBinary("13", 13);
-    printfBinary("13的123位置为101 ", num);
+    unsigned char num = 13;
+    num &= ~(7 << 1);
+    num |= 5 << 1;
+    printfBinary("13", 13);
+    printfBinary("13的123位置为101 ", num);
 }
 ```
-
 
 ##### 继续进化
 
@@ -442,35 +423,34 @@ int main()
 
 int main(void)
 {
-    /* 开启GPIOA的时钟 第2位置1*/
-    RCC->APB2ENR |= 0x1 << 2;
+    /* 开启GPIOA的时钟 第2位置1*/
+    RCC->APB2ENR |= 0x1 << 2;
 
-    /* GPIOA_CRL的最后4位置 0011 */
-    GPIOA->CRL &= ~(0x1 << 3);
-    GPIOA->CRL &= ~(0x1 << 2);
-    GPIOA->CRL |= 0x1 << 1;
-    GPIOA->CRL |= 0x1 << 0;
+    /* GPIOA_CRL的最后4位置 0011 */
+    GPIOA->CRL &= ~(0x1 << 3);
+    GPIOA->CRL &= ~(0x1 << 2);
+    GPIOA->CRL |= 0x1 << 1;
+    GPIOA->CRL |= 0x1 << 0;
 
-    /* GPIOA_ODR的第0位置0 */
-    GPIOA->ODR &= ~(0x1 << 0);
+    /* GPIOA_ODR的第0位置0 */
+    GPIOA->ODR &= ~(0x1 << 0);
 
-    while (1)
-    {
-    }
+    while (1)
+    {
+    }
 }
 ```
 
+#### "进化"3
 
-#### “进化”3
-
-在上次的进化中，我们是给寄存器“或等”和“与等”了一些值，这些值都是通过相应的“移位”操作得到的。比如要操作第2位，就需要把0x1左移2位得到。我们需要查找手册才能知道要移位几。也是很不方便。
+在上次的进化中，我们是给寄存器"或等"和"与等"了一些值，这些值都是通过相应的"移位"操作得到的。比如要操作第2位，就需要把0x1左移2位得到。我们需要查找手册才能知道要移位几。也是很不方便。
 
 其实ST公司也把我们需要的移位后的值给提前计算好了，用宏定义的方式供我们使用。
 
 比如前面的开启时钟，已经定义了好了这个值。正好就是1<<2
 
 ```c
-#define  RCC_APB2ENR_IOPAEN                  ((uint32_t)0x00000004)
+#define  RCC_APB2ENR_IOPAEN                  ((uint32_t)0x00000004)
 ```
 
 利用ST公司提前预定义的这些值，可以进一步进化代码为下面的形式。
@@ -480,20 +460,19 @@ int main(void)
 
 int main(void)
 {
-    RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
+    RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
 
-    GPIOA->CRL &= ~GPIO_CRL_CNF0_1;
-    GPIOA->CRL &= ~GPIO_CRL_CNF0_0;
-    GPIOA->CRL |= GPIO_CRL_MODE0_1;
-    GPIOA->CRL |= GPIO_CRL_MODE0_0;
+    GPIOA->CRL &= ~GPIO_CRL_CNF0_1;
+    GPIOA->CRL &= ~GPIO_CRL_CNF0_0;
+    GPIOA->CRL |= GPIO_CRL_MODE0_1;
+    GPIOA->CRL |= GPIO_CRL_MODE0_0;
 
-    GPIOA->ODR &= ~GPIO_ODR_ODR0;
+    GPIOA->ODR &= ~GPIO_ODR_ODR0;
 
-    while (1)
-    {
-    }
+    while (1)
+    {
+    }
 }
 ```
 
 这样可读性就好多了，等操作熟练之后，很多操作不查找寄存器手册也能直接操作了。
-
