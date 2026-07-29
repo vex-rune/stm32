@@ -1,67 +1,77 @@
-/* USER CODE BEGIN Header */
-/**
-  ******************************************************************************
-  * @file    gpio.c
-  * @brief   This file provides code for the configuration
-  *          of all used GPIO pins.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2026 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
-/* USER CODE END Header */
+#include "eth.h"
 
-/* Includes ------------------------------------------------------------------*/
-#include "gpio.h"
+#include <stdint.h>
+#include <stdio.h>
 
-/* USER CODE BEGIN 0 */
+#include "main.h"
+#include "stm32f1xx_hal_spi.h"
+#include "../../Drivers/Ethernet/w5500.h"
 
-/* USER CODE END 0 */
+// ip
+uint8_t ip[4] = {192, 168, 31, 11};
 
-/*----------------------------------------------------------------------------*/
-/* Configure GPIO                                                             */
-/*----------------------------------------------------------------------------*/
-/* USER CODE BEGIN 1 */
+// mac
+uint8_t mac[6] = {0x94, 0xB6, 0x09, 0x4C, 0xC4, 0x11};
 
-/* USER CODE END 1 */
+// 掩码
+uint8_t sub_mask[4] = {255, 255, 255, 0};
 
-/** Configure pins as
-        * Analog
-        * Input
-        * Output
-        * EVENT_OUT
-        * EXTI
-*/
-void MX_GPIO_Init(void)
+// 网关
+uint8_t gateway[4] = {192, 168, 31, 1};
+
+
+void ETH_Reset(void)
 {
+    // 时钟
+    // 工作模式: 推完模式
+    // main 已经有了 MX_GPIO_Init
 
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
+    // 复位: 拉低 300 ms, 恢复拉高
+    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_RESET);
 
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOD_CLK_ENABLE();
+    HAL_Delay(300);
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, GPIO_PIN_SET);
 
-  /*Configure GPIO pin : CS_Pin */
-  GPIO_InitStruct.Pin = CS_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(CS_GPIO_Port, &GPIO_InitStruct);
-
+    printf("eth 复位完成的\n");
 }
 
-/* USER CODE BEGIN 2 */
+void ETH_Set_Ip(void)
+{
+    // 设置
+    printf("eht 开始设置 ip\n");
+    setSIPR(ip);
+    printf("eht 设置完成 ip\n");
 
-/* USER CODE END 2 */
+    printf("eht 开始设置 sub_mask\n");
+    setSUBR(sub_mask);
+    printf("eht 设置完成 sub_mask\n");
+
+    printf("eht 开始设置 gateway\n");
+    setGAR(gateway);
+    printf("eht 设置完成 gateway\n");
+}
+
+void ETH_Set_Mac(void)
+{
+    // 设置
+    printf("eht 开始设置 mac\n");
+    setSHAR(mac);
+    printf("eht 设置完成 mac\n");
+}
+
+
+void ETH_Init(void)
+{
+    // 1. 注册自定义回调函数
+    // 先省略
+
+    // 2. 复位 w5500
+    ETH_Reset();
+
+    // 3. 设置mac
+    ETH_Set_Mac();
+
+    // 4. 设置IP 网关 子网掩码
+    ETH_Set_Ip();
+}
