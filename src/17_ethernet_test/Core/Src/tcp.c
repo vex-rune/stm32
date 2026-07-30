@@ -20,7 +20,7 @@ void TCP_Server_Start(void)
         // 创建 Socket, sn = port 则表示成功后
         int8_t sn = socket(SN, Sn_MR_TCP, PORT, 0);
 
-        if (sn == PORT)
+        if (((int)sn) == SN)
         {
             printf("\tSOCK_OPEN\n");
         }
@@ -36,11 +36,11 @@ void TCP_Server_Start(void)
 
         if (res == SOCK_OK)
         {
-            // printf("\tSOCK_LISTEN\n");
+            printf("\tSOCK_LISTEN\n");
         }
         else
         {
-            // printf("\tSOCK_ERROR res = %d\n", res);
+            printf("\tSOCK_ERROR res = %d\n", res);
         }
     }
     else if (state == SOCK_LISTEN)
