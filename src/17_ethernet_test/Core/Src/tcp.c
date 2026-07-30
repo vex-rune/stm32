@@ -17,7 +17,6 @@ void TCP_Server_Start(void)
     // 判断状态
     if (state == SOCK_CLOSED)
     {
-        printf("\t打开socket\n");
         // 创建 Socket, sn = port 则表示成功后
         int8_t sn = socket(SN, Sn_MR_TCP, PORT, 0);
 
@@ -37,25 +36,34 @@ void TCP_Server_Start(void)
 
         if (res == SOCK_OK)
         {
-            printf("\tSOCK_LISTEN\n");
+            // printf("\tSOCK_LISTEN\n");
         }
         else
         {
-            printf("\tSOCK_ERROR res = %d\n", res);
+            // printf("\tSOCK_ERROR res = %d\n", res);
         }
     }
     else if (state == SOCK_LISTEN)
     {
-        // printf("\t等待连接\n");
     }
     else if (state == SOCK_ESTABLISHED)
     {
-        // printf("\t已连接\n");
+        // 建立 连接中断标志位
+        if (getSn_IR(SN) & Sn_IR_CON)
+        {
+            // 获取对方的ip 端口号
+            uint8_t dip[4] = {0};
+            getSn_DIPR(SN, dip);
+            getSn_DPORT(SN);
+            printf("创建链接 %d.%d.%d.%d:%d\n",
+                   dip[0], dip[1], dip[2], dip[3],
+                   getSn_DPORT(SN)
+            );
+            setSn_IR(SN, Sn_IR_CON);
+        }
     }
     else if (state == SOCK_CLOSE_WAIT)
     {
-        printf("\t等待关闭\n");
-        // 直接关闭
         close(SN);
     }
 }
@@ -79,16 +87,6 @@ int TCP_Server_Accept(uint8_t buff[], uint16_t* len)
         {
             printf("TCP_Server_Accept\n");
 
-            // 获取对方的ip 端口号
-
-            uint8_t dip[4] = {0};
-            getSn_DIPR(SN, dip);
-            getSn_DPORT(SN);
-
-            printf("\t已接收数据 %d.%d.%d.%d:%d\n",
-                   dip[0], dip[1], dip[2], dip[3],
-                   getSn_DPORT(SN)
-            );
             // 清零标志位 (写1清0)
 
             printf("\t清零标志位\n");
