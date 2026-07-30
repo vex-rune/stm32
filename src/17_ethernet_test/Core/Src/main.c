@@ -27,6 +27,7 @@
 #include "usart.h"
 #include "gpio.h"
 #include "tcp.h"
+#include "udp.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -70,7 +71,7 @@ uint16_t rexLen = 0;
 
 /* USER CODE END 0 */
 
-void server_test(void)
+void tcp_server_test(void)
 {
   // 启动服务
   TCP_Server_Start();
@@ -91,7 +92,7 @@ void server_test(void)
   }
 }
 
-void client_test(void)
+void tcp_client_test(void)
 {
   TCP_Client_Start();
 
@@ -161,11 +162,36 @@ int main(void)
   {
     /* USER CODE END WHILE */
 
-    // 服务测试
-    // server_test();
+    // tcp服务测试
+    // tcp_server_test();
 
-    // 客户端测试
-    client_test();
+    // tcp客户端测试
+    // tcp_client_test();
+
+    UDP_Start();
+
+    uint8_t udp_ip[4] = {192, 168, 31, 187};
+    uint16_t udp_prot = 8081;
+    UDP_Server_Accept(udp_ip, &udp_prot, buff, &rexLen);
+
+    // 内容判断
+    if (rexLen > 0)
+    {
+      printf("接受到数据 d:%s\n", (char*)buff);
+
+      // 返回数据前面加 ack:
+      // 预估最大长度，buff长度 + "ack:" 4字节，预留空间
+      char send_buf[128];
+      // 第一步先拷贝前缀
+      strcpy(send_buf, "udp-ack:");
+      // 第二步拼接buff
+      strcat(send_buf, buff);
+
+      UDP_Send_Message(udp_ip, &udp_prot, send_buf, strlen(send_buf));
+
+      // 清空
+      rexLen = 0;
+    }
 
     /* USER CODE BEGIN 3 */
   }

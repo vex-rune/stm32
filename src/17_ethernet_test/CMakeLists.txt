@@ -46,6 +46,8 @@ add_executable(${CMAKE_PROJECT_NAME}
         Core/Inc/eth.h
         Core/Inc/tcp.h
         Core/Src/tcp.c
+        Core/Inc/udp.h
+        Core/Src/udp.c
 )
 
 # Add STM32CubeMX generated sources
