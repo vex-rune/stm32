@@ -7,13 +7,13 @@
 #include "stm32f1xx_hal_spi.h"
 #include "../../Drivers/Ethernet/w5500.h"
 
-// ip
+// IP 地址
 uint8_t ip[4] = {192, 168, 31, 11};
 
-// mac
+// MAC 地址
 uint8_t mac[6] = {0x94, 0xB6, 0x09, 0x4C, 0xC4, 0x11};
 
-// 掩码
+// 子网掩码
 uint8_t sub_mask[4] = {255, 255, 255, 0};
 
 // 网关

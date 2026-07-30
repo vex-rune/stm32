@@ -25,6 +25,7 @@
 #include "spi.h"
 #include "usart.h"
 #include "gpio.h"
+#include "tcp.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -60,6 +61,11 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+// 接收缓冲区
+uint8_t buff[1024] = {0};
+// 接收长度
+uint16_t rexLen = 0;
 
 /* USER CODE END 0 */
 
@@ -105,6 +111,26 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+
+    // 启动服务
+    TCP_Server_Start();
+
+    // 持续接受数据并打印
+    TCP_Server_Accept(buff, &rexLen);
+
+    if (rexLen > 0)
+    {
+
+      // 收到数据再发回去
+      TCP_Server_Send(buff, rexLen);
+
+      printf("发送成功 d:%s\n",(char *)buff);
+
+      // 清空
+      rexLen = 0;
+      printf("清空\n");
+    }
+
 
     /* USER CODE BEGIN 3 */
   }

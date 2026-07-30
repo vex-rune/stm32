@@ -43,7 +43,10 @@ add_executable(${CMAKE_PROJECT_NAME}
         Drivers/Ethernet/w5500.h
         Drivers/Ethernet/w5500.c
         Core/Src/eth.c
-        Core/Inc/eth.h)
+        Core/Inc/eth.h
+        Core/Inc/tcp.h
+        Core/Src/tcp.c
+)
 
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)
