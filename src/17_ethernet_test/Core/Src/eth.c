@@ -41,15 +41,16 @@ void ETH_Set_Ip(void)
     // 设置
     printf("eht 开始设置 ip\n");
     setSIPR(ip);
-    printf("eht 设置完成 ip\n");
+    printf("eht 设置完成 ip: %d.%d.%d.%d\n", ip[0], ip[1], ip[2], ip[3]);
 
     printf("eht 开始设置 sub_mask\n");
     setSUBR(sub_mask);
-    printf("eht 设置完成 sub_mask\n");
+    printf("eht 设置完成 sub_mask: %x-%x-%x-%x-%x-%x\n",
+           sub_mask[0], sub_mask[1], sub_mask[2], sub_mask[3], sub_mask[4], sub_mask[5]);
 
     printf("eht 开始设置 gateway\n");
     setGAR(gateway);
-    printf("eht 设置完成 gateway\n");
+    printf("eht 设置完成 gateway: %d.%d.%d.%d\n", gateway[0], gateway[1], gateway[2], gateway[3]);
 }
 
 void ETH_Set_Mac(void)
