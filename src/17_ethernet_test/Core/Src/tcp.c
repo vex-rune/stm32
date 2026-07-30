@@ -73,13 +73,22 @@ int TCP_Server_Accept(uint8_t buff[], uint16_t* len)
     // 如果是建立连接状态
     if (state == SOCK_ESTABLISHED)
     {
-
         // 根据标志位判断是否接收到数据
+        // 获取SN寄存器值 对比 Sn_IR_RECV 接收中断 当从对等方接收到数据时发出。
         if (getSn_IR(SN) & Sn_IR_RECV)
         {
             printf("TCP_Server_Accept\n");
 
-            printf("\t已接收数据\n");
+            // 获取对方的ip 端口号
+
+            uint8_t dip[4] = {0};
+            getSn_DIPR(SN, dip);
+            getSn_DPORT(SN);
+
+            printf("\t已接收数据 %d.%d.%d.%d:%d\n",
+                   dip[0], dip[1], dip[2], dip[3],
+                   getSn_DPORT(SN)
+            );
             // 清零标志位 (写1清0)
 
             printf("\t清零标志位\n");
@@ -92,12 +101,14 @@ int TCP_Server_Accept(uint8_t buff[], uint16_t* len)
 
             // 接收数据
             recv(SN, buff, *len);
+
             // 手动加结束符,避免打印越界
             if (*len > 0 && *len < 0xFFFF)
             {
                 buff[*len] = '\0';
             }
-            printf("\t接收数据(%u 字节): %s\r\n", (unsigned)*len, (char *)buff);
+
+            printf("\t接收数据(%u 字节): %s\r\n", (unsigned)*len, (char*)buff);
 
             return 0;
         }
@@ -121,7 +132,8 @@ int TCP_Server_Send(uint8_t buff[], uint16_t len)
     if (state == SOCK_ESTABLISHED)
     {
         printf("\t已连接\n");
-        if (len > 0 && buff[len - 1] != '\n') {
+        if (len > 0 && buff[len - 1] != '\n')
+        {
             buff[len] = '\n';
             len++;
         }
