@@ -119,6 +119,34 @@ void tcp_client_test(void)
   }
 }
 
+void udp_test(void)
+{
+  UDP_Start();
+
+  uint8_t udp_ip[4] = {192, 168, 31, 187};
+  uint16_t udp_prot = 8081;
+  UDP_Server_Accept(udp_ip, &udp_prot, buff, &rexLen);
+
+  // 内容判断
+  if (rexLen > 0)
+  {
+    printf("接受到数据 d:%s\n", (char*)buff);
+
+    // 返回数据前面加 ack:
+    // 预估最大长度，buff长度 + "ack:" 4字节，预留空间
+    char send_buf[128];
+    // 第一步先拷贝前缀
+    strcpy(send_buf, "udp-ack:");
+    // 第二步拼接buff
+    strcat(send_buf, buff);
+
+    UDP_Send_Message(udp_ip, &udp_prot, send_buf, strlen(send_buf));
+
+    // 清空
+    rexLen = 0;
+  }
+}
+
 /**
   * @brief  The application entry point.
   * @retval int
@@ -168,30 +196,8 @@ int main(void)
     // tcp客户端测试
     // tcp_client_test();
 
-    UDP_Start();
-
-    uint8_t udp_ip[4] = {192, 168, 31, 187};
-    uint16_t udp_prot = 8081;
-    UDP_Server_Accept(udp_ip, &udp_prot, buff, &rexLen);
-
-    // 内容判断
-    if (rexLen > 0)
-    {
-      printf("接受到数据 d:%s\n", (char*)buff);
-
-      // 返回数据前面加 ack:
-      // 预估最大长度，buff长度 + "ack:" 4字节，预留空间
-      char send_buf[128];
-      // 第一步先拷贝前缀
-      strcpy(send_buf, "udp-ack:");
-      // 第二步拼接buff
-      strcat(send_buf, buff);
-
-      UDP_Send_Message(udp_ip, &udp_prot, send_buf, strlen(send_buf));
-
-      // 清空
-      rexLen = 0;
-    }
+    // udp测试
+    udp_test();
 
     /* USER CODE BEGIN 3 */
   }
