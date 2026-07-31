@@ -18,9 +18,13 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+
+#include "eth.h"
 #include "spi.h"
 #include "usart.h"
 #include "gpio.h"
+#include "web_server.h"
+#include "web_server.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -92,6 +96,10 @@ int main(void)
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
 
+  ETH_Init();
+
+  WebServer_Init();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -99,6 +107,8 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
+
+    WebServer_Start();
 
     /* USER CODE BEGIN 3 */
   }

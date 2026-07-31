@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include "main.h"
+#include "socket.h"
 #include "stm32f1xx_hal_gpio.h"
 #include "../../Drivers/Ethernet/w5500.h"
 
@@ -100,6 +101,13 @@ void ETH_Init(void)
 
     // 打印 Socket 缓冲区配置
     ETH_PrintSocketBuf();
+
+    // 强制关闭全部 socket(W5500 上电/异常后兜底)
+    // 即使 ETH_Reset 已经做了一次硬件复位（CS 拉低 300ms），通常 W5500 应该完全归零；但增加一道软件兜底能消掉 90% 的"幽灵"：
+    for (uint8_t i = 0; i < 8; i++) {
+        close(i);
+    }
+    printf("[ETH] all 8 sockets closed (clean state)\r\n");
 
     printf("[ETH] init done\r\n");
 }

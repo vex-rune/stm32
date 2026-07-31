@@ -1,6 +1,6 @@
 
-#ifndef __ETH_H__
-#define __ETH_H__
+#ifndef __WEBSERVER_H__
+#define __WEBSERVER_H__
 
 void WebServer_Init(void);
 void WebServer_Start(void);
