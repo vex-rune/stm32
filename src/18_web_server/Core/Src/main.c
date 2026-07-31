@@ -61,6 +61,31 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+void _led_action(uint8_t action, uint8_t device)
+{
+  uint8_t led_state = GPIO_PIN_SET;
+  uint8_t led_id = 0;
+  if (action == 1)
+  {
+    led_state = GPIO_PIN_RESET;
+  }
+
+  switch (device)
+  {
+  case 1:
+    led_id = led1_Pin;
+    break;
+  case 2:
+    led_id = led2_Pin;
+    break;
+  case 3:
+    led_id = led3_Pin;
+    break;
+  }
+
+  HAL_GPIO_WritePin(led1_GPIO_Port, led_id, led_state);
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -69,7 +94,6 @@ void SystemClock_Config(void);
   */
 int main(void)
 {
-
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -141,8 +165,8 @@ void SystemClock_Config(void)
 
   /** Initializes the CPU, AHB and APB buses clocks
   */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+    | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
@@ -180,7 +204,7 @@ void Error_Handler(void)
   * @param  line: assert_param error line source number
   * @retval None
   */
-void assert_failed(uint8_t *file, uint32_t line)
+void assert_failed(uint8_t* file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
