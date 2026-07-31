@@ -114,5 +114,13 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 
 /* USER CODE BEGIN 1 */
 
+// 串口复写打印
+int _write(int file, char *ptr, int len)
+{
+  (void)file;
+  HAL_UART_Transmit(&huart1, (uint8_t *)ptr, len, 100);
+  return len;
+}
+
 /* USER CODE END 1 */
 

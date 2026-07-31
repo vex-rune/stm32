@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 #include "main.h"
-#include "stm32f1xx_hal_spi.h"
+#include "stm32f1xx_hal_gpio.h"
 #include "../../Drivers/Ethernet/w5500.h"
 
 // IP 地址

@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "socket.h"
 #include "wizchip_conf.h"
 
 #include "httpServer.h"
