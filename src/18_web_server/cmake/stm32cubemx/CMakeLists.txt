@@ -17,6 +17,11 @@ set(MX_Include_Dirs
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/CMSIS/Include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/Ethernet
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/httpServer
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../App
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../App/Eth
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../App/Tcp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../App/Udp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../App/Web
 )
 
 # STM32CubeMX 生成的应用源码
@@ -50,7 +55,27 @@ set(STM32_Drivers_Src
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c
 )
 
-# 驱动中间件
+# 驱动中间件：W5500 以太网驱动
+set(Ethernet_Drivers_Src
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/Ethernet/socket.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/Ethernet/w5500.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/Ethernet/wizchip_conf.c
+)
+
+# 驱动中间件：HTTP 服务器
+set(HttpServer_Drivers_Src
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/httpServer/httpParser.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/httpServer/httpServer.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/httpServer/httpUtil.c
+)
+
+# 应用层源码：业务模块
+set(App_Src
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../App/Eth/eth.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../App/Tcp/tcp.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../App/Udp/udp.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../App/Web/web_server.c
+)
 
 
 
@@ -71,7 +96,12 @@ target_compile_definitions(stm32cubemx INTERFACE ${MX_Defines_Syms})
 
 # 创建 STM32_Drivers 静态库
 add_library(STM32_Drivers OBJECT)
-target_sources(STM32_Drivers PRIVATE ${STM32_Drivers_Src})
+target_sources(STM32_Drivers PRIVATE
+    ${STM32_Drivers_Src}
+    ${Ethernet_Drivers_Src}
+    ${HttpServer_Drivers_Src}
+    ${App_Src}
+)
 target_link_libraries(STM32_Drivers PUBLIC stm32cubemx)
 
 
