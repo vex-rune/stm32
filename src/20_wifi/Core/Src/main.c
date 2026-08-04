@@ -58,8 +58,8 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 
 // 缓存区
-uint8_t esp_rx_buf[256] = {0};
-uint16_t res_len;
+uint8_t main_rx_buf[1024] = {0};
+uint16_t main_rx_len;
 
 /* USER CODE END PFP */
 
@@ -111,10 +111,10 @@ int main(void)
   HAL_Delay(300);
 
   // WIFI初始化 STA
-  // Wifi_Init( STA);
+  Wifi_Init(STA);
 
-  // WIFI初始化 AP
-  Wifi_Init(AP);
+  // 开始启动 server
+  Wifi_StartServer();
 
 
   /* USER CODE END 2 */
@@ -123,6 +123,47 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    /* 接收数据参数：
+     * - rx_buf / sizeof(rx_buf)  : 接收缓冲区 / 其容量
+     * - conn_id / conn_port / conn_ip : 由 Wifi_ReadData 填充
+     *   （conn_id 范围 0~4，conn_ip 必须 >= 32 字节）
+     */
+    uint8_t conn_id = 0;
+    uint16_t conn_port = 0;
+    char conn_ip[32] = {0};
+
+    // main_rx_buf 清理
+    memset(main_rx_buf, 0, sizeof(main_rx_buf));
+
+    /* 1. 接收一帧 ESP32 +IPD 数据
+     *    返回值 n > 0：成功解析，返回 data 字节数（已截断到不超过 sizeof(rx_buf)）
+     *    返回值 n = 0：无数据 / 非 +IPD 帧 / 解析失败
+     */
+    uint16_t n = Wifi_ReadData(main_rx_buf, sizeof(main_rx_buf),
+                               &conn_id, &conn_port, (uint8_t*)conn_ip);
+
+    /* 2. 只有成功接收到数据才回发 ack */
+    if (n > 0)
+    {
+      /* 加上 "ack:" 前缀回发给客户端 */
+      char ack[1100];
+      int ack_len = snprintf(ack, sizeof(ack), "ack:%s", (char*)main_rx_buf);
+      if (ack_len > 0)
+      {
+        printf("conn_id: %d, conn_port: %d, conn_ip: %s\r\n",
+               conn_id, conn_port, conn_ip);
+        printf("rx: %s\r\n", (char*)main_rx_buf);
+
+        /* ack_len 不超过 1100；Wifi_SendData 接受 uint16_t */
+        if (ack_len > 1100) ack_len = 1100;
+        Wifi_SendData(conn_id, (uint8_t*)ack, (uint16_t)ack_len);
+
+        printf("返回数据: %s\r\n", ack);
+      }
+    }
+
+    HAL_Delay(1000);
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

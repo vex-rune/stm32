@@ -257,7 +257,7 @@ ESP_StatusTypeDef esp32_read_resp(uint8_t buf[], uint16_t* len, uint16_t size, u
     buf[rx_len] = '\0';
     *len = rx_len;
 
-    printf("esp32 -> recv: [ %s ];\r\n", buf);
+    // printf("esp32 -> recv: [ %s ];\r\n", buf);
 
     return (rx_len > 0) ? ESP_OK : ESP_TIMEOUT;
 }
