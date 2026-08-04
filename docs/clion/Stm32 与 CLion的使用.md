@@ -3,6 +3,7 @@
 > 来源：B 站视频 BV1pnjizYEAk（UP：keysking）
 > 整理日期：2026-07-15
 > 配套图片位于本目录下的 `images/` 子目录
+> 适用于版本 Clion 2026.1.4 (亲测可用)
 
 ## 一、安装 STM32CubeMX
 
