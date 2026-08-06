@@ -1,5 +1,6 @@
 #ifndef __BLUETOOTH_H
 #define __BLUETOOTH_H
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -10,7 +11,7 @@ extern "C" {
 
 #include <stdint.h>
 
-void BLE_Init();
+bool BLE_Init();
 
 void BLE_SendData(uint8_t  data[], uint16_t len);
 

@@ -97,11 +97,20 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
-  // 等3秒, 等待 esp32 准备好
-  HAL_Delay(3000);
+  bool res = BLE_Init();
+  uint8_t retry = 30;
 
-  BLE_Init();
+  while (!res && retry > 0) {
+    retry--;
+    printf("BLE_Init failed, retry %u/3 in 3s...\r\n", (uint32_t)(3 - retry));
+    HAL_Delay(3000);
+    res = BLE_Init();
+  }
 
+  if (!res) {
+    printf("[ERROR] BLE init failed after 4 attempts, system halted.\r\n");
+    Error_Handler();
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -118,7 +127,8 @@ int main(void)
 
     if (rxlen > 0)
     {
-      printf( "\r\n>>>>>>>>>>>>>>>>>>>>>>\r\nBLE_ReadData:\r\n\t%d\r\n\r\n\t%s\r\n>>>>>>>>>>>>>>>>>>>>>>\r\n", rxlen,(char*)data);
+      printf("\r\n>>>>>>>>>>>>>>>>>>>>>>\r\nBLE_ReadData:\r\n\t%d\r\n\r\n\t%s\r\n>>>>>>>>>>>>>>>>>>>>>>\r\n", rxlen,
+             (char*)data);
 
       // 返回数据给设备
 

@@ -4,6 +4,9 @@
 
 #include "esp32.h"
 #include "bluetooth.h"
+
+#include <stdbool.h>
+
 #include "usart.h"
 
 uint8_t resp[1024] = {0};
@@ -28,7 +31,77 @@ static void BLE_SendCmdAndWait(const char* cmd, const char* tag, uint32_t timeou
            cmd, (char*)resp);
 }
 
-void BLE_Init()
+/**
+ * @brief 剔除首尾 \r \n 空格
+ * @param buf 输入输出缓冲区，原地修改
+ * @return 处理之后有效字符串长度
+ */
+static int trim_at_response(char* buf)
+{
+    if (buf == NULL) return 0;
+
+    // 跳过开头空格 \r \n
+    char* p = buf;
+    while (*p == ' ' || *p == '\r' || *p == '\n')
+    {
+        p++;
+    }
+
+    // 尾部截掉
+    int len = (int)strlen(p);
+    while (len > 0)
+    {
+        char ch = p[len - 1];
+        if (ch == ' ' || ch == '\r' || ch == '\n')
+        {
+            len--;
+        }
+        else
+        {
+            break;
+        }
+    }
+    p[len] = '\0';
+    memmove(buf, p, len + 1);
+    return len;
+}
+
+
+/**
+ * @brief 判断AT应答是否成功
+ * @param resp 串口读到的AT返回原始字符串
+ * @return true:成功(有OK，无ERROR，非空) false:失败
+ */
+bool at_response_ok(char* resp)
+{
+    if (resp == NULL)
+    {
+        return false;
+    }
+    int valid_len = trim_at_response(resp);
+
+    // 除去空字符后长度为0
+    if (valid_len == 0)
+    {
+        return false;
+    }
+
+    // 包含ERROR →失败
+    if (strstr(resp, "ERROR") != NULL)
+    {
+        return false;
+    }
+
+    // 没有OK →失败
+    if (strstr(resp, "OK") == NULL)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool BLE_Init()
 {
     printf("======================== BLE INITIALIZING ====================\r\n");
 
@@ -38,35 +111,39 @@ void BLE_Init()
     // 2. 设置角色为服务端 AT+BLEINIT=2
     BLE_SendCmdAndWait("AT+BLEINIT=2\r\n", "BLEINIT", 3000);
 
-    if (strstr((char*)resp, "ERROR") != NULL)
+    if (!at_response_ok((char*)resp))
     {
-        printf("BLE INIT FAILED\r\n");
+        printf("设置角色为服务端 FAILED\r\n");
+        return false;
     }
 
     // 3. 服务端创建服务
     BLE_SendCmdAndWait("AT+BLEGATTSSRVCRE\r\n", "GATTSSRVCRE", 3000);
 
-    if (strstr((char*)resp, "ERROR") != NULL || rlen == 0)
+    // 特殊处理 'AT+BLEGATTSSRVCRE' 命令 返回的是 'AT+BLEGATTSSRVCRE'
+    if ( strstr((char*)resp, "BLEGATTSSRVCRE") == NULL)
     {
-        printf("BLE INIT FAILED\r\n");
+        printf("创建服务失败\r\n");
+        return false;
     }
 
     // 4. 服务端开启服务
     BLE_SendCmdAndWait("AT+BLEGATTSSRVSTART\r\n", "GATTSSRVSTART", 3000);
 
-    if (strstr((char*)resp, "ERROR") != NULL || rlen == 0)
+    if (!at_response_ok((char*)resp))
     {
-        printf("BLE INIT FAILED\r\n");
+        printf("开启服务失败\r\n");
+        return false;
     }
-
 
     // 5. 服务端获取其 MAC 地址
     BLE_SendCmdAndWait("AT+BLEADDR?\r\n", "BLEADDR", 3000);
 
 
-    if (strstr((char*)resp, "ERROR") != NULL || rlen == 0)
+    if (!at_response_ok((char*)resp))
     {
-        printf("BLE INIT FAILED\r\n");
+        printf("获取MAC地址失败\r\n");
+        return false;
     }
 
 
@@ -74,11 +151,11 @@ void BLE_Init()
     BLE_SendCmdAndWait("AT+BLEADVPARAM=50,50,0,0,7,0\r\n", "BLEADVPARAM", 3000);
 
 
-    if (strstr((char*)resp, "ERROR") != NULL || rlen == 0)
+    if (!at_response_ok((char*)resp))
     {
-        printf("BLE INIT FAILED\r\n");
+        printf("设置广播参数失败\r\n");
+        return false;
     }
-
 
     // 7. 设置广播数据 AT+BLEADVDATAEX=<dev_name>,<uuid>,<manufacturer_data>,<include_power>
     // 设备名缩短为 VEX_BLE，规避BLE广播31字节payload上限
@@ -91,10 +168,10 @@ void BLE_Init()
     );
     BLE_SendCmdAndWait(cmd, "BLEADVDATAEX", 3000);
 
-
-    if (strstr((char*)resp, "ERROR") != NULL || rlen == 0)
+    if (!at_response_ok((char*)resp))
     {
-        printf("BLE INIT FAILED\r\n");
+        printf("设置广播数据失败\r\n");
+        return false;
     }
 
 
@@ -103,12 +180,11 @@ void BLE_Init()
     // 8. 服务端开始广播
     BLE_SendCmdAndWait("AT+BLEADVSTART\r\n", "BLEADVSTART", 3000);
 
-
-    if (!(strstr((char*)resp, "OK") != NULL))
+    if (!at_response_ok((char*)resp))
     {
-        printf("BLE INIT FAILED\r\n");
+        printf("广播失败\r\n");
+        return false;
     }
-
 
     // 9. 配置 SPP 参数 AT+BLESPPCFG=1,1,7,1,5
     BLE_SendCmdAndWait("AT+BLESPPCFG=1,1,7,1,5\r\n", "BLESPPCFG", 3000);
@@ -117,13 +193,15 @@ void BLE_Init()
     // 它是为经典蓝牙 SPP 透传设计的，会干扰 BLE 状态上报
     BLE_SendCmdAndWait("AT+SYSMSG=4\r\n", "SYSMSG", 3000);
 
-
-    if (!(strstr((char*)resp, "OK") != NULL))
+    if (!at_response_ok((char*)resp))
     {
-        printf("BLE INIT FAILED\r\n");
+        printf("配置 SPP 参数失败\r\n");
+        return false;
     }
 
     printf("======================== BLE INITIALIZED ====================\r\n");
+
+    return true;
 }
 
 void BLE_SendData(uint8_t data[], uint16_t len)
