@@ -48,5 +48,19 @@ https://docs.espressif.com/projects/esp-at/zh_CN/release-v3.2.0.0/esp32c3/Get_St
 
 ![alt text](images/at_down_2.png)
 
+![alt text](image.png)
+
+```
+完整烧录地址映射（来自 flasher_args.json / download.config）
+─────────────────────────────────────────────────────────────
+ 0x0     → bootloader/bootloader.bin
+ 0x8000  → partition_table/partition-table.bin
+ 0xd000  → ota_data_initial.bin
+ 0xf000  → phy_multiple_init_data.bin
+ 0x1e000 → at_customize.bin
+ 0x1f000 → customized_partitions/mfg_nvs.bin
+ 0x60000 → esp-at.bin  (≈ factory_MINI-1.bin)
+```
+
 如果usb链接后, 不停地提示音, 需要短接 P9 与 GND, 激活boot模式, 进行烧写;
 

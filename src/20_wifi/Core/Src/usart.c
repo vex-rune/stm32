@@ -23,7 +23,6 @@
 
 /* USER CODE BEGIN 0 */
 
-/* USER CODE END 0 */
 
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
@@ -33,6 +32,9 @@ UART_HandleTypeDef huart2;
 volatile uint8_t rx_buf[RX_BUF_SIZE];
 volatile uint16_t rx_head = 0;
 volatile uint8_t rx_byte;
+
+/* USER CODE END 0 */
+
 
 /* USART1 init function */
 void MX_USART1_UART_Init(void)
