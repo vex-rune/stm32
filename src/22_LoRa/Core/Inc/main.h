@@ -61,13 +61,13 @@ void Error_Handler(void);
 #define lora_busy_GPIO_Port GPIOE
 #define lora_rxen_Pin GPIO_PIN_5
 #define lora_rxen_GPIO_Port GPIOE
-#define lorat_xen_Pin GPIO_PIN_6
-#define lorat_xen_GPIO_Port GPIOE
+#define lora_txen_Pin GPIO_PIN_6
+#define lora_txen_GPIO_Port GPIOE
 #define KEY_Pin GPIO_PIN_10
 #define KEY_GPIO_Port GPIOF
 #define KEY_EXTI_IRQn EXTI15_10_IRQn
-#define loar_rst_Pin GPIO_PIN_13
-#define loar_rst_GPIO_Port GPIOG
+#define lora_rst_Pin GPIO_PIN_13
+#define lora_rst_GPIO_Port GPIOG
 #define lora_cs_Pin GPIO_PIN_14
 #define lora_cs_GPIO_Port GPIOG
 

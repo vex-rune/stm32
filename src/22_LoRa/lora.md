@@ -198,10 +198,69 @@ Ts = 2^SF / BW
 
 
 # LoRa 库下载
-[llcc68_driver](https://github.com/Lora-net/llcc68_driver.git)
+
+## 官方库
+[Lora-net](https://github.com/Lora-net/llcc68_driver.git)
 
  ```
  git clone https://github.com/Lora-net/llcc68_driver.git
  ```
 
 
+## 第三方库
+[libdriver](https://github.com/libdriver/llcc68)
+
+ ```
+ git clone https://github.com/libdriver/llcc68.git
+ ```
+
+# 两个库对比
+1. **https://github.com/Lora‑net/llcc68_driver.git** → **Semtech官方驱动**
+- 芯片原厂（Semtech）维护，Lora‑net是Semtech官方组织，BSD‑3‑Clear协议
+- 只有核心逻辑，**无平台代码、无完整示例**；只定义`llcc68_hal.h`，SPI/复位/唤醒需要你自己实现HAL层（4个回调函数）
+- 更新频繁，跟随芯片勘误、bug修复，LoRaWAN项目标准引用驱动
+- 优点：最权威，没有封装，可控性极强；缺点：上手门槛高，没有可直接跑的demo
+
+2. **https://github.com/libdriver/llcc68.git** → **第三方开源LibDriver库（个人维护）**
+- 基于官方寄存器指令做的二次封装，**非官方**，MIT协议
+- 自带完整封装、现成接口、STM32/Linux示例、中文文档、misra检查，`interface`目录放SPI模板，复制改一改就能跑示例，开箱友好
+- 优点：上手快，demo齐全；缺点：封装厚重，版本跟进慢，遇到芯片底层bug要等作者更新
+
+## 选型建议
+|场景|选哪个|
+|---|---|
+|做LoRaWAN、产品量产、追求原汁原味、STM32裸机深度开发|✅ **官方 lora‑net/llcc68_driver**|
+|快速验证、原型开发、不想写HAL层、需要现成收发demo、快速跑通LLCC68|✅ **libdriver/llcc68**|
+
+> 提示：LibDriver本质还是调用LLCC68寄存器命令，底层逻辑来自官方手册；量产项目优先官方库，原型调试可以先用libdriver快速验证功能，再迁移官方库。
+
+### 简单区分记忆
+- 官方：只给寄存器操作，**不给SPI实现**，你写HAL对接
+- libdriver：已经把SPI、延时、复位全部封装好，填SPI函数指针直接调用收发API
+
+如果你用STM32，我可以给一份极简的官方llcc68_driver的HAL适配模板（SPI+复位）。
+
+
+# 代码
+```c
+
+#include "stdarg.h"
+
+
+/**
+ * @brief     interface print format data
+ * @param[in] fmt format data
+ * @note      none
+ */
+void llcc68_interface_debug_print(const char* const fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    vprintf(fmt, ap);
+    va_end(ap);
+}
+```
+
+# LoRa 图
+
+![](4.png)

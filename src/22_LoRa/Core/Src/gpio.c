@@ -52,10 +52,10 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOG_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, lora_rxen_Pin|lorat_xen_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOE, lora_rxen_Pin|lora_txen_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOG, loar_rst_Pin|lora_cs_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOG, lora_rst_Pin|lora_cs_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin : lora_busy_Pin */
   GPIO_InitStruct.Pin = lora_busy_Pin;
@@ -63,8 +63,8 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(lora_busy_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : lora_rxen_Pin lorat_xen_Pin */
-  GPIO_InitStruct.Pin = lora_rxen_Pin|lorat_xen_Pin;
+  /*Configure GPIO pins : lora_rxen_Pin lora_txen_Pin */
+  GPIO_InitStruct.Pin = lora_rxen_Pin|lora_txen_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
@@ -76,8 +76,8 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(KEY_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : loar_rst_Pin lora_cs_Pin */
-  GPIO_InitStruct.Pin = loar_rst_Pin|lora_cs_Pin;
+  /*Configure GPIO pins : lora_rst_Pin lora_cs_Pin */
+  GPIO_InitStruct.Pin = lora_rst_Pin|lora_cs_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;

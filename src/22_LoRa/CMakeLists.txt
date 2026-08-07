@@ -32,14 +32,14 @@ message("Build type: " ${CMAKE_BUILD_TYPE})
 enable_language(C ASM)
 
 # Create an executable object type
-add_executable(${CMAKE_PROJECT_NAME})
+add_executable(${CMAKE_PROJECT_NAME}
+        Core/Inc/driver_llcc68.h
+        Core/Inc/driver_llcc68_interface.h
+        Core/Src/driver_llcc68.c
+        Core/Src/driver_llcc68_interface.c)
 
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)
-
-# ====================== 新增：引入LLCC68驱动子库 ======================
-add_subdirectory(llcc68_driver/src)
-# ====================================================================
 
 # Link directories setup
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
@@ -70,8 +70,4 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32cubemx
 
     # Add user defined libraries
-
-    # ====================== 新增：链接LLCC68驱动库 ======================
-    llcc68_driver
-    # =================================================================
 )
