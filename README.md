@@ -26,3 +26,9 @@ https://www.st.com.cn/zh/development-tools/stsw-link009.html#tools-software)
 - `CMake Tools` 插件
 - `STM32` 插件
 - `clangd` 插件
+
+
+
+# 日记
+
+目前到了 LoRa, 还没有完成, 待续...
