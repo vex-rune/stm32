@@ -36,7 +36,9 @@ add_executable(${CMAKE_PROJECT_NAME}
         Core/Inc/driver_llcc68.h
         Core/Inc/driver_llcc68_interface.h
         Core/Src/driver_llcc68.c
-        Core/Src/driver_llcc68_interface.c)
+        Core/Src/driver_llcc68_interface.c
+        Core/Inc/lora.h
+        Core/Src/lora.c)
 
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)
