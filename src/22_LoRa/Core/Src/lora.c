@@ -1,11 +1,17 @@
 #include  "lora.h"
 
+#include "spi.h"
 
-// 定义全局结构体对象, 剧本
+#include <string.h>
+
+#include "driver_llcc68.h"
+#include "driver_llcc68_interface.h"
+
+/* 定义全局结构体对象, 剧本 */
 static llcc68_handle_t gs_handle;
 
 // 初始化
-int lora_init(void)
+uint8_t lora_init(void)
 {
     printf(">>>>>>>>>>>>>>>> llcc68: 初始化. <<<<<<<<<<<<<<<<<<<<<<\r\n");
 
@@ -284,13 +290,10 @@ int lora_init(void)
 }
 
 /**
- * @brief  LoRa 示例进入发送模式
- * @return 状态码
- *         - 0 成功
- *         - 1 进入失败
- * @note   无
+ * @brief  内部：进入发送模式（设置 IRQ + 清状态）
+ * @note   仅供 lora_send() 调用，不暴露到 .h
  */
-uint8_t llcc68_lora_set_send_mode(void)
+static uint8_t lora_set_send_mode_internal(void)
 {
     /* 设置 DIO 中断 */
     if (llcc68_set_dio_irq_params(
@@ -311,15 +314,10 @@ uint8_t llcc68_lora_set_send_mode(void)
 }
 
 /**
- * @brief     LoRa 示例发送 LoRa 数据
- * @param[in] *buf 指向数据缓冲区的指针
- * @param[in] len 数据长度
- * @return    状态码
- *            - 0 成功
- *            - 1 发送失败
- * @note      无
+ * @brief  内部：调用底层 llcc68_lora_transmit 发送
+ * @note   仅供 lora_send() 调用
  */
-uint8_t llcc68_lora_send(uint8_t* buf, uint16_t len)
+static uint8_t lora_send_internal(uint8_t* buf, uint16_t len)
 {
     /* 发送数据 */
     if (llcc68_lora_transmit(&gs_handle, LLCC68_CLOCK_SOURCE_XTAL_32MHZ,
@@ -333,22 +331,150 @@ uint8_t llcc68_lora_send(uint8_t* buf, uint16_t len)
     return 0;
 }
 
-// 发送数据
+/**
+ * @brief  发送一包 LoRa 数据
+ */
 void lora_send(uint8_t* buf, uint16_t len)
 {
-    // 收发使能
+    /* 切射频开关到 TX 模式 */
     TXEN_HIGH;
     RXEN_LOW;
+    llcc68_interface_delay_ms(5);
 
-    // 1. 进入TX模式
-    llcc68_lora_set_send_mode();
-
-    // 2. 数据发送
-    llcc68_lora_send(buf, len);
+    /* 进入发送模式 + 发送 */
+    lora_set_send_mode_internal();
+    lora_send_internal(buf, len);
 }
 
-// 接受数据
-uint8_t lora_receive(uint8_t* buf, uint16_t* len)
+// 进入连续接受模式
+uint8_t lora_receive_mode(void)
 {
+    uint8_t setup;
+
+    /* 切射频开关到 RX 模式 */
+    RXEN_HIGH;
+    TXEN_LOW;
+    llcc68_interface_delay_ms(5);
+
+    /* 设置 DIO 中断 */
+    if (llcc68_set_dio_irq_params(
+        &gs_handle,
+        LLCC68_IRQ_RX_DONE | LLCC68_IRQ_TIMEOUT | LLCC68_IRQ_CRC_ERR | LLCC68_IRQ_CAD_DONE | LLCC68_IRQ_CAD_DETECTED,
+        LLCC68_IRQ_RX_DONE | LLCC68_IRQ_TIMEOUT | LLCC68_IRQ_CRC_ERR | LLCC68_IRQ_CAD_DONE | LLCC68_IRQ_CAD_DETECTED,
+        0x0000, 0x0000) != 0)
+    {
+        return 1;
+    }
+
+    /* 清除中断状态 */
+    if (llcc68_clear_irq_status(&gs_handle, 0x03FFU) != 0)
+    {
+        return 1;
+    }
+
+    /* 设置 LoRa 数据包参数 */
+    if (llcc68_set_lora_packet_params(&gs_handle, LLCC68_LORA_DEFAULT_PREAMBLE_LENGTH,
+                                      LLCC68_LORA_DEFAULT_HEADER, LLCC68_LORA_DEFAULT_BUFFER_SIZE,
+                                      LLCC68_LORA_DEFAULT_CRC_TYPE, LLCC68_LORA_DEFAULT_INVERT_IQ) != 0)
+    {
+        return 1;
+    }
+
+    /* 获取 IQ 极性 */
+    if (llcc68_get_iq_polarity(&gs_handle, (uint8_t*)&setup) != 0)
+    {
+        return 1;
+    }
+
+#if LLCC68_LORA_DEFAULT_INVERT_IQ == LLCC68_BOOL_FALSE
+    setup |= 1 << 2;
+#else
+    setup &= ~(1 << 2);
+#endif
+
+    /* 设置 IQ 极性 */
+    if (llcc68_set_iq_polarity(&gs_handle, setup) != 0)
+    {
+        return 1;
+    }
+
+    /* 开始接收 */
+    if (llcc68_continuous_receive(&gs_handle) != 0)
+    {
+        return 1;
+    }
+
+    return 0;
 }
 
+/*======================================================================*/
+/*                  分步式接收 API（main 按顺序调用）*/
+/*======================================================================*/
+
+/**
+ * @brief  查询芯片 IRQ 状态，返回是否收到完整一包
+ * @retval 1 收到 / 0 未收到 / 出错
+ */
+uint8_t lora_check_rx(void)
+{
+    uint16_t irq = 0;
+    if (llcc68_get_irq_status(&gs_handle, &irq) != 0)
+        return 0;
+    return (irq & LLCC68_IRQ_RX_DONE) ? 1 : 0;
+}
+
+/**
+ * @brief  从 RX FIFO 读取一包数据
+ * @param[out] buf  接收缓冲区
+ * @param[out] len  实际字节数
+ * @retval 0 成功 / 1 失败
+ */
+uint8_t lora_read_packet(uint8_t *buf, uint16_t *len)
+{
+    uint8_t payload_len = 0, start_ptr = 0;
+    uint8_t payload[255];
+
+    if (llcc68_get_rx_buffer_status(&gs_handle, &payload_len, &start_ptr) != 0)
+        return 1;
+    if (payload_len == 0 || payload_len > sizeof(payload))
+        return 1;
+    if (llcc68_read_buffer(&gs_handle, start_ptr, payload, payload_len) != 0)
+        return 1;
+
+    memcpy(buf, payload, payload_len);
+    *len = payload_len;
+    return 0;
+}
+
+/**
+ * @brief  读取最近一包的 RSSI / SNR
+ * @param[out] rssi 信号强度 dBm
+ * @param[out] snr  信噪比 dB
+ */
+void lora_get_rssi_snr(float *rssi, float *snr)
+{
+    uint8_t rssi_raw = 0, sig_raw = 0;
+    int8_t  snr_raw  = 0;
+    float   r = 0.0f, s = 0.0f;
+    llcc68_get_lora_packet_status(&gs_handle,
+        &rssi_raw, &snr_raw, &sig_raw, &r, &s, NULL);
+    if (rssi) *rssi = r;
+    if (snr)  *snr  = s;
+}
+
+/**
+ * @brief  处理 IRQ 收尾：清标志 + 重新进入 RX
+ * @note   收到包 / 超时 / CRC错 / 报头错 时调用
+ */
+void lora_resume_rx(void)
+{
+    uint16_t irq = 0;
+    llcc68_get_irq_status(&gs_handle, &irq);
+
+    if (irq & (LLCC68_IRQ_TIMEOUT | LLCC68_IRQ_CRC_ERR
+             | LLCC68_IRQ_HEADER_ERR | LLCC68_IRQ_RX_DONE))
+    {
+        llcc68_clear_irq_status(&gs_handle, 0x03FFU);
+        llcc68_continuous_receive(&gs_handle);
+    }
+}

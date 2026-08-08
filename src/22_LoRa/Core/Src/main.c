@@ -21,6 +21,7 @@
 #include "spi.h"
 #include "usart.h"
 #include "gpio.h"
+#include "lora.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -65,7 +66,6 @@ void SystemClock_Config(void);
   */
 int main(void)
 {
-
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -92,12 +92,61 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 
+
+  printf("\r\n=========================\r\n");
+  printf(" 22_LoRa 启动中...\r\n");
+  printf("=========================\r\n");
+
+  if (lora_init() != 0)
+  {
+    printf("[ERROR] lora init failed!\r\n");
+    while (1) { HAL_Delay(1000); }
+  }
+  printf("[OK] lora init done.\r\n");
+
+  if (lora_receive_mode() != 0)
+  {
+    printf("[ERROR] enter RX mode failed!\r\n");
+    while (1) { HAL_Delay(1000); }
+  }
+  printf("[OK] ready to receive.\r\n");
+
+  /* 启动后立刻发一包，便于对端验证 */
+  uint8_t tx[] = "Hello from 22_LoRa";
+  printf("[TX] sending: %s\r\n", tx);
+  lora_send(tx, sizeof(tx) - 1);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    /* 步骤1：问芯片收到没？ */
+    if (lora_check_rx())
+    {
+      uint8_t  buf[256];
+      uint16_t len = 0;
+      float    rssi = 0, snr = 0;
+
+      /* 步骤2：读出数据 */
+      if (lora_read_packet(buf, &len) == 0)
+      {
+        /* 步骤3：取 RSSI/SNR（可选） */
+        lora_get_rssi_snr(&rssi, &snr);
+
+        printf("[RX %dB rssi=%.1f snr=%.1f]: %.*s\r\n",
+               len, rssi, snr, len, (char*)buf);
+      }
+    }
+
+    /* 步骤4：清理 + 准备接收下一包 */
+    lora_resume_rx();
+
+    HAL_Delay(50);
+
+
+    HAL_Delay(50);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -131,8 +180,8 @@ void SystemClock_Config(void)
 
   /** Initializes the CPU, AHB and APB buses clocks
   */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+    | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
@@ -170,7 +219,7 @@ void Error_Handler(void)
   * @param  line: assert_param error line source number
   * @retval None
   */
-void assert_failed(uint8_t *file, uint32_t line)
+void assert_failed(uint8_t* file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,

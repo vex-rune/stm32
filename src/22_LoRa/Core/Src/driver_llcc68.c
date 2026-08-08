@@ -1253,8 +1253,6 @@ uint8_t llcc68_lora_transmit(llcc68_handle_t* handle, llcc68_clock_source_t stan
     ms = us / 1000 + 10000; /* set timeout */
     while ((ms != 0) && (handle->tx_done == 0) && (handle->timeout == 0)) /* 检查超时 */
     {
-        // 手动调用 irq 处理函数
-        llcc68_irq_handler(handle);
         handle->delay_ms(1); /* 延时1毫秒 */
         ms--; /* 毫秒减1 */
     }
